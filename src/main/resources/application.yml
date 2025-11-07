@@ -68,7 +68,7 @@ logging:
   level:
     org.hibernate.SQL: DEBUG
     org.springframework.jdbc.core: DEBUG
-    com.workoutmate: INFO
+    com.localfestival: INFO
 
 management:
   endpoints:
