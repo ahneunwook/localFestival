@@ -1,0 +1,15 @@
+name: 📝 Docs Update
+description: README, 위키, 주석 등 문서 관련 수정
+title: "[DOCS] 문서 작업 요약 제목"
+labels: ["docs"]
+body:
+  - type: textarea
+    id: scope
+    attributes:
+      label: 📚 수정 범위
+      description: 어떤 문서를 수정/추가하나요?
+  - type: textarea
+    id: details
+    attributes:
+      label: 🧾 변경 내용
+      description: 구체적인 수정 내용을 적어주세요.

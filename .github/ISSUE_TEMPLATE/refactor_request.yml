@@ -1,0 +1,22 @@
+name: ♻️ Refactor Request
+description: 코드 구조 개선/리팩토링 요청
+title: "[REFACTOR] 리팩토링 요약 제목"
+labels: ["refactor"]
+body:
+  - type: textarea
+    id: scope
+    attributes:
+      label: 🧾 대상/범위
+      description: 어떤 부분을 리팩토링하나요?
+  - type: textarea
+    id: reason
+    attributes:
+      label: 💡 이유
+      description: 유지보수성/가독성/중복 제거 등 사유를 기입하세요.
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: ✅ 체크리스트
+      options:
+        - label: 기능 동작 영향 없음
+        - label: 테스트/커버리지 유지

@@ -1,0 +1,34 @@
+feature:
+  - 'front/**'
+  - 'src/**/components/**'
+  - 'src/**/*.tsx'
+  - 'src/**/*.ts'
+  - 'src/**/*.js'
+  - 'src/**/*.jsx'
+backend:
+  - 'src/main/**'
+  - 'src/**/controller/**'
+  - 'src/**/service/**'
+  - 'src/**/repository/**'
+  - 'pom.xml'
+  - 'build.gradle*'
+docs:
+  - '**/*.md'
+  - 'docs/**'
+  - 'wiki/**'
+test:
+  - '**/*Test.java'
+  - '**/__tests__/**'
+  - '**/*.spec.*'
+  - '**/*.test.*'
+ci:
+  - '.github/workflows/**'
+design:
+  - '**/*.css'
+  - '**/*.scss'
+  - '**/*.sass'
+  - '**/*.less'
+  - 'src/**/styles/**'
+  - 'public/**/*.svg'
+  - 'public/**/*.png'
+  - 'public/**/*.jpg'

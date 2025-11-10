@@ -1,0 +1,24 @@
+name: ✨ Feature Request
+description: 새로운 기능 추가나 개선 요청을 남깁니다.
+title: "[FEAT] 기능 요약 제목"
+labels: ["feature"]
+body:
+  - type: input
+    id: summary
+    attributes:
+      label: 🧾 요약
+      description: 어떤 기능을 제안하나요?
+      placeholder: 간단한 설명
+  - type: textarea
+    id: details
+    attributes:
+      label: 💡 상세 내용
+      description: 무엇을, 왜 구현해야 하는지 자세히 적어주세요.
+      placeholder: 문제 상황/개선 포인트/수용 기준 등
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: ✅ 체크리스트
+      options:
+        - label: 요구사항 분석 완료
+        - label: 구현 가능성 검토

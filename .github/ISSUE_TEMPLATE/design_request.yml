@@ -1,0 +1,28 @@
+name: 🎨 Design Request
+description: UI/UX, 스타일, 레이아웃 관련 변경 요청
+title: "[DESIGN] 디자인 작업 요약 제목"
+labels: ["design"]
+body:
+  - type: input
+    id: summary
+    attributes:
+      label: 🧾 요약
+      description: 어떤 디자인 변경인가요?
+      placeholder: 예) 메인 카드 간격 조정
+  - type: textarea
+    id: details
+    attributes:
+      label: 💡 상세 내용
+      description: 컴포넌트/페이지/레이아웃/반응형 등 상세 요구를 적어주세요.
+  - type: textarea
+    id: refs
+    attributes:
+      label: 🔗 참고 자료
+      description: 레퍼런스 링크/시안/스크린샷이 있으면 첨부하세요.
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: ✅ 체크리스트
+      options:
+        - label: 디자인 가이드(색/타이포/간격) 준수
+        - label: 반응형/접근성 고려
