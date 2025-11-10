@@ -1,34 +1,52 @@
+# actions/labeler@v5 config (new schema)
 feature:
-  - 'front/**'
-  - 'src/**/components/**'
-  - 'src/**/*.tsx'
-  - 'src/**/*.ts'
-  - 'src/**/*.js'
-  - 'src/**/*.jsx'
+  - changed-files:
+      - any-glob-to-any-file: 
+          - 'front/**'
+          - 'src/**/components/**'
+          - 'src/**/*.tsx'
+          - 'src/**/*.ts'
+          - 'src/**/*.js'
+          - 'src/**/*.jsx'
+
 backend:
-  - 'src/main/**'
-  - 'src/**/controller/**'
-  - 'src/**/service/**'
-  - 'src/**/repository/**'
-  - 'pom.xml'
-  - 'build.gradle*'
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'src/main/**'
+          - 'src/**/controller/**'
+          - 'src/**/service/**'
+          - 'src/**/repository/**'
+          - 'pom.xml'
+          - 'build.gradle*'
+
 docs:
-  - '**/*.md'
-  - 'docs/**'
-  - 'wiki/**'
+  - changed-files:
+      - any-glob-to-any-file:
+          - '**/*.md'
+          - 'docs/**'
+          - 'wiki/**'
+
 test:
-  - '**/*Test.java'
-  - '**/__tests__/**'
-  - '**/*.spec.*'
-  - '**/*.test.*'
+  - changed-files:
+      - any-glob-to-any-file:
+          - '**/*Test.java'
+          - '**/__tests__/**'
+          - '**/*.spec.*'
+          - '**/*.test.*'
+
 ci:
-  - '.github/workflows/**'
+  - changed-files:
+      - any-glob-to-any-file:
+          - '.github/workflows/**'
+
 design:
-  - '**/*.css'
-  - '**/*.scss'
-  - '**/*.sass'
-  - '**/*.less'
-  - 'src/**/styles/**'
-  - 'public/**/*.svg'
-  - 'public/**/*.png'
-  - 'public/**/*.jpg'
+  - changed-files:
+      - any-glob-to-any-file:
+          - '**/*.css'
+          - '**/*.scss'
+          - '**/*.sass'
+          - '**/*.less'
+          - 'src/**/styles/**'
+          - 'public/**/*.svg'
+          - 'public/**/*.png'
+          - 'public/**/*.jpg'
