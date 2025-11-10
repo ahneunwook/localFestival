@@ -1,0 +1,4 @@
+# CODEOWNERS 예시: 필요 시 수정
+* @your-org/reviewers
+/frontend/** @fe-leads
+/backend/** @server-leads

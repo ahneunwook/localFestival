@@ -1,0 +1,36 @@
+name: 🐛 Bug Report
+description: 발견한 버그나 오류를 신고합니다.
+title: "[FIX] 버그 요약 제목"
+labels: ["bug"]
+body:
+  - type: textarea
+    id: desc
+    attributes:
+      label: ❗ 문제 설명
+      description: 무엇이 잘못되었는지 설명해주세요.
+  - type: textarea
+    id: steps
+    attributes:
+      label: ⚙️ 재현 단계
+      description: 어떻게 재현할 수 있나요?
+      placeholder: |
+        1. ...
+        2. ...
+        3. ...
+  - type: textarea
+    id: expected
+    attributes:
+      label: 🧩 기대 동작
+      description: 정상적으로 어떻게 동작해야 하나요?
+  - type: input
+    id: env
+    attributes:
+      label: 🖥 환경
+      placeholder: OS/브라우저/버전 등
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: ✅ 체크리스트
+      options:
+        - label: 최신 브랜치에서 재현 확인
+        - label: 스크린샷/로그 첨부 (해당 시)
