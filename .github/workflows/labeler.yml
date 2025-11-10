@@ -1,3 +1,45 @@
 feature:
   - changed-files:
-      - any-glob-to-any-file: 'front/**'
+    - any-glob-to-any-file: 'front/**'
+    - any-glob-to-any-file: 'src/**/components/**'
+    - any-glob-to-any-file: 'src/**/*.tsx'
+    - any-glob-to-any-file: 'src/**/*.ts'
+    - any-glob-to-any-file: 'src/**/*.js'
+    - any-glob-to-any-file: 'src/**/*.jsx'
+
+backend:
+  - changed-files:
+    - any-glob-to-any-file: 'src/main/**'
+    - any-glob-to-any-file: 'src/**/controller/**'
+    - any-glob-to-any-file: 'src/**/service/**'
+    - any-glob-to-any-file: 'src/**/repository/**'
+    - any-glob-to-any-file: 'pom.xml'
+    - any-glob-to-any-file: 'build.gradle*'
+
+docs:
+  - changed-files:
+    - any-glob-to-any-file: '**/*.md'
+    - any-glob-to-any-file: 'docs/**'
+    - any-glob-to-any-file: 'wiki/**'
+
+test:
+  - changed-files:
+    - any-glob-to-any-file: '**/*Test.java'
+    - any-glob-to-any-file: '**/__tests__/**'
+    - any-glob-to-any-file: '**/*.spec.*'
+    - any-glob-to-any-file: '**/*.test.*'
+
+ci:
+  - changed-files:
+    - any-glob-to-any-file: '.github/workflows/**'
+
+design:
+  - changed-files:
+    - any-glob-to-any-file: '**/*.css'
+    - any-glob-to-any-file: '**/*.scss'
+    - any-glob-to-any-file: '**/*.sass'
+    - any-glob-to-any-file: '**/*.less'
+    - any-glob-to-any-file: 'src/**/styles/**'
+    - any-glob-to-any-file: 'public/**/*.svg'
+    - any-glob-to-any-file: 'public/**/*.png'
+    - any-glob-to-any-file: 'public/**/*.jpg'
