@@ -1,9 +1,0 @@
-# Title-based PR labels (TimonVS/pr-labeler-action)
-feature: '^FEAT:'
-bug: '^FIX:'
-refactor: '^REFACTOR:'
-docs: '^DOCS:'
-chore: '^CHORE:'
-test: '^TEST:'
-perf: '^PERF:'
-style: '^STYLE:'
