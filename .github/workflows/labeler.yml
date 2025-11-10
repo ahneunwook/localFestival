@@ -1,4 +1,4 @@
-feature:
+frontend:
   - changed-files:
     - any-glob-to-any-file: 'front/**'
     - any-glob-to-any-file: 'src/**/components/**'
