@@ -1,0 +1,32 @@
+name: PR Checks
+on:
+  pull_request:
+    types: [opened, edited, synchronize]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check PR title format
+        uses: actions-ecosystem/action-regex-match@v2
+        id: title
+        with:
+          text: ${{ github.event.pull_request.title }}
+          regex: '^(FEAT|FIX|REFACTOR|CHORE|DOCS|TEST|PERF|STYLE): .+'
+      - name: Fail if title invalid
+        if: ${{ steps.title.outputs.match == '' }}
+        run: |
+          echo "❌ PR 제목은 'FEAT: 제목' 형식이어야 합니다."
+          exit 1
+
+      - name: Check body has required sections
+        uses: actions-ecosystem/action-regex-match@v2
+        id: body
+        with:
+          text: ${{ github.event.pull_request.body }}
+          regex: '(##\s*(변경 내용|체크리스트|상세 설명))'
+      - name: Fail if body missing sections
+        if: ${{ steps.body.outputs.match == '' }}
+        run: |
+          echo "❌ PR 본문에 '변경 내용/상세 설명/체크리스트' 중 최소 1개 섹션이 필요합니다."
+          exit 1

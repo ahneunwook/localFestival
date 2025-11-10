@@ -1,0 +1,9 @@
+# Title-based Issue labels (github/issue-labeler)
+feature:
+  - '(?i)\[FEAT\]|feature|기능'
+bug:
+  - '(?i)\[FIX\]|bug|버그|오류'
+refactor:
+  - '(?i)\[REFACTOR\]|refactor|리팩토'
+docs:
+  - '(?i)\[DOCS\]|docs|문서'

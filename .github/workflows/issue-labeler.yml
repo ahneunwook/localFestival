@@ -1,0 +1,21 @@
+name: Auto Label (Issues)
+on:
+  issues:
+    types: [opened, edited, reopened]
+
+permissions:
+  issues: write
+  contents: read
+
+jobs:
+  issue-labeler:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: github/issue-labeler@v3
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          configuration-path: .github/issue-labeler.yml
+          include-title: true
+          include-body: false
+          # multiple: true allows multiple labels to be applied if matched
+          enable-versioned-regex: true

@@ -1,0 +1,4 @@
+# CODEOWNERS 예시: 경로별 기본 리뷰어 자동 지정
+* @your-org/reviewers
+/backend/** @server-leads
+/front/**   @fe-leads
