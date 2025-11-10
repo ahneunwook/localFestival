@@ -6,6 +6,7 @@ import Router from './router/index.js'
 import { HomePage } from './pages/Home.js'
 import { FestivalListPage } from './pages/FestivalList.js'
 import { LoginPage } from './pages/Login.js'
+import { SignupPage } from './pages/Signup.js'
 
 // 라우트 정의
 const routes = [
@@ -20,6 +21,10 @@ const routes = [
   {
     path: '/login',
     component: LoginPage
+  },
+  {
+    path: '/signup',
+    component: SignupPage
   },
   {
     path: '*',

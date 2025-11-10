@@ -38,7 +38,7 @@ export function LoginPage() {
         </div>
 
         <div class="signup-link">
-          아직 회원이 아니신가요? <a href="#" data-link>회원가입</a>
+          아직 회원이 아니신가요? <a href="/signup" data-link>회원가입</a>
         </div>
       </div>
     </div>

@@ -11,7 +11,7 @@ export function createHeader(activePage = '') {
       </nav>
       <div class="auth-buttons">
         <span onclick="window.location.href='/login'" style="cursor: pointer;">로그인</span>
-        <span class="active" style="cursor: pointer;">회원가입</span>
+        <span class="active" onclick="window.location.href='/signup'" style="cursor: pointer;">회원가입</span>
       </div>
     </header>
   `;
