@@ -1,0 +1,42 @@
+// Simple SPA Router
+class Router {
+  constructor(routes) {
+    this.routes = routes;
+    this.currentRoute = null;
+    
+    // 뒤로가기/앞으로가기 처리
+    window.addEventListener('popstate', () => {
+      this.loadRoute(window.location.pathname);
+    });
+
+    // 링크 클릭 이벤트 처리
+    document.addEventListener('click', (e) => {
+      if (e.target.matches('[data-link]')) {
+        e.preventDefault();
+        this.navigate(e.target.getAttribute('href'));
+      }
+    });
+  }
+
+  navigate(path) {
+    window.history.pushState(null, null, path);
+    this.loadRoute(path);
+  }
+
+  async loadRoute(path) {
+    // 라우트 찾기
+    const route = this.routes.find(r => r.path === path) || this.routes.find(r => r.path === '*');
+    
+    if (route) {
+      this.currentRoute = route;
+      const app = document.querySelector('#app');
+      app.innerHTML = await route.component();
+    }
+  }
+
+  init() {
+    this.loadRoute(window.location.pathname || '/');
+  }
+}
+
+export default Router;

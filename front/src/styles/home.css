@@ -1,0 +1,222 @@
+.hero-section {
+  padding: 80px 50px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.hero-cards {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 30px;
+  margin-bottom: 60px;
+}
+
+.hero-card {
+  position: relative;
+  padding: 50px;
+  border-radius: 20px;
+  color: white;
+  min-height: 200px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.3s;
+}
+
+.hero-card:hover {
+  transform: translateY(-5px);
+}
+
+.hero-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, 
+    rgba(255,255,255,0.1) 0%, 
+    rgba(255,255,255,0) 100%);
+  pointer-events: none;
+}
+
+.hero-card.music {
+  background: linear-gradient(135deg, #a8d8ea 0%, #c1e7f4 100%);
+}
+
+.hero-card.culture {
+  background: linear-gradient(135deg, #d4a5d8 0%, #e8c4ea 100%);
+}
+
+.hero-card .category {
+  font-size: 14px;
+  opacity: 0.9;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.hero-card .title {
+  font-size: 32px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.geometric-pattern {
+  position: absolute;
+  right: 30px;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 0.3;
+}
+
+.geometric-pattern svg {
+  width: 150px;
+  height: 150px;
+}
+
+.search-section {
+  background: white;
+  padding: 30px;
+  border-radius: 15px;
+  margin-bottom: 60px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.search-box {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.search-box input {
+  flex: 1;
+  padding: 15px 20px;
+  border: 2px solid #e0e0e0;
+  border-radius: 10px;
+  font-size: 16px;
+  transition: border-color 0.3s;
+}
+
+.search-box input:focus {
+  outline: none;
+  border-color: #a8d8ea;
+}
+
+.search-box button {
+  padding: 15px 30px;
+  background: #a8d8ea;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.search-box button:hover {
+  background: #8bc9e0;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+  margin-bottom: 40px;
+}
+
+.info-card {
+  background: white;
+  padding: 40px;
+  border-radius: 15px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  transition: transform 0.3s, box-shadow 0.3s;
+  cursor: pointer;
+}
+
+.info-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+}
+
+.info-card .card-title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.info-card .card-subtitle {
+  font-size: 14px;
+  color: #999;
+  margin-bottom: 30px;
+}
+
+.info-card .icon {
+  float: right;
+  width: 50px;
+  height: 50px;
+}
+
+.info-card .icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.secondary-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+}
+
+.secondary-card {
+  background: white;
+  padding: 40px;
+  border-radius: 15px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  transition: transform 0.3s;
+  cursor: pointer;
+}
+
+.secondary-card:hover {
+  transform: translateY(-5px);
+}
+
+.secondary-card .card-title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.secondary-card .card-subtitle {
+  font-size: 14px;
+  color: #999;
+  margin-bottom: 30px;
+}
+
+.secondary-card .icon {
+  float: right;
+  width: 50px;
+  height: 50px;
+}
+
+@media (max-width: 1024px) {
+  .info-grid, .secondary-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .hero-cards {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .info-grid, .secondary-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-section {
+    padding: 40px 20px;
+  }
+}

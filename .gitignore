@@ -37,3 +37,6 @@ out/
 .vscode/
 # Environment files
 .env
+/build.gradle
+/settings.gradle
+/front/

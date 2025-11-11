@@ -1,0 +1,18 @@
+export function createHeader(activePage = '') {
+  return `
+    <header class="header">
+      <div class="logo" onclick="window.location.href='/'" style="cursor: pointer;">FESTIVAL</div>
+      <nav class="nav">
+        <a href="/" data-link class="${activePage === 'home' ? 'active' : ''}">소개</a>
+        <a href="/festivals" data-link class="${activePage === 'list' ? 'active' : ''}">축제 목록</a>
+        <a href="#schedule" class="${activePage === 'schedule' ? 'active' : ''}">일정</a>
+        <a href="#news" class="${activePage === 'news' ? 'active' : ''}">소식</a>
+        <a href="#contact" class="${activePage === 'contact' ? 'active' : ''}">문의</a>
+      </nav>
+      <div class="auth-buttons">
+        <span onclick="window.location.href='/login'" style="cursor: pointer;">로그인</span>
+        <span class="active" onclick="window.location.href='/signup'" style="cursor: pointer;">회원가입</span>
+      </div>
+    </header>
+  `;
+}
