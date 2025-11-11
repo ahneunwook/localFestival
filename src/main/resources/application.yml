@@ -52,7 +52,7 @@ jwt:
 
 logging:
   level:
-    org.hibernate.SQL: DEBUG
+    org.hibernate.SQL: INFO
     org.springframework.jdbc.core: DEBUG
     com.localfestival: INFO
 
