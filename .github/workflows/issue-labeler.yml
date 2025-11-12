@@ -14,7 +14,7 @@ jobs:
       - uses: github/issue-labeler@v3
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
-          configuration-path: .github/workflows/issue-labeler.yaml
+          configuration-path: .github/issue-labeler.yaml
           include-title: true
           include-body: false
           enable-versioned-regex: true
