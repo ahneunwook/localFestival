@@ -7,7 +7,14 @@ import lombok.*;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "festivals")
+@Table(name = "festivals", indexes = {
+    @Index(name = "idx_active_dates", columnList = "isActive, startDate, endDate"),
+    @Index(name = "idx_active_category", columnList = "isActive, category"),
+    @Index(name = "idx_active_region", columnList = "isActive, region"),
+    @Index(name = "idx_title", columnList = "title"),
+    @Index(name = "idx_last_synced", columnList = "lastSyncedAt"),
+    @Index(name = "idx_event_status", columnList = "eventStatus")
+})
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor

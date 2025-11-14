@@ -14,6 +14,9 @@ import java.time.LocalDate;
 public record FestivalListResponse(
     Long id,
     String title,
+    String description,
+    String address,
+    String imageUrl,
     LocalDate startDate,
     LocalDate endDate,
     String region,
@@ -25,6 +28,9 @@ public record FestivalListResponse(
         return FestivalListResponse.builder()
             .id(festival.getId())
             .title(festival.getTitle())
+            .description(festival.getDescription())
+            .address(festival.getAddress())
+            .imageUrl(festival.getImageUrl())
             .startDate(festival.getStartDate())
             .endDate(festival.getEndDate())
             .region(festival.getRegion())

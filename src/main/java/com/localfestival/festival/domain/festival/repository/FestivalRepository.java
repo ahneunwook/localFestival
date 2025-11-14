@@ -1,6 +1,9 @@
 package com.localfestival.festival.domain.festival.repository;
 
 import com.localfestival.festival.domain.festival.entity.Festival;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -14,19 +17,31 @@ public interface FestivalRepository extends JpaRepository<Festival, Long> {
     Optional<Festival> findByUniqueKey(String uniqueKey);
 
     List<Festival> findByIsActiveTrue();
+ 
+    // 페이징
+    Page<Festival> findByIsActiveTrue(Pageable pageable);
 
-    List<Festival> findByCategory(String category);
+    Page<Festival> findByCategory(String category, Pageable pageable);
 
-    List<Festival> findByRegion(String region);
+    Page<Festival> findByRegion(String region, Pageable pageable);
 
     @Query("SELECT f FROM Festival f WHERE f.startDate <= :date AND f.endDate >= :date AND f.isActive = true")
-    List<Festival> findOngoingFestivals(@Param("date") LocalDate date);
+    Page<Festival> findOngoingFestivals(@Param("date") LocalDate date, Pageable pageable);
 
     @Query("SELECT f FROM Festival f WHERE f.startDate > :date AND f.isActive = true")
-    List<Festival> findUpcomingFestivals(@Param("date") LocalDate date);
+    Page<Festival> findUpcomingFestivals(@Param("date") LocalDate date, Pageable pageable);
 
     @Query("SELECT f FROM Festival f WHERE f.lastSyncedAt < :date OR f.lastSyncedAt IS NULL")
     List<Festival> findFestivalsNeedingSync(@Param("date") LocalDate date);
+
+    @Query("SELECT f FROM Festival f WHERE f.isActive = true " +
+           "AND (:keyword IS NULL OR :keyword = '' OR f.title LIKE %:keyword% OR f.description LIKE %:keyword%) " +
+           "AND (:region IS NULL OR :region = '' OR f.region = :region) " +
+           "AND (:category IS NULL OR :category = '' OR f.category = :category)")
+    List<Festival> searchFestivals(
+            @Param("keyword") String keyword,
+            @Param("region") String region,
+            @Param("category") String category);
 
     boolean existsByUniqueKey(String uniqueKey);
 }
