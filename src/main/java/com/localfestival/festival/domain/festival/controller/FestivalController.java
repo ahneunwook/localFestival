@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.localfestival.festival.domain.festival.dto.request.FestivalSearchRequest;
 import com.localfestival.festival.domain.festival.dto.response.FestivalPageResponse;
+import com.localfestival.festival.domain.festival.dto.response.FestivalResponse;
 import com.localfestival.festival.domain.festival.dto.response.FestivalListResponse;
 import com.localfestival.festival.domain.festival.service.FestivalService;
 import com.localfestival.festival.global.common.BaseResponse;
@@ -67,6 +68,14 @@ public class FestivalController {
             @PageableDefault(size = 12, sort = "startDate", direction = Sort.Direction.ASC) Pageable pageable) {
         FestivalPageResponse<FestivalListResponse> result = festivalService.getUpcomingFestivals(pageable);
         return BaseResponse.success(HttpStatus.OK, "예정된 축제 조회 성공", result);
+    }
+    
+    // 축제 상세 조회
+    @GetMapping("/{id}")
+    public ResponseEntity<BaseResponse<FestivalResponse>> getFestivalById(
+            @PathVariable("id") Long id) {
+        FestivalResponse result = festivalService.getFestivalById(id);
+        return BaseResponse.success(HttpStatus.OK, "축제 상세 조회 성공", result);
     }
     
     // 축제 검색

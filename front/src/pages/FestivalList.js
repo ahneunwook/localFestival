@@ -1,5 +1,5 @@
 import { createHeader } from '../components/header.js';
-import { festivalApi } from '../api/festivalApi.js';
+import { festivalApi } from '../api/FestivalApi.js';
 
 // 전역 변수
 let currentPage = 0;
@@ -170,7 +170,7 @@ function displayFestivals(festivals, append = false) {
   }
 
   const festivalHTML = festivals.map(festival => `
-    <div class="festival-card">
+    <div class="festival-card" onclick="window.location.href='/festival/detail?id=${festival.id}'" style="cursor: pointer;">
       <div class="festival-image">${getCategoryEmoji(festival.category)}</div>
       <div class="festival-info">
         <span class="festival-category">${festival.category || '기타'}</span>

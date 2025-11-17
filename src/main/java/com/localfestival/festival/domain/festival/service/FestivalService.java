@@ -1,23 +1,23 @@
 package com.localfestival.festival.domain.festival.service;
 
 import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.localfestival.festival.domain.festival.dto.request.FestivalSearchRequest;
 import com.localfestival.festival.domain.festival.dto.response.FestivalPageResponse;
+import com.localfestival.festival.domain.festival.dto.response.FestivalResponse;
+import com.localfestival.festival.domain.festival.entity.Festival;
 import com.localfestival.festival.domain.festival.dto.response.FestivalListResponse;
 import com.localfestival.festival.domain.festival.repository.FestivalRepository;
+import com.localfestival.festival.global.exception.CustomException;
+import com.localfestival.festival.global.exception.ErrorCode;
 
 import lombok.RequiredArgsConstructor;
 
@@ -67,6 +67,14 @@ public class FestivalService {
                 .map(FestivalListResponse::from);
 
         return FestivalPageResponse.from(festivalPage);
+    }
+    
+    // 축제 상세 조회
+    public FestivalResponse getFestivalById(Long id) {
+        Festival festival = festivalRepository.findById(id)
+                .orElseThrow(() -> new CustomException(ErrorCode.FESTIVAL_NOT_FOUND));
+        
+        return FestivalResponse.from(festival);
     }
     
     // 검색

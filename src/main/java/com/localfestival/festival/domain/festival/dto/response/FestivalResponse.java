@@ -18,13 +18,17 @@ public record FestivalResponse(
     LocalDate startDate,
     LocalDate endDate,
     String address,
+    String detailAddress,
     String region,
     String category,
     String venue,
     String organizer,
+    String host,
+    String sponsor,
     String homepageUrl,
+    String imageUrl,
     String tel,
-    String fee,
+    String relatedInfo,
     Double latitude,
     Double longitude,
     String eventStatus  // SCHEDULED, ONGOING, ENDED
@@ -40,12 +44,17 @@ public record FestivalResponse(
             .startDate(festival.getStartDate())
             .endDate(festival.getEndDate())
             .address(festival.getAddress())
+            .detailAddress(festival.getDetailAddress())
             .region(festival.getRegion())
             .category(festival.getCategory())
             .venue(festival.getVenue())
             .organizer(festival.getOrganizer())
+            .host(festival.getHost())
+            .sponsor(festival.getSponsor())
             .homepageUrl(festival.getHomepageUrl())
+            .imageUrl(festival.getImageUrl())
             .tel(festival.getTel())
+            .relatedInfo(festival.getRelatedInfo())
             .latitude(festival.getLatitude())
             .longitude(festival.getLongitude())
             .eventStatus(festival.getEventStatus())

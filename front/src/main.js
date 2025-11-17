@@ -3,9 +3,11 @@ import './styles/home.css'
 import './styles/festival-list.css'
 import './styles/login.css'
 import './styles/search-result.css'
+import './styles/festival-detail.css'
 import Router from './router/index.js'
 import { HomePage, setupHomeSearchListeners } from './pages/Home.js'
 import { FestivalListPage } from './pages/FestivalList.js'
+import { FestivalDetailPage } from './pages/FestivalDetail.js'
 import { LoginPage } from './pages/Login.js'
 import { SignupPage } from './pages/Signup.js'
 import { SearchResultPage, setupSearchListeners } from './pages/SearchResult.js'
@@ -24,6 +26,10 @@ const routes = [
   {
     path: '/festivals',
     component: FestivalListPage
+  },
+  {
+    path: '/festival/detail',
+    component: FestivalDetailPage
   },
   {
     path: '/search',
