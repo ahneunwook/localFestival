@@ -4,6 +4,7 @@ import com.localfestival.festival.domain.festival.entity.Festival;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -41,7 +42,8 @@ public interface FestivalRepository extends JpaRepository<Festival, Long> {
     List<Festival> searchFestivals(
             @Param("keyword") String keyword,
             @Param("region") String region,
-            @Param("category") String category);
+            @Param("category") String category,
+            Sort sort);
 
     boolean existsByUniqueKey(String uniqueKey);
 }

@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.localfestival.festival.domain.festival.dto.request.FestivalSearchRequest;
+import com.localfestival.festival.domain.festival.dto.response.FestivalPageResponse;
 import com.localfestival.festival.domain.festival.dto.response.FestivalListResponse;
 import com.localfestival.festival.domain.festival.repository.FestivalRepository;
 
@@ -25,78 +26,60 @@ import lombok.RequiredArgsConstructor;
 @Transactional(readOnly = true)
 public class FestivalService {
     private final FestivalRepository festivalRepository;
-
-    private static final int PAGE_SIZE = 12;
     
     // 전체 활성화된 축제 목록
-    public Map<String, Object> getAllActiveFestivals(int page) {
-        Pageable pageable = PageRequest.of(page, PAGE_SIZE, Sort.by("startDate").descending());
+    public FestivalPageResponse<FestivalListResponse> getAllActiveFestivals(Pageable pageable) {
         Page<FestivalListResponse> festivalPage = festivalRepository.findByIsActiveTrue(pageable)
                 .map(FestivalListResponse::from);
         
-        return createPageResponse(festivalPage);
+        return FestivalPageResponse.from(festivalPage);
     }
 
     // 지역별 조회
-    public Map<String, Object> getFestivalsByRegion(String region, int page) {
-        Pageable pageable = PageRequest.of(page, PAGE_SIZE, Sort.by("startDate").descending());
+    public FestivalPageResponse<FestivalListResponse>  getFestivalsByRegion(String region, Pageable pageable) {
         Page<FestivalListResponse> festivalPage = festivalRepository.findByRegion(region, pageable)
                 .map(FestivalListResponse::from);
         
-        return createPageResponse(festivalPage);
+        return FestivalPageResponse.from(festivalPage);
     }
 
     // 카테고리별 조회
-    public Map<String, Object> getFestivalsByCategory(String category, int page) {
-        Pageable pageable = PageRequest.of(page, PAGE_SIZE, Sort.by("startDate").descending());
+    public FestivalPageResponse<FestivalListResponse> getFestivalsByCategory(String category, Pageable pageable) {
         Page<FestivalListResponse> festivalPage = festivalRepository.findByCategory(category, pageable)
                 .map(FestivalListResponse::from);
         
-        return createPageResponse(festivalPage);
+        return FestivalPageResponse.from(festivalPage);
     }
 
     // 진행 중인 축제
-    public Map<String, Object> getOngoingFestivals(int page) {
+    public FestivalPageResponse<FestivalListResponse> getOngoingFestivals(Pageable pageable) {
         LocalDate today = LocalDate.now();
-        Pageable pageable = PageRequest.of(page, PAGE_SIZE, Sort.by("startDate").descending());
         Page<FestivalListResponse> festivalPage = festivalRepository.findOngoingFestivals(today, pageable)
                 .map(FestivalListResponse::from);
         
-        return createPageResponse(festivalPage);
+        return FestivalPageResponse.from(festivalPage);
     }
 
     // 예정된 축제
-    public Map<String, Object> getUpcomingFestivals(int page) {
+    public FestivalPageResponse<FestivalListResponse> getUpcomingFestivals(Pageable pageable) {
         LocalDate today = LocalDate.now();
-        Pageable pageable = PageRequest.of(page, PAGE_SIZE, Sort.by("startDate").ascending());
         Page<FestivalListResponse> festivalPage = festivalRepository.findUpcomingFestivals(today, pageable)
                 .map(FestivalListResponse::from);
-        
-        return createPageResponse(festivalPage);
+
+        return FestivalPageResponse.from(festivalPage);
     }
     
     // 검색
-    public List<FestivalListResponse> searchFestivals(FestivalSearchRequest request) {
+    public List<FestivalListResponse> searchFestivals(FestivalSearchRequest request, Pageable pageable) {
         List<FestivalListResponse> results = festivalRepository.searchFestivals(
                 request.getKeyword(),
                 request.getRegion(),
-                request.getCategory()
+                request.getCategory(),
+                pageable.getSort()
         ).stream()
                 .map(FestivalListResponse::from)
                 .collect(Collectors.toList());
-        
-        return results;
-    }
 
-    // 페이지 응답 생성
-    private Map<String, Object> createPageResponse(Page<FestivalListResponse> page) {
-        Map<String, Object> response = new HashMap<>();
-        response.put("content", page.getContent());
-        response.put("currentPage", page.getNumber());
-        response.put("totalPages", page.getTotalPages());
-        response.put("totalElements", page.getTotalElements());
-        response.put("hasNext", page.hasNext());
-        response.put("isLast", page.isLast());
-        return response;
+        return results;
     }
 }
