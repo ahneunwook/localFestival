@@ -11,10 +11,10 @@ jobs:
   issue-labeler:
     runs-on: ubuntu-latest
     steps:
-      - uses: github/issue-labeler@v3
+      - uses: github/issue-labeler@v4
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
-          configuration-path: .github/workflows/issue-labeler.yaml
+          configuration-path: .github/issue-labeler.yaml
           include-title: true
           include-body: false
           enable-versioned-regex: true
