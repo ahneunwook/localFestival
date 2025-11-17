@@ -19,7 +19,12 @@ public enum ErrorCode {
     REGION_NOT_FOUND(HttpStatus.NOT_FOUND, "지역 정보를 찾을 수 없습니다."),
 
     // 유저
-    DUPLICATE_EMAIL(HttpStatus.BAD_REQUEST, "중복된 이메일 입니다.");
+    DUPLICATE_EMAIL(HttpStatus.BAD_REQUEST, "중복된 이메일 입니다."),
+	
+    // 축제 api
+    FESTIVAL_SYNC_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "데이터 동기화에 실패했습니다."),
+    FESTIVAL_API_ERROR(HttpStatus.SERVICE_UNAVAILABLE, "API 호출에 실패했습니다."),
+    FESTIVAL_API_RESPONSE_ERROR(HttpStatus.BAD_GATEWAY, "API 응답 형식이 올바르지 않습니다.");
 
     private final HttpStatus httpStatus;
     private final String message;

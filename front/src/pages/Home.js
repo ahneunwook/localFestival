@@ -33,8 +33,8 @@ export function HomePage() {
 
       <div class="search-section">
         <div class="search-box">
-          <input type="text" placeholder="원하시는 축제나 지역을 검색해보세요.">
-          <button>🔍</button>
+          <input type="text" id="home-search-input" placeholder="원하시는 축제나 지역을 검색해보세요.">
+          <button id="home-search-btn">검색</button>
         </div>
       </div>
 
@@ -113,4 +113,27 @@ export function HomePage() {
       </div>
     </main>
   `;
+}
+
+// Home 페이지 검색 이벤트 리스너
+export function setupHomeSearchListeners() {
+  const searchBtn = document.getElementById('home-search-btn');
+  const searchInput = document.getElementById('home-search-input');
+  
+  if (searchBtn && searchInput) {
+    const handleSearch = () => {
+      const keyword = searchInput.value.trim();
+      if (keyword) {
+        window.location.href = `/search?q=${encodeURIComponent(keyword)}`;
+      }
+    };
+    
+    searchBtn.addEventListener('click', handleSearch);
+    
+    searchInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        handleSearch();
+      }
+    });
+  }
 }
