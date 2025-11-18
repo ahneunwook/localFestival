@@ -4,6 +4,7 @@ import './styles/festival-list.css'
 import './styles/login.css'
 import './styles/search-result.css'
 import './styles/festival-detail.css'
+import './styles/news.css'
 import Router from './router/index.js'
 import { HomePage, setupHomeSearchListeners } from './pages/Home.js'
 import { FestivalListPage } from './pages/FestivalList.js'
@@ -11,6 +12,7 @@ import { FestivalDetailPage } from './pages/FestivalDetail.js'
 import { LoginPage } from './pages/Login.js'
 import { SignupPage } from './pages/Signup.js'
 import { SearchResultPage, setupSearchListeners } from './pages/SearchResult.js'
+import { NewsPage, setupNewsListeners } from './pages/News.js'
 
 // 라우트 정의
 const routes = [
@@ -47,6 +49,15 @@ const routes = [
   {
     path: '/signup',
     component: SignupPage
+  },
+  {
+    path: '/news',
+    component: async () => {
+      const html = NewsPage();
+      // 페이지 로드 후 이벤트 리스너 설정
+      setTimeout(() => setupNewsListeners(), 0);
+      return html;
+    }
   },
   {
     path: '*',
