@@ -61,3 +61,11 @@ management:
     web:
       exposure:
         include: "*"
+
+# 외부 API
+external:
+  api:
+    festival:
+      url: https://api.data.go.kr/openapi/tn_pubr_public_cltur_fstvl_api
+      key: ${FESTIVAL_API_KEY}
+

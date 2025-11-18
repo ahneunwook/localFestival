@@ -172,3 +172,35 @@
     font-size: 28px;
   }
 }
+
+/* 필터 탭 호버 효과 개선 */
+.filter-tab {
+  transition: all 0.3s ease;
+}
+
+.filter-tab:hover {
+  background: linear-gradient(135deg, #a8d8ea 0%, #c1e7f4 100%);
+  color: white;
+  transform: translateY(-2px);
+}
+
+.filter-tab.active {
+  background: linear-gradient(135deg, #a8d8ea 0%, #c1e7f4 100%);
+  color: white;
+}
+
+/* 축제 카드 애니메이션 */
+.festival-card {
+  animation: fadeInUp 0.5s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

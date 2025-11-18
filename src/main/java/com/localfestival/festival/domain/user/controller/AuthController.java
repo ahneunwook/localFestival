@@ -1,6 +1,8 @@
 package com.localfestival.festival.domain.user.controller;
 
+import com.localfestival.festival.domain.user.dto.request.LoginRequestDto;
 import com.localfestival.festival.domain.user.dto.request.SignupRequestDto;
+import com.localfestival.festival.domain.user.dto.response.LoginResponseDto;
 import com.localfestival.festival.domain.user.dto.response.SignupResponseDto;
 import com.localfestival.festival.domain.user.service.UserService;
 import com.localfestival.festival.global.common.BaseResponse;
@@ -27,5 +29,12 @@ public class AuthController {
         SignupResponseDto signup = userService.signup(signupRequestDto);
 
         return BaseResponse.success(HttpStatus.CREATED, "회원가입에 성공하였습니다.", signup);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<BaseResponse<LoginResponseDto>> login(@RequestBody LoginRequestDto loginRequestDto){
+        LoginResponseDto login = userService.login(loginRequestDto);
+
+        return BaseResponse.success(HttpStatus.OK, "로그인에 성공하였습니다.", login);
     }
 }
