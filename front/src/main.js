@@ -9,7 +9,7 @@ import Router from './router/index.js'
 import { HomePage, setupHomeSearchListeners } from './pages/Home.js'
 import { FestivalListPage } from './pages/FestivalList.js'
 import { FestivalDetailPage } from './pages/FestivalDetail.js'
-import { LoginPage } from './pages/Login.js'
+import {login, LoginPage} from './pages/Login.js'
 import { SignupPage } from './pages/Signup.js'
 import { SearchResultPage, setupSearchListeners } from './pages/SearchResult.js'
 //import { NewsPage, setupNewsListeners } from './pages/News.js'
@@ -44,7 +44,12 @@ const routes = [
   },
   {
     path: '/login',
-    component: LoginPage
+    component: async () => {
+      const html = LoginPage();
+      // 페이지 로드 후 이벤트 리스너 설정
+      setTimeout(() => login(), 0);
+      return html;
+    }
   },
   {
     path: '/signup',
