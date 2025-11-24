@@ -1,3 +1,5 @@
+import {authApi} from "../api/AuthApi.js";
+
 export function LoginPage() {
   return `
     <div class="login-page">
@@ -5,7 +7,7 @@ export function LoginPage() {
         <div class="logo">FESTIVAL</div>
         <div class="subtitle">대한민국 대표 축제 플랫폼</div>
 
-        <form>
+        <form id="login-form">
           <div class="form-group">
             <label for="email">이메일</label>
             <input type="email" id="email" placeholder="example@email.com" required>
@@ -43,4 +45,27 @@ export function LoginPage() {
       </div>
     </div>
   `;
+}
+
+export function login(){
+  const form = document.getElementById('login-form');
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const loginRequest = {
+      email : document.getElementById("email").value,
+      password : document.getElementById("password").value,
+    }
+
+    try {
+      const result = await authApi.login(loginRequest);
+
+      localStorage.setItem("accessToken", result.data.accessToken);
+      alert("로그인이 완료되었습니다.");
+      window.location.href = "/";
+    } catch (err) {
+      alert(err.message);
+    }
+  })
 }

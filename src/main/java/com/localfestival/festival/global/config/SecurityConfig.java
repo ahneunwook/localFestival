@@ -7,6 +7,7 @@ import com.localfestival.festival.global.jwt.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -40,7 +41,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtUtil jwtUtil) throws Exception {
         http
-        		.cors(cors -> cors.configurationSource(corsConfigurationSource())) 
+        		.cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
@@ -48,9 +49,9 @@ public class SecurityConfig {
                 .rememberMe(AbstractHttpConfigurer::disable)
                 .addFilterBefore(new JwtFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
-                .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/signup").permitAll() // 임시로 전체 허용
+                        .requestMatchers(HttpMethod.POST,"/auth/**").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/festivals/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(configure -> configure

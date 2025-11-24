@@ -22,14 +22,13 @@ public enum ErrorCode {
 
     // 유저
     DUPLICATE_EMAIL(HttpStatus.BAD_REQUEST, "중복된 이메일 입니다."),
-
     USER_NOT_FOUND(HttpStatus.BAD_REQUEST, "유저를 찾을 수 없습니다."),
     PASSWORD_NOT_MATCHED(HttpStatus.BAD_REQUEST, "비밀번호가 일치 하지 않습니다."),
 
-	
+	// 축제
+    FESTIVAL_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 축제를 찾을 수 없습니다"),
 
     // 축제 api
-    FESTIVAL_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 축제를 찾을 수 없습니다."),
     FESTIVAL_SYNC_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "데이터 동기화에 실패했습니다."),
     FESTIVAL_API_ERROR(HttpStatus.SERVICE_UNAVAILABLE, "API 호출에 실패했습니다."),
     FESTIVAL_API_RESPONSE_ERROR(HttpStatus.BAD_GATEWAY, "API 응답 형식이 올바르지 않습니다.");

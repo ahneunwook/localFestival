@@ -27,6 +27,10 @@ public class UserService {
             throw new CustomException(ErrorCode.DUPLICATE_EMAIL);
         }
 
+        if (!signupRequestDto.getPassword().equals(signupRequestDto.getConfirmPassword())){
+            throw new CustomException(ErrorCode.PASSWORD_NOT_MATCHED);
+        }
+
         User user = User.createUser(signupRequestDto, passwordEncoder);
 
         userRepository.save(user);
