@@ -34,7 +34,8 @@ public enum ErrorCode {
     FESTIVAL_API_RESPONSE_ERROR(HttpStatus.BAD_GATEWAY, "API 응답 형식이 올바르지 않습니다."),
 
     // 문의
-    QUESTION_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 문의 글이 없습니다.");
+    QUESTION_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 문의 글이 없습니다."),
+    NO_AUTHORIZATION_EDIT(HttpStatus.UNAUTHORIZED, "자기 자신의 글만 수정 할 수 있습니다.");
 
     private final HttpStatus httpStatus;
     private final String message;

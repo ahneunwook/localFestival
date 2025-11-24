@@ -67,4 +67,15 @@ public class Question extends BaseEntity {
         this.status = status;
     }
 
+    // 권한 검사 : 현재 유저가 게시글 작성자인지 확인
+    public boolean isAuthor(Long userId){
+        return this.author.getId().equals(userId);
+    }
+
+    public void updateQuestion(QuestionCategory category, String title, String content){
+        this.category = category;
+        this.title = title;
+        this.content = content;
+    }
+
 }

@@ -47,4 +47,14 @@ public class QuestionController {
         return BaseResponse.success(HttpStatus.OK, "문의 조회가 완료되었습니다.", detailResponseDto);
     }
 
+    @PutMapping("/{questionId}")
+    public ResponseEntity<BaseResponse<Long>> updateDetailQuestion(
+            @CurrentUser User user,
+            @PathVariable("questionId") Long questionId,
+            @RequestBody QuestionRequestDto questionRequestDto
+    ){
+        Long question = questionService.updateDetailQuestion(user, questionId, questionRequestDto);
+
+        return BaseResponse.success(HttpStatus.OK, "수정이 완료 되었습니다.", question);
+    }
 }

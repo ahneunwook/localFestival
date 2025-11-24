@@ -4,6 +4,7 @@ import com.localfestival.festival.domain.question.dto.request.QuestionRequestDto
 import com.localfestival.festival.domain.question.dto.response.QuestionDetailResponseDto;
 import com.localfestival.festival.domain.question.dto.response.QuestionResponseDto;
 import com.localfestival.festival.domain.question.entity.Question;
+import com.localfestival.festival.domain.question.enums.QuestionCategory;
 import com.localfestival.festival.domain.question.repository.QuestionRepository;
 import com.localfestival.festival.domain.user.entity.User;
 import com.localfestival.festival.global.exception.CustomException;
@@ -38,9 +39,33 @@ public class QuestionService {
 
     @Transactional(readOnly = true)
     public QuestionDetailResponseDto getDetailQuestion(Long questionId) {
-        Question question = questionRepository.findById(questionId)
-                .orElseThrow(() -> new CustomException(ErrorCode.QUESTION_NOT_FOUND));
+        Question question = findByQuestionId(questionId);
 
         return QuestionDetailResponseDto.toQuestionDto(question);
+    }
+
+    @Transactional
+    public Long updateDetailQuestion(User user, Long questionId, QuestionRequestDto questionRequestDto) {
+
+        Question question = findByQuestionId(questionId);
+
+        if(!question.isAuthor(user.getId())){
+            throw new CustomException(ErrorCode.NO_AUTHORIZATION_EDIT);
+        }
+
+        question.updateQuestion(
+                QuestionCategory.from(questionRequestDto.getCategory()),
+                questionRequestDto.getTitle(),
+                questionRequestDto.getContent()
+        );
+
+        return question.getId();
+    }
+
+
+
+    public Question findByQuestionId(Long questionId){
+        return questionRepository.findById(questionId)
+                .orElseThrow(() -> new CustomException(ErrorCode.QUESTION_NOT_FOUND));
     }
 }
