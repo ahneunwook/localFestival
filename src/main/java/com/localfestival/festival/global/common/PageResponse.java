@@ -1,4 +1,4 @@
-package com.localfestival.festival.domain.festival.dto.response;
+package com.localfestival.festival.global.common;
 
 import java.util.List;
 
@@ -15,7 +15,7 @@ import lombok.Getter;
  */
 @Getter
 @Builder
-public class FestivalPageResponse<T> {
+public class PageResponse<T> {
     private List<T> content;
     private int currentPage;
     private int totalPages;
@@ -23,8 +23,8 @@ public class FestivalPageResponse<T> {
     private boolean hasNext;
     private boolean isLast;
     
-    public static <T> FestivalPageResponse<T> from(Page<T> page) {
-        return FestivalPageResponse.<T>builder()
+    public static <T> PageResponse<T> from(Page<T> page) {
+        return PageResponse.<T>builder()
             .content(page.getContent())
             .currentPage(page.getNumber())
             .totalPages(page.getTotalPages())

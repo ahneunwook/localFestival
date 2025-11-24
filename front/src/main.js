@@ -14,6 +14,7 @@ import {login, LoginPage} from './pages/Login.js'
 import { SignupPage } from './pages/Signup.js'
 import { SearchResultPage, setupSearchListeners } from './pages/SearchResult.js'
 import {questionPage, questionPageInit} from "./pages/question.js";
+
 //import { NewsPage, setupNewsListeners } from './pages/News.js'
 
 // 라우트 정의
