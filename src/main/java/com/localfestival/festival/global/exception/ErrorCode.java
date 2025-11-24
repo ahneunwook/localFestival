@@ -13,7 +13,7 @@ public enum ErrorCode {
     INVALID_INPUT_VALUE(HttpStatus.BAD_REQUEST, "잘못된 요청 값입니다."),
     ACCESS_DENIED(HttpStatus.FORBIDDEN, "접근 권한이 없습니다."),
     INVALID_GENDER_VALUE(HttpStatus.BAD_REQUEST, "올바르지 않은 성별 값입니다."),
-
+    INVALID_CATEGORY_VALUE(HttpStatus.BAD_REQUEST, "올바르지 않은 카테고리 값입니다."),
     // 인증, 인가
     SERVER_EXCEPTION_JWT(HttpStatus.INTERNAL_SERVER_ERROR, "토큰이 유효하지 않습니다."),
     TOKEN_EXPIRED(HttpStatus.INTERNAL_SERVER_ERROR, "만료된 토큰입니다."),
@@ -31,7 +31,10 @@ public enum ErrorCode {
     // 축제 api
     FESTIVAL_SYNC_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "데이터 동기화에 실패했습니다."),
     FESTIVAL_API_ERROR(HttpStatus.SERVICE_UNAVAILABLE, "API 호출에 실패했습니다."),
-    FESTIVAL_API_RESPONSE_ERROR(HttpStatus.BAD_GATEWAY, "API 응답 형식이 올바르지 않습니다.");
+    FESTIVAL_API_RESPONSE_ERROR(HttpStatus.BAD_GATEWAY, "API 응답 형식이 올바르지 않습니다."),
+
+    // 문의
+    QUESTION_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 문의 글이 없습니다.");
 
     private final HttpStatus httpStatus;
     private final String message;
