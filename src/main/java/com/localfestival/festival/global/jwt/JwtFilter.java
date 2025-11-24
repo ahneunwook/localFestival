@@ -1,7 +1,10 @@
 package com.localfestival.festival.global.jwt;
 
+import com.localfestival.festival.domain.user.entity.User;
 import com.localfestival.festival.domain.user.enums.Role;
+import com.localfestival.festival.domain.user.repository.UserRepository;
 import com.localfestival.festival.global.exception.CustomException;
+import com.localfestival.festival.global.exception.ErrorCode;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
@@ -24,6 +27,7 @@ import java.util.List;
 public class JwtFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
+    private final UserRepository userRepository;
 
     /**
      * JWT 인증 필터
@@ -53,8 +57,11 @@ public class JwtFilter extends OncePerRequestFilter {
             String roleString = claimsToken.get("userRole", String.class);
             Role userRole = Role.valueOf(roleString);
 
+            User user = userRepository.findById(userId)
+                    .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
             // CustomUserPrincipal 은 인증된 사용자 정보 객체
-            CustomUserPrincipal customUserPrincipal = new CustomUserPrincipal(userId, userName, userRole);
+            CustomUserPrincipal customUserPrincipal = new CustomUserPrincipal(user);
 
             /**
              * UsernamePasswordAuthenticationToken 을 직접 생성하는 이유:
