@@ -7,6 +7,7 @@ import com.localfestival.festival.global.jwt.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -50,7 +51,13 @@ public class SecurityConfig {
                 .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/signup").permitAll() // 임시로 전체 허용
+                        .requestMatchers(HttpMethod.POST,"/auth/**").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/festivals/**").permitAll()
+                        .requestMatchers("/admin/festivals/**").permitAll()
+                        .requestMatchers("/news/**").permitAll()
+//                        .requestMatchers(HttpMethod.POST, "/api/news/**").hasRole("ADMIN")
+//                        .requestMatchers(HttpMethod.PATCH, "/api/news/**").hasRole("ADMIN")
+//                        .requestMatchers(HttpMethod.DELETE, "/api/news/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(configure -> configure

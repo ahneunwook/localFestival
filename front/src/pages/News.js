@@ -1,4 +1,10 @@
 import { createHeader } from '../components/header.js';
+import { newsApi } from '../api/NewsApi.js';
+
+// 상태 관리
+let currentPage = 0;
+let totalPages = 0;
+let currentNewsList = [];
 
 export function NewsPage() {
   return `
@@ -6,11 +12,14 @@ export function NewsPage() {
     
     <main class="news-page">
       <div class="news-container">
-        <h1 class="page-title">공지사항</h1>
+        <div class="news-header">
+          <h1 class="page-title">공지사항</h1>
+          <button class="btn-write" id="btnWriteNews">글쓰기</button>
+        </div>
         
         <div class="news-content">
           <div class="news-list-section">
-            <div id="newsList"></div>
+            <div id="newsList" class="loading-message">불러오는 중...</div>
             <div id="pagination"></div>
           </div>
           
@@ -22,132 +31,38 @@ export function NewsPage() {
         </div>
       </div>
     </main>
+    
+    <!-- 글쓰기 모달 -->
+    <div class="modal-overlay" id="writeModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 id="modalTitle">공지사항 작성</h2>
+          <button class="modal-close" id="btnCloseModal">&times;</button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" id="editNewsId" value="">
+          <div class="form-group">
+            <label for="newsTitle">제목</label>
+            <input type="text" id="newsTitle" placeholder="제목을 입력하세요" maxlength="200">
+          </div>
+          <div class="form-group">
+            <label for="newsContent">내용</label>
+            <textarea id="newsContent" placeholder="내용을 입력하세요" rows="10"></textarea>
+          </div>
+          <div class="form-group checkbox-group">
+            <label>
+              <input type="checkbox" id="newsImportant">
+              <span>중요 공지사항으로 설정</span>
+            </label>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-cancel" id="btnCancelWrite">취소</button>
+          <button class="btn-submit" id="btnSubmitNews">등록</button>
+        </div>
+      </div>
+    </div>
   `;
-}
-
-// Mock 데이터
-function getMockNews() {
-  return [
-    {
-      id: 1,
-      title: '2024년 전국 문화축제 일정 안내',
-      content: `
-        <p>안녕하세요, LocalFestival입니다.</p>
-        <p>2024년 전국 각지에서 열리는 문화축제 일정을 안내드립니다.</p>
-        <br>
-        <p><strong>주요 축제 일정:</strong></p>
-        <ul>
-          <li>봄: 진해 군항제, 보령 머드축제</li>
-          <li>여름: 보령 머드축제, 부산 바다축제</li>
-          <li>가을: 안동 국제탈춤페스티벌, 통영 한산대첩축제</li>
-          <li>겨울: 화천 산천어축제, 평창 송어축제</li>
-        </ul>
-        <br>
-        <p>자세한 정보는 각 축제 상세 페이지에서 확인하실 수 있습니다.</p>
-      `,
-      important: true,
-      createdAt: '2024-01-15T10:00:00',
-      views: 1250
-    },
-    {
-      id: 2,
-      title: 'LocalFestival 서비스 개선 안내',
-      content: `
-        <p>더 나은 서비스 제공을 위해 다음과 같이 개선했습니다.</p>
-        <br>
-        <p><strong>개선 사항:</strong></p>
-        <ul>
-          <li>축제 검색 기능 강화</li>
-          <li>지역별 필터링 개선</li>
-          <li>모바일 UI/UX 최적화</li>
-          <li>축제 이미지 품질 향상</li>
-        </ul>
-        <br>
-        <p>앞으로도 더 좋은 서비스로 찾아뵙겠습니다.</p>
-      `,
-      important: false,
-      createdAt: '2024-02-01T14:30:00',
-      views: 856
-    },
-    {
-      id: 3,
-      title: '개인정보 처리방침 변경 안내',
-      content: `
-        <p>개인정보 처리방침이 다음과 같이 변경되었습니다.</p>
-        <br>
-        <p><strong>주요 변경사항:</strong></p>
-        <ul>
-          <li>수집하는 개인정보 항목 명시</li>
-          <li>개인정보 보유 및 이용기간 안내</li>
-          <li>개인정보 제3자 제공 관련 사항</li>
-        </ul>
-        <br>
-        <p>변경된 개인정보 처리방침은 2024년 3월 1일부터 적용됩니다.</p>
-      `,
-      important: true,
-      createdAt: '2024-02-20T09:00:00',
-      views: 542
-    },
-    {
-      id: 4,
-      title: '설 연휴 고객센터 운영 안내',
-      content: `
-        <p>설 연휴 기간 동안 고객센터 운영 시간을 안내드립니다.</p>
-        <br>
-        <p><strong>운영 일정:</strong></p>
-        <ul>
-          <li>2월 9일(금): 정상 운영</li>
-          <li>2월 10일(토) ~ 2월 12일(월): 휴무</li>
-          <li>2월 13일(화): 정상 운영</li>
-        </ul>
-        <br>
-        <p>휴무 기간 중 긴급 문의는 이메일로 남겨주시기 바랍니다.</p>
-      `,
-      important: false,
-      createdAt: '2024-02-05T11:20:00',
-      views: 423
-    },
-    {
-      id: 5,
-      title: '회원 등급제 도입 안내',
-      content: `
-        <p>회원님들께 더 많은 혜택을 드리기 위해 회원 등급제를 도입합니다.</p>
-        <br>
-        <p><strong>등급별 혜택:</strong></p>
-        <ul>
-          <li>브론즈: 기본 서비스 이용</li>
-          <li>실버: 축제 알림 서비스</li>
-          <li>골드: 프리미엄 추천 서비스</li>
-          <li>플래티넘: VIP 전용 이벤트 참여</li>
-        </ul>
-        <br>
-        <p>자세한 내용은 마이페이지에서 확인하실 수 있습니다.</p>
-      `,
-      important: false,
-      createdAt: '2024-01-28T16:45:00',
-      views: 789
-    },
-    {
-      id: 6,
-      title: '여름 축제 특별 기획전',
-      content: `
-        <p>더운 여름, 시원한 축제를 즐겨보세요!</p>
-        <br>
-        <p><strong>추천 여름 축제:</strong></p>
-        <ul>
-          <li>보령 머드축제 - 7월 중순</li>
-          <li>부산 바다축제 - 8월 초</li>
-          <li>대천 해수욕장 축제 - 7월 말</li>
-          <li>무주 반딧불축제 - 6월 초</li>
-        </ul>
-        <br>
-        <p>여름 축제 특별 할인 이벤트도 진행 중입니다!</p>
-      `,
-      important: false,
-      createdAt: '2024-05-20T10:30:00',
-      views: 1035
-    }
-  ];
 }
 
 // 날짜 포맷팅
@@ -164,7 +79,7 @@ function renderNewsList(newsList) {
   const newsListEl = document.getElementById('newsList');
   if (!newsListEl) return;
 
-  if (newsList.length === 0) {
+  if (!newsList || newsList.length === 0) {
     newsListEl.innerHTML = '<div class="empty-message">등록된 공지사항이 없습니다.</div>';
     return;
   }
@@ -188,14 +103,25 @@ function renderNewsList(newsList) {
 
   // 아이템 클릭 이벤트
   document.querySelectorAll('.news-item').forEach(item => {
-    item.addEventListener('click', () => {
+    item.addEventListener('click', async () => {
       const newsId = parseInt(item.dataset.id);
-      const selectedNews = newsList.find(n => n.id === newsId);
-      if (selectedNews) {
-        renderNewsDetail(selectedNews);
-      }
+      await loadNewsDetail(newsId);
     });
   });
+}
+
+// 뉴스 상세 로드
+async function loadNewsDetail(newsId) {
+  const newsDetailEl = document.getElementById('newsDetail');
+  if (!newsDetailEl) return;
+
+  try {
+    const news = await newsApi.getNewsDetail(newsId);
+    renderNewsDetail(news);
+  } catch (error) {
+    console.error('Failed to load news detail:', error);
+    newsDetailEl.innerHTML = '<div class="error-message">공지사항을 불러오는데 실패했습니다.</div>';
+  }
 }
 
 // 뉴스 상세 렌더링
@@ -216,7 +142,13 @@ function renderNewsDetail(news) {
     <div class="news-detail-content">
       ${news.content}
     </div>
-    <button class="btn-back" id="btnBackToList">목록으로</button>
+    <div class="news-detail-actions">
+      <button class="btn-back" id="btnBackToList">목록으로</button>
+      <div class="action-btns">
+        <button class="btn-edit" id="btnEditNews" data-id="${news.id}">수정</button>
+        <button class="btn-delete" id="btnDeleteNews" data-id="${news.id}">삭제</button>
+      </div>
+    </div>
   `;
 
   // 목록으로 버튼
@@ -224,18 +156,39 @@ function renderNewsDetail(news) {
     newsDetailEl.className = 'news-detail-empty';
     newsDetailEl.innerHTML = '<p>공지사항을 선택해주세요.</p>';
   });
+
+  // 수정 버튼
+  document.getElementById('btnEditNews')?.addEventListener('click', () => {
+    openEditModal(news);
+  });
+
+  // 삭제 버튼
+  document.getElementById('btnDeleteNews')?.addEventListener('click', async () => {
+    if (confirm('정말 삭제하시겠습니까?')) {
+      try {
+        await newsApi.deleteNews(news.id);
+        alert('삭제되었습니다.');
+        newsDetailEl.className = 'news-detail-empty';
+        newsDetailEl.innerHTML = '<p>공지사항을 선택해주세요.</p>';
+        await loadNews(currentPage);
+      } catch (error) {
+        alert('삭제에 실패했습니다.');
+      }
+    }
+  });
 }
 
 // 페이지네이션 렌더링
-function renderPagination(currentPage, totalPages) {
+function renderPagination() {
   const paginationEl = document.getElementById('pagination');
   if (!paginationEl || totalPages <= 1) {
-    paginationEl.innerHTML = '';
+    if (paginationEl) paginationEl.innerHTML = '';
     return;
   }
 
   const maxVisible = 5;
-  let startPage = Math.max(1, currentPage - Math.floor(maxVisible / 2));
+  const current = currentPage + 1; // 0-indexed to 1-indexed
+  let startPage = Math.max(1, current - Math.floor(maxVisible / 2));
   let endPage = Math.min(totalPages, startPage + maxVisible - 1);
 
   if (endPage - startPage < maxVisible - 1) {
@@ -244,45 +197,158 @@ function renderPagination(currentPage, totalPages) {
 
   paginationEl.innerHTML = `
     <div class="pagination">
-      <button class="page-btn" data-page="1" ${currentPage === 1 ? 'disabled' : ''}>처음</button>
-      <button class="page-btn" data-page="${currentPage - 1}" ${currentPage === 1 ? 'disabled' : ''}>이전</button>
+      <button class="page-btn" data-page="0" ${currentPage === 0 ? 'disabled' : ''}>처음</button>
+      <button class="page-btn" data-page="${currentPage - 1}" ${currentPage === 0 ? 'disabled' : ''}>이전</button>
       
       ${Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i).map(page => `
-        <button class="page-btn ${page === currentPage ? 'active' : ''}" data-page="${page}">
+        <button class="page-btn ${page - 1 === currentPage ? 'active' : ''}" data-page="${page - 1}">
           ${page}
         </button>
       `).join('')}
       
-      <button class="page-btn" data-page="${currentPage + 1}" ${currentPage === totalPages ? 'disabled' : ''}>다음</button>
-      <button class="page-btn" data-page="${totalPages}" ${currentPage === totalPages ? 'disabled' : ''}>마지막</button>
+      <button class="page-btn" data-page="${currentPage + 1}" ${currentPage >= totalPages - 1 ? 'disabled' : ''}>다음</button>
+      <button class="page-btn" data-page="${totalPages - 1}" ${currentPage >= totalPages - 1 ? 'disabled' : ''}>마지막</button>
     </div>
   `;
 
   // 페이지 버튼 이벤트
   document.querySelectorAll('.page-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
+    btn.addEventListener('click', async () => {
       const page = parseInt(btn.dataset.page);
-      if (page && !btn.disabled) {
-        loadNews(page);
+      if (!isNaN(page) && page >= 0 && page < totalPages && page !== currentPage) {
+        await loadNews(page);
       }
     });
   });
 }
 
-// 뉴스 로드
-function loadNews(page = 1) {
-  const pageSize = 5;
-  const allNews = getMockNews();
-  const totalPages = Math.ceil(allNews.length / pageSize);
-  const start = (page - 1) * pageSize;
-  const end = start + pageSize;
-  const pageNews = allNews.slice(start, end);
+// 뉴스 로드 (API 호출)
+async function loadNews(page = 0) {
+  const newsListEl = document.getElementById('newsList');
+  
+  try {
+    if (newsListEl) {
+      newsListEl.innerHTML = '<div class="loading-message">불러오는 중...</div>';
+    }
 
-  renderNewsList(pageNews);
-  renderPagination(page, totalPages);
+    const response = await newsApi.getNewsList(page, 10);
+    currentPage = page;
+    totalPages = response.totalPages || 0;
+    currentNewsList = response.content || [];
+
+    renderNewsList(currentNewsList);
+    renderPagination();
+  } catch (error) {
+    console.error('Failed to load news:', error);
+    if (newsListEl) {
+      newsListEl.innerHTML = '<div class="error-message">공지사항을 불러오는데 실패했습니다.</div>';
+    }
+  }
+}
+
+// 모달 열기 (글쓰기)
+function openWriteModal() {
+  const modal = document.getElementById('writeModal');
+  const modalTitle = document.getElementById('modalTitle');
+  const submitBtn = document.getElementById('btnSubmitNews');
+  
+  document.getElementById('editNewsId').value = '';
+  document.getElementById('newsTitle').value = '';
+  document.getElementById('newsContent').value = '';
+  document.getElementById('newsImportant').checked = false;
+  
+  modalTitle.textContent = '공지사항 작성';
+  submitBtn.textContent = '등록';
+  
+  modal.classList.add('active');
+}
+
+// 모달 열기 (수정)
+function openEditModal(news) {
+  const modal = document.getElementById('writeModal');
+  const modalTitle = document.getElementById('modalTitle');
+  const submitBtn = document.getElementById('btnSubmitNews');
+  
+  document.getElementById('editNewsId').value = news.id;
+  document.getElementById('newsTitle').value = news.title;
+  document.getElementById('newsContent').value = news.content;
+  document.getElementById('newsImportant').checked = news.important;
+  
+  modalTitle.textContent = '공지사항 수정';
+  submitBtn.textContent = '수정';
+  
+  modal.classList.add('active');
+}
+
+// 모달 닫기
+function closeModal() {
+  const modal = document.getElementById('writeModal');
+  modal.classList.remove('active');
+}
+
+// 공지사항 등록/수정
+async function submitNews() {
+  const editId = document.getElementById('editNewsId').value;
+  const title = document.getElementById('newsTitle').value.trim();
+  const content = document.getElementById('newsContent').value.trim();
+  const important = document.getElementById('newsImportant').checked;
+
+  if (!title) {
+    alert('제목을 입력해주세요.');
+    return;
+  }
+  if (!content) {
+    alert('내용을 입력해주세요.');
+    return;
+  }
+
+  const newsData = { title, content, important };
+
+  try {
+    if (editId) {
+      // 수정
+      await newsApi.updateNews(editId, newsData);
+      alert('수정되었습니다.');
+    } else {
+      // 등록
+      await newsApi.createNews(newsData);
+      alert('등록되었습니다.');
+    }
+    
+    closeModal();
+    
+    // 상세보기 초기화
+    const newsDetailEl = document.getElementById('newsDetail');
+    if (newsDetailEl) {
+      newsDetailEl.className = 'news-detail-empty';
+      newsDetailEl.innerHTML = '<p>공지사항을 선택해주세요.</p>';
+    }
+    
+    await loadNews(0);
+  } catch (error) {
+    alert(editId ? '수정에 실패했습니다.' : '등록에 실패했습니다.');
+  }
 }
 
 // 페이지 초기화
 export function setupNewsListeners() {
-  loadNews(1);
+  // 글쓰기 버튼
+  document.getElementById('btnWriteNews')?.addEventListener('click', openWriteModal);
+  
+  // 모달 닫기 버튼
+  document.getElementById('btnCloseModal')?.addEventListener('click', closeModal);
+  document.getElementById('btnCancelWrite')?.addEventListener('click', closeModal);
+  
+  // 모달 외부 클릭 시 닫기
+  document.getElementById('writeModal')?.addEventListener('click', (e) => {
+    if (e.target.id === 'writeModal') {
+      closeModal();
+    }
+  });
+  
+  // 등록/수정 버튼
+  document.getElementById('btnSubmitNews')?.addEventListener('click', submitNews);
+  
+  // 초기 데이터 로드
+  loadNews(0);
 }
