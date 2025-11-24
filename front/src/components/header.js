@@ -7,7 +7,7 @@ export function createHeader(activePage = '') {
         <a href="/festivals" data-link class="${activePage === 'list' ? 'active' : ''}">축제 목록</a>
         <a href="#schedule" class="${activePage === 'schedule' ? 'active' : ''}">일정</a>
         <a href="/news" data-link class="${activePage === 'news' ? 'active' : ''}">소식</a>
-        <a href="#contact" class="${activePage === 'contact' ? 'active' : ''}">문의</a>
+        <a href="/questions" class="${activePage === 'questions' ? 'active' : ''}">문의</a>
       </nav>
       <div class="auth-buttons">
         <span onclick="window.location.href='/login'" style="cursor: pointer;">로그인</span>
