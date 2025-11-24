@@ -13,11 +13,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.localfestival.festival.domain.festival.dto.request.FestivalSearchRequest;
-import com.localfestival.festival.domain.festival.dto.response.FestivalPageResponse;
 import com.localfestival.festival.domain.festival.dto.response.FestivalResponse;
 import com.localfestival.festival.domain.festival.dto.response.FestivalListResponse;
 import com.localfestival.festival.domain.festival.service.FestivalService;
 import com.localfestival.festival.global.common.BaseResponse;
+import com.localfestival.festival.global.common.PageResponse;
 
 import lombok.RequiredArgsConstructor;
 
@@ -30,43 +30,43 @@ public class FestivalController {
 
     // 전체 축제 목록 조회
     @GetMapping
-    public ResponseEntity<BaseResponse<FestivalPageResponse<FestivalListResponse>>> getAllFestivals(
+    public ResponseEntity<BaseResponse<PageResponse<FestivalListResponse>>> getAllFestivals(
             @PageableDefault(size = 12, sort = "startDate", direction = Sort.Direction.DESC) Pageable pageable) {
-        FestivalPageResponse<FestivalListResponse> result = festivalService.getAllActiveFestivals(pageable);
+        PageResponse<FestivalListResponse> result = festivalService.getAllActiveFestivals(pageable);
         return BaseResponse.success(HttpStatus.OK, "축제 목록 조회 성공", result);
     }
 
     // 카테고리별 조회
     @GetMapping("/category/{category}")
-    public ResponseEntity<BaseResponse<FestivalPageResponse<FestivalListResponse>>> getFestivalsByCategory(
+    public ResponseEntity<BaseResponse<PageResponse<FestivalListResponse>>> getFestivalsByCategory(
             @PathVariable("category") String category,
             @PageableDefault(size = 12, sort = "startDate", direction = Sort.Direction.DESC) Pageable pageable) {
-        FestivalPageResponse<FestivalListResponse> result = festivalService.getFestivalsByCategory(category, pageable);
+        PageResponse<FestivalListResponse> result = festivalService.getFestivalsByCategory(category, pageable);
         return BaseResponse.success(HttpStatus.OK, "카테고리별 축제 조회 성공", result);
     }
 
     // 지역별 조회
     @GetMapping("/region/{region}")
-    public ResponseEntity<BaseResponse<FestivalPageResponse<FestivalListResponse>>> getFestivalsByRegion(
+    public ResponseEntity<BaseResponse<PageResponse<FestivalListResponse>>> getFestivalsByRegion(
             @PathVariable("region") String region,
             @PageableDefault(size = 12, sort = "startDate", direction = Sort.Direction.DESC) Pageable pageable) {
-        FestivalPageResponse<FestivalListResponse> result = festivalService.getFestivalsByRegion(region, pageable);
+        PageResponse<FestivalListResponse> result = festivalService.getFestivalsByRegion(region, pageable);
         return BaseResponse.success(HttpStatus.OK, "지역별 축제 조회 성공", result);
     }
 
     // 진행 중인 축제
     @GetMapping("/ongoing")
-    public ResponseEntity<BaseResponse<FestivalPageResponse<FestivalListResponse>>> getOngoingFestivals(
+    public ResponseEntity<BaseResponse<PageResponse<FestivalListResponse>>> getOngoingFestivals(
             @PageableDefault(size = 12, sort = "startDate", direction = Sort.Direction.DESC) Pageable pageable) {
-        FestivalPageResponse<FestivalListResponse> result = festivalService.getOngoingFestivals(pageable);
+        PageResponse<FestivalListResponse> result = festivalService.getOngoingFestivals(pageable);
         return BaseResponse.success(HttpStatus.OK, "진행 중인 축제 조회 성공", result);
     }
 
     // 예정된 축제
     @GetMapping("/upcoming")
-    public ResponseEntity<BaseResponse<FestivalPageResponse<FestivalListResponse>>> getUpcomingFestivals(
+    public ResponseEntity<BaseResponse<PageResponse<FestivalListResponse>>> getUpcomingFestivals(
             @PageableDefault(size = 12, sort = "startDate", direction = Sort.Direction.ASC) Pageable pageable) {
-        FestivalPageResponse<FestivalListResponse> result = festivalService.getUpcomingFestivals(pageable);
+        PageResponse<FestivalListResponse> result = festivalService.getUpcomingFestivals(pageable);
         return BaseResponse.success(HttpStatus.OK, "예정된 축제 조회 성공", result);
     }
     
