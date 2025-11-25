@@ -1,4 +1,5 @@
 import {createHeader} from "../components/header.js";
+import { questionApi } from '../api/questionApi.js';
 
 export function questionPage() {
     return `
@@ -28,17 +29,17 @@ export function questionPage() {
                     <div class="form-row">
                         <div class="form-group">
                             <label for="name">이름 *</label>
-                            <input type="text" id="name" required>
+                            <input type="text" id="name" readonly>
                         </div>
                         <div class="form-group">
                             <label for="email">이메일 *</label>
-                            <input type="email" id="email" required>
+                            <input type="email" id="email" readonly>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="category">문의 유형 *</label>
-                        <select id="category" required>
+                        <select id="category" name="category" required>
                             <option value="">선택하세요</option>
                             <option value="축제 관련">축제 관련</option>
                             <option value="예약/참가 문의">예약/참가 문의</option>
@@ -50,12 +51,12 @@ export function questionPage() {
 
                     <div class="form-group">
                         <label for="subject">제목 *</label>
-                        <input type="text" id="subject" required>
+                        <input type="text" id="subject" name="title" required>
                     </div>
 
                     <div class="form-group">
                         <label for="message">문의 내용 *</label>
-                        <textarea id="message" required></textarea>
+                        <textarea id="message" name="content" required></textarea>
                     </div>
 
                     <button type="submit" class="submit-btn">문의 등록하기</button>
@@ -132,7 +133,7 @@ export function questionPageInit() {
     const detailModal = document.getElementById("detailModal");
 
     document.getElementById("openWriteModalBtn").onclick = () => {
-        writeModal.classList.add("active");
+        questionApi.openQuestionModal();
     };
 
     document.querySelectorAll(".close-btn").forEach(btn => {
@@ -171,8 +172,22 @@ export function questionPageInit() {
     const form = document.getElementById("inquiryForm");
     form.onsubmit = (e) => {
         e.preventDefault();
-        alert("문의가 정상적으로 등록되었습니다.");
-        writeModal.classList.remove('active');
-        form.reset();
+
+        const questionData = {
+            category: document.getElementById("category").value,
+            title: document.getElementById("subject").value,
+            content: document.getElementById("message").value
+        };
+
+        try {
+            const result = questionApi.createQuestion(questionData);
+
+            alert("문의가 정상적으로 등록되었습니다.");
+            writeModal.classList.remove('active');
+            form.reset();
+
+        } catch (err) {
+            alert(err.message);
+        }
     };
 }
