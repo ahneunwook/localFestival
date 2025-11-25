@@ -3,6 +3,7 @@ package com.localfestival.festival.domain.question.controller;
 import com.localfestival.festival.domain.question.dto.request.QuestionRequestDto;
 import com.localfestival.festival.domain.question.dto.response.QuestionDetailResponseDto;
 import com.localfestival.festival.domain.question.dto.response.QuestionResponseDto;
+import com.localfestival.festival.domain.question.dto.response.UserProfileResponse;
 import com.localfestival.festival.domain.question.service.QuestionService;
 import com.localfestival.festival.domain.user.entity.User;
 import com.localfestival.festival.global.common.BaseResponse;
@@ -66,5 +67,12 @@ public class QuestionController {
        questionService.deleteQuestion(user, questionId);
 
         return BaseResponse.success(HttpStatus.OK, "삭제 완료 되었습니다.", null);
+    }
+
+    @GetMapping("/users/me")
+    public ResponseEntity<BaseResponse<UserProfileResponse>> getUsers(@CurrentUser User user){
+        UserProfileResponse userProfile = UserProfileResponse.from(user);
+
+        return BaseResponse.success(HttpStatus.OK, "유저 조회가 완료 되었습니다.", userProfile);
     }
 }

@@ -5,6 +5,7 @@ import com.localfestival.festival.domain.answer.repository.AnswerRepository;
 import com.localfestival.festival.domain.question.dto.request.QuestionRequestDto;
 import com.localfestival.festival.domain.question.dto.response.QuestionDetailResponseDto;
 import com.localfestival.festival.domain.question.dto.response.QuestionResponseDto;
+import com.localfestival.festival.domain.question.dto.response.UserProfileResponse;
 import com.localfestival.festival.domain.question.entity.Question;
 import com.localfestival.festival.domain.question.enums.QuestionCategory;
 import com.localfestival.festival.domain.question.repository.QuestionRepository;

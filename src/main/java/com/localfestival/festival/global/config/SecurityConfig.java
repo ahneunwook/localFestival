@@ -58,6 +58,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/news/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PATCH, "/news/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/news/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/questions/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(configure -> configure
