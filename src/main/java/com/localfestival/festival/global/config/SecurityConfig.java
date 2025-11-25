@@ -53,6 +53,11 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.POST,"/auth/**").permitAll()
                         .requestMatchers(HttpMethod.GET,"/festivals/**").permitAll()
+                        .requestMatchers("/admin/festivals/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/news/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/news/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PATCH, "/news/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/news/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(configure -> configure
