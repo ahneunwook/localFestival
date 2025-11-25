@@ -31,7 +31,10 @@ public enum ErrorCode {
     // 축제 api
     FESTIVAL_SYNC_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "데이터 동기화에 실패했습니다."),
     FESTIVAL_API_ERROR(HttpStatus.SERVICE_UNAVAILABLE, "API 호출에 실패했습니다."),
-    FESTIVAL_API_RESPONSE_ERROR(HttpStatus.BAD_GATEWAY, "API 응답 형식이 올바르지 않습니다.");
+    FESTIVAL_API_RESPONSE_ERROR(HttpStatus.BAD_GATEWAY, "API 응답 형식이 올바르지 않습니다."),
+	
+    // 공지사항 api
+	NEWS_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 공지사항을 찾을 수 없습니다.");
 
     private final HttpStatus httpStatus;
     private final String message;

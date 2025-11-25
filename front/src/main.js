@@ -5,7 +5,7 @@ import './styles/login.css'
 import './styles/search-result.css'
 import './styles/festival-detail.css'
 import './styles/question.css'
-//import './styles/news.css'
+import './styles/news.css'
 import Router from './router/index.js'
 import { HomePage, setupHomeSearchListeners } from './pages/Home.js'
 import { FestivalListPage } from './pages/FestivalList.js'
@@ -15,7 +15,7 @@ import { SignupPage } from './pages/Signup.js'
 import { SearchResultPage, setupSearchListeners } from './pages/SearchResult.js'
 import {questionPage, questionPageInit} from "./pages/question.js";
 
-//import { NewsPage, setupNewsListeners } from './pages/News.js'
+import { NewsPage, setupNewsListeners } from './pages/News.js'
 
 // 라우트 정의
 const routes = [
