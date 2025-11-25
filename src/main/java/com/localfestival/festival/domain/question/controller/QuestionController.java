@@ -48,7 +48,7 @@ public class QuestionController {
     }
 
     @PutMapping("/{questionId}")
-    public ResponseEntity<BaseResponse<Long>> updateDetailQuestion(
+    public ResponseEntity<BaseResponse<Long>> updateQuestion(
             @CurrentUser User user,
             @PathVariable("questionId") Long questionId,
             @RequestBody QuestionRequestDto questionRequestDto
@@ -56,5 +56,15 @@ public class QuestionController {
         Long question = questionService.updateDetailQuestion(user, questionId, questionRequestDto);
 
         return BaseResponse.success(HttpStatus.OK, "수정이 완료 되었습니다.", question);
+    }
+
+    @DeleteMapping("/{questionId}")
+    public ResponseEntity<BaseResponse<Void>> deleteQuestion(
+            @CurrentUser User user,
+            @PathVariable("questionId") Long questionId
+    ){
+       questionService.deleteQuestion(user, questionId);
+
+        return BaseResponse.success(HttpStatus.OK, "삭제 완료 되었습니다.", null);
     }
 }

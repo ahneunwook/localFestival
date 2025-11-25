@@ -38,9 +38,6 @@ public class Question extends BaseEntity {
     @Column(nullable = false)
     private QuestionStatus status = QuestionStatus.PENDING;
 
-    @OneToOne(mappedBy = "question", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
-    private Answer answer;
-
     @Builder
     private Question(User author, QuestionCategory category, String title, String content, QuestionStatus status){
         this.author = author;

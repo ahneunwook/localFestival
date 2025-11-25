@@ -1,5 +1,7 @@
 package com.localfestival.festival.domain.question.service;
 
+import com.localfestival.festival.domain.answer.entity.Answer;
+import com.localfestival.festival.domain.answer.repository.AnswerRepository;
 import com.localfestival.festival.domain.question.dto.request.QuestionRequestDto;
 import com.localfestival.festival.domain.question.dto.response.QuestionDetailResponseDto;
 import com.localfestival.festival.domain.question.dto.response.QuestionResponseDto;
@@ -20,6 +22,7 @@ import java.util.List;
 public class QuestionService {
 
     private final QuestionRepository questionRepository;
+    private final AnswerRepository answerRepository;
 
     @Transactional
     public Long createQuestion(User user, QuestionRequestDto dto) {
@@ -41,7 +44,9 @@ public class QuestionService {
     public QuestionDetailResponseDto getDetailQuestion(Long questionId) {
         Question question = findByQuestionId(questionId);
 
-        return QuestionDetailResponseDto.toQuestionDto(question);
+        Answer answer = answerRepository.findByQuestionId(questionId).orElse(null);
+
+        return QuestionDetailResponseDto.toQuestionDto(question, answer);
     }
 
     @Transactional
@@ -62,7 +67,16 @@ public class QuestionService {
         return question.getId();
     }
 
+    @Transactional
+    public void deleteQuestion(User user, Long questionId) {
+        Question question = findByQuestionId(questionId);
 
+        if(!question.isAuthor(user.getId())){
+            throw new CustomException(ErrorCode.NO_AUTHORIZATION_DELETE);
+        }
+
+        questionRepository.delete(question);
+    }
 
     public Question findByQuestionId(Long questionId){
         return questionRepository.findById(questionId)
