@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -41,6 +42,7 @@ public class NewsController {
     }
 
     // 공지사항 생성
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<BaseResponse<NewsResponse>> createNews(
             @Valid @RequestBody NewsCreateRequest request
@@ -50,6 +52,7 @@ public class NewsController {
     }
 
     // 공지사항 수정
+    @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping("/{id}")
     public ResponseEntity<BaseResponse<NewsResponse>> updateNews(
             @PathVariable("id") Long id,
@@ -60,6 +63,7 @@ public class NewsController {
     }
 
     // 공지사항 삭제
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<BaseResponse<Void>> deleteNews(@PathVariable("id") Long id) {
         newsService.deleteNews(id);

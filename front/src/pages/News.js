@@ -1,5 +1,6 @@
 import { createHeader } from '../components/header.js';
 import { newsApi } from '../api/NewsApi.js';
+import { isAdmin } from '../utils/auth.js';
 
 // 상태 관리
 let currentPage = 0;
@@ -7,6 +8,8 @@ let totalPages = 0;
 let currentNewsList = [];
 
 export function NewsPage() {
+  const adminOnly = isAdmin();
+  
   return `
     ${createHeader('news')}
     
@@ -14,7 +17,7 @@ export function NewsPage() {
       <div class="news-container">
         <div class="news-header">
           <h1 class="page-title">공지사항</h1>
-          <button class="btn-write" id="btnWriteNews">글쓰기</button>
+          ${adminOnly ? '<button class="btn-write" id="btnWriteNews">글쓰기</button>' : ''}
         </div>
         
         <div class="news-content">
@@ -129,6 +132,8 @@ function renderNewsDetail(news) {
   const newsDetailEl = document.getElementById('newsDetail');
   if (!newsDetailEl) return;
 
+  const adminOnly = isAdmin();
+
   newsDetailEl.className = 'news-detail';
   newsDetailEl.innerHTML = `
     <div class="news-detail-header">
@@ -144,10 +149,12 @@ function renderNewsDetail(news) {
     </div>
     <div class="news-detail-actions">
       <button class="btn-back" id="btnBackToList">목록으로</button>
+      ${adminOnly ? `
       <div class="action-btns">
         <button class="btn-edit" id="btnEditNews" data-id="${news.id}">수정</button>
         <button class="btn-delete" id="btnDeleteNews" data-id="${news.id}">삭제</button>
       </div>
+      ` : ''}
     </div>
   `;
 
@@ -157,25 +164,28 @@ function renderNewsDetail(news) {
     newsDetailEl.innerHTML = '<p>공지사항을 선택해주세요.</p>';
   });
 
-  // 수정 버튼
-  document.getElementById('btnEditNews')?.addEventListener('click', () => {
-    openEditModal(news);
-  });
+  // ADMIN인 경우만 수정/삭제 이벤트 추가
+  if (adminOnly) {
+    // 수정 버튼
+    document.getElementById('btnEditNews')?.addEventListener('click', () => {
+      openEditModal(news);
+    });
 
-  // 삭제 버튼
-  document.getElementById('btnDeleteNews')?.addEventListener('click', async () => {
-    if (confirm('정말 삭제하시겠습니까?')) {
-      try {
-        await newsApi.deleteNews(news.id);
-        alert('삭제되었습니다.');
-        newsDetailEl.className = 'news-detail-empty';
-        newsDetailEl.innerHTML = '<p>공지사항을 선택해주세요.</p>';
-        await loadNews(currentPage);
-      } catch (error) {
-        alert('삭제에 실패했습니다.');
+    // 삭제 버튼
+    document.getElementById('btnDeleteNews')?.addEventListener('click', async () => {
+      if (confirm('정말 삭제하시겠습니까?')) {
+        try {
+          await newsApi.deleteNews(news.id);
+          alert('삭제되었습니다.');
+          newsDetailEl.className = 'news-detail-empty';
+          newsDetailEl.innerHTML = '<p>공지사항을 선택해주세요.</p>';
+          await loadNews(currentPage);
+        } catch (error) {
+          alert('삭제에 실패했습니다.');
+        }
       }
-    }
-  });
+    });
+  }
 }
 
 // 페이지네이션 렌더링
