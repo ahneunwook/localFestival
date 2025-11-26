@@ -126,7 +126,7 @@ export const festivalApi = {
 	    const response = await fetch(`${API_BASE_URL}/festivals/${festivalId}/like`, {
 	      method: 'POST',
 	      headers: {
-	        'Authorization': `Bearer ${token}`
+	        'Authorization': token  // 이미 "Bearer "가 포함되어 있음
 	      }
 	    });
 
@@ -148,7 +148,7 @@ export const festivalApi = {
 	    const token = localStorage.getItem('accessToken');
 	    const headers = {};
 	    if (token) {
-	      headers['Authorization'] = `Bearer ${token}`;
+	      headers['Authorization'] = token;
 	    }
 
 	    const response = await fetch(`${API_BASE_URL}/festivals/${festivalId}/like`, {
