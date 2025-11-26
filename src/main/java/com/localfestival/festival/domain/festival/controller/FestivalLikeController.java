@@ -25,7 +25,7 @@ public class FestivalLikeController {
             @PathVariable("festivalId") Long festivalId,
             @AuthenticationPrincipal CustomUserPrincipal principal
     ) {
-        Long userId = Long.parseLong(principal.getName());
+    	Long userId = principal.getId();
         FestivalLikeResponse response = festivalLikeService.toggleLike(festivalId, userId);
         return BaseResponse.success(HttpStatus.OK, "좋아요 처리 완료", response);
     }
@@ -38,7 +38,7 @@ public class FestivalLikeController {
             @PathVariable("festivalId") Long festivalId,
             @AuthenticationPrincipal CustomUserPrincipal principal
     ) {
-        Long userId = principal != null ? Long.parseLong(principal.getName()) : null;
+        Long userId = principal != null ? principal.getId() : null;
         FestivalLikeResponse response = festivalLikeService.getLikeInfo(festivalId, userId);
         return BaseResponse.success(HttpStatus.OK, "좋아요 정보 조회 성공", response);
     }
