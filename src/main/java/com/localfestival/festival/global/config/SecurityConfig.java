@@ -59,6 +59,12 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PATCH, "/news/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/news/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/questions/**").permitAll()
+                        .requestMatchers(
+                                "/swagger-ui.html",
+                                "/swagger-ui/**",
+                                "/local-festival/**",
+                                "/swagger-resources/**"
+                        ).permitAll()
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(configure -> configure
