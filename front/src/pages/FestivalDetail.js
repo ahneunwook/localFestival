@@ -41,6 +41,10 @@ export async function FestivalDetailPage() {
                 <div class="detail-meta">
                   <span class="meta-item">📍 ${festival.region || '-'}</span>
                   <span class="meta-item">🎫 ${getStatusBadge(festival.eventStatus)}</span>
+                  <button id="likeButton" class="like-button" data-festival-id="${festival.id}">
+                    <span class="like-icon">❤️</span>
+                    <span class="like-count">0</span>
+                  </button>
                 </div>
               </div>
             </div>
@@ -174,4 +178,55 @@ function getStatusBadge(status) {
     'ENDED': '<span class="badge badge-ended">종료</span>'
   };
   return badges[status] || '-';
+}
+
+// 좋아요 기능 초기화
+export async function setupLikeFeature() {
+  const likeButton = document.getElementById('likeButton');
+  
+  if (!likeButton) return;
+
+  const festivalId = likeButton.dataset.festivalId;
+
+  // 좋아요 정보 로드
+  try {
+    const likeInfo = await festivalApi.getLikeInfo(festivalId);
+    updateLikeButton(likeButton, likeInfo);
+  } catch (error) {
+    console.error('좋아요 정보 로드 실패:', error);
+  }
+
+  // 좋아요 버튼 클릭 이벤트
+  likeButton.addEventListener('click', async () => {
+    try {
+      const token = localStorage.getItem('accessToken');
+      if (!token) {
+        alert('로그인이 필요합니다.');
+        window.location.href = '/login';
+        return;
+      }
+
+      likeButton.disabled = true;
+      const likeInfo = await festivalApi.toggleLike(festivalId);
+      updateLikeButton(likeButton, likeInfo);
+    } catch (error) {
+      console.error('좋아요 처리 실패:', error);
+      alert(error.message || '좋아요 처리에 실패했습니다.');
+    } finally {
+      likeButton.disabled = false;
+    }
+  });
+}
+
+// 좋아요 버튼 UI 업데이트
+function updateLikeButton(button, likeInfo) {
+  const likeCountEl = button.querySelector('.like-count');
+  
+  if (likeInfo.isLiked) {
+    button.classList.add('liked');
+  } else {
+    button.classList.remove('liked');
+  }
+  
+  likeCountEl.textContent = likeInfo.likeCount;
 }

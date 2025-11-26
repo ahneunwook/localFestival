@@ -113,5 +113,58 @@ export const festivalApi = {
 	    console.error('Failed to get autocomplete suggestions:', error);
 	    return [];
 	  }
+	},
+
+	// 좋아요 토글 (추가/취소)
+	async toggleLike(festivalId) {
+	  try {
+	    const token = localStorage.getItem('accessToken');
+	    if (!token) {
+	      throw new Error('로그인이 필요합니다.');
+	    }
+
+	    const response = await fetch(`${API_BASE_URL}/festivals/${festivalId}/like`, {
+	      method: 'POST',
+	      headers: {
+	        'Authorization': `Bearer ${token}`
+	      }
+	    });
+
+	    if (!response.ok) {
+	      throw new Error('좋아요 처리에 실패했습니다.');
+	    }
+
+	    const data = await response.json();
+	    return data.data; // { festivalId, likeCount, isLiked }
+	  } catch (error) {
+	    console.error('Failed to toggle like:', error);
+	    throw error;
+	  }
+	},
+
+	// 좋아요 정보 조회
+	async getLikeInfo(festivalId) {
+	  try {
+	    const token = localStorage.getItem('accessToken');
+	    const headers = {};
+	    if (token) {
+	      headers['Authorization'] = `Bearer ${token}`;
+	    }
+
+	    const response = await fetch(`${API_BASE_URL}/festivals/${festivalId}/like`, {
+	      method: 'GET',
+	      headers: headers
+	    });
+
+	    if (!response.ok) {
+	      throw new Error('좋아요 정보 조회에 실패했습니다.');
+	    }
+
+	    const data = await response.json();
+	    return data.data; // { festivalId, likeCount, isLiked }
+	  } catch (error) {
+	    console.error('Failed to get like info:', error);
+	    throw error;
+	  }
 	}
 }
