@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class QuestionDetailResponseDto {
     private Long id;
+    private Long authorId;
     private String title;
     private String content;
     private AnswerResponseDto answer;
@@ -21,6 +22,7 @@ public class QuestionDetailResponseDto {
     public static QuestionDetailResponseDto toQuestionDto(Question question, Answer answer){
         return QuestionDetailResponseDto.builder()
                 .id(question.getId())
+                .authorId(question.getAuthor().getId())
                 .title(question.getTitle())
                 .content(question.getContent())
                 .answer(answer == null ? null : AnswerResponseDto.toDetailDto(answer))

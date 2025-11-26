@@ -69,7 +69,7 @@ export function NewsPage() {
 }
 
 // 날짜 포맷팅
-function formatDate(dateString) {
+export function formatDate(dateString) {
   const date = new Date(dateString);
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, '0');

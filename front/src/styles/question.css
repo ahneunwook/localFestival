@@ -190,6 +190,79 @@
     margin: 0;
 }
 
+.modal-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+}
+
+/* 수정 버튼 */
+.edit-question-btn {
+    padding: 10px 20px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+}
+
+.edit-question-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+}
+
+.edit-question-btn:active {
+    transform: translateY(0);
+}
+
+/* 삭제 버튼 */
+.delete-question-btn {
+    padding: 10px 20px;
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    border: none;
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(245, 87, 108, 0.3);
+}
+
+.delete-question-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(245, 87, 108, 0.4);
+    background: linear-gradient(135deg, #f5576c 0%, #f093fb 100%);
+}
+
+.delete-question-btn:active {
+    transform: translateY(0);
+}
+
+/* 숨김 처리 */
+.question-hidden {
+    display: none;
+}
+
+/* 아이콘 추가하려면 */
+.edit-question-btn::before {
+    content: "✏️ ";
+    margin-right: 5px;
+}
+
+.delete-question-btn::before {
+    content: "🗑️ ";
+    margin-right: 5px;
+}
+
 .close-btn {
     background: none;
     border: none;

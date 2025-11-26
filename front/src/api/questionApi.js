@@ -47,6 +47,76 @@ export const questionApi = {
         } catch (error) {
             throw error;
         }
+    },
+
+    async getQuestionList(){
+        try {
+            const response = await fetch(`${API_BASE_URL}/questions`);
+
+            const data = await response.json();
+            if (!response.ok){
+                throw new Error(data.message);
+            }
+            return data.data;
+        } catch (error){
+            throw error;
+        }
+    },
+
+    async getQuestionDetail(id){
+        try {
+            const response = await fetch(`${API_BASE_URL}/questions/${id}`);
+
+            const data = await response.json();
+            if (!response.ok){
+                throw new Error(data.message);
+            }
+            return data.data;
+        } catch (error){
+            throw error;
+        }
+    },
+
+    async updateQuestion(id, questionData){
+        try{
+            const response = await fetch(`${API_BASE_URL}/questions/${id}`, {
+                method : 'PUT',
+                headers : {
+                    'Content-Type' : 'application/json',
+                    'Authorization': localStorage.getItem('accessToken'),
+                },
+                body: JSON.stringify(questionData),
+            });
+            const data = await response.json();
+
+            if (!response.ok){
+                throw new Error(data.message);
+            }
+            return data.data;
+
+        } catch (error){
+            throw error;
+        }
+    },
+
+    async deleteQuestion(id){
+        try{
+            const response = await fetch(`${API_BASE_URL}/questions/${id}`, {
+                method : 'DELETE',
+                headers : {
+                    'Authorization': localStorage.getItem('accessToken'),
+                },
+            });
+            const data = await response.json();
+
+            if (!response.ok){
+                throw new Error(data.message);
+            }
+            return data.data;
+
+        } catch (error){
+            throw error;
+        }
     }
 
 }

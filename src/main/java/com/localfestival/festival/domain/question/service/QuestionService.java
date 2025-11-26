@@ -10,6 +10,7 @@ import com.localfestival.festival.domain.question.entity.Question;
 import com.localfestival.festival.domain.question.enums.QuestionCategory;
 import com.localfestival.festival.domain.question.repository.QuestionRepository;
 import com.localfestival.festival.domain.user.entity.User;
+import com.localfestival.festival.domain.user.enums.Role;
 import com.localfestival.festival.global.exception.CustomException;
 import com.localfestival.festival.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -55,7 +56,7 @@ public class QuestionService {
 
         Question question = findByQuestionId(questionId);
 
-        if(!question.isAuthor(user.getId())){
+        if(!question.isAuthor(user.getId()) && !user.getRole().equals(Role.ADMIN)){
             throw new CustomException(ErrorCode.NO_AUTHORIZATION_EDIT);
         }
 
@@ -72,7 +73,7 @@ public class QuestionService {
     public void deleteQuestion(User user, Long questionId) {
         Question question = findByQuestionId(questionId);
 
-        if(!question.isAuthor(user.getId())){
+        if(!question.isAuthor(user.getId()) && !user.getRole().equals(Role.ADMIN)){
             throw new CustomException(ErrorCode.NO_AUTHORIZATION_DELETE);
         }
 

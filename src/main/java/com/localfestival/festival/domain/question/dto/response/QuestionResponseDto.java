@@ -17,20 +17,20 @@ import java.time.LocalDateTime;
 public class QuestionResponseDto {
 
     private Long id;
-    private QuestionCategory category;
+    private String category;;
     private String title;
     private String authorName;
     private LocalDateTime createdAt;
-    private QuestionStatus status;
+    private String status;
 
     public static QuestionResponseDto toDto(Question question){
         return QuestionResponseDto.builder()
                 .id(question.getId())
-                .category(question.getCategory())
+                .category(question.getCategory().getCategory())
                 .title(question.getTitle())
                 .authorName(question.getAuthor().getUserName())
                 .createdAt(question.getCreatedAt())
-                .status(question.getStatus())
+                .status(question.getStatus().getLabel())
                 .build();
     }
 }
