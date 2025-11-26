@@ -1,5 +1,6 @@
 import { createHeader } from '../components/header.js';
 import { festivalApi } from '../api/FestivalApi.js';
+import { isLoggedIn } from '../utils/auth.js';
 
 export async function FestivalDetailPage() {
   // URL에서 축제 ID 가져오기
@@ -198,14 +199,14 @@ export async function setupLikeFeature() {
 
   // 좋아요 버튼 클릭 이벤트
   likeButton.addEventListener('click', async () => {
-    try {
-      const token = localStorage.getItem('accessToken');
-      if (!token) {
-        alert('로그인이 필요합니다.');
-        window.location.href = '/login';
-        return;
-      }
+    // 로그인 체크 (토큰 만료도 자동 체크됨)
+    if (!isLoggedIn()) {
+      alert('로그인 후 이용 가능합니다.');
+      window.location.href = '/login';
+      return;
+    }
 
+    try {
       likeButton.disabled = true;
       const likeInfo = await festivalApi.toggleLike(festivalId);
       updateLikeButton(likeButton, likeInfo);
