@@ -7,4 +7,8 @@ import java.util.Optional;
 
 public interface AnswerRepository extends JpaRepository<Answer, Long> {
     Optional<Answer> findByQuestionId(Long questionId);
+
+    long countByQuestionId(Long questionId);
+
+    void deleteByQuestionId(Long questionId);
 }

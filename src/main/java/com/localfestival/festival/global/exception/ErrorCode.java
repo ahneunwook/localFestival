@@ -43,7 +43,8 @@ public enum ErrorCode {
     NO_AUTHORIZATION_DELETE(HttpStatus.UNAUTHORIZED, "작성자만 삭제 할 수 있습니다."),
 
     // 답변
-    ANSWER_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 답변이 없습니다.");
+    ANSWER_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 답변이 없습니다."),
+    INVALID_ANSWER_RELATION(HttpStatus.INTERNAL_SERVER_ERROR, "해당 답변이 ");
     private final HttpStatus httpStatus;
     private final String message;
 }

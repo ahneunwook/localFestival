@@ -2,6 +2,7 @@ import {createHeader} from "../components/header.js";
 import { questionApi } from '../api/questionApi.js';
 import { formatDate } from "./News.js";
 import {getCurrentUser} from "../utils/auth.js";
+import {answerApi} from "../api/AnswerApi.js";
 
 export function questionPage() {
     return `
@@ -80,9 +81,33 @@ export function questionPage() {
             <div class="modal-actions">
                 <button id="editQuestionBtn" class="edit-question-btn question-hidden">수정</button>
                 <button id="deleteQuestionBtn" class="delete-question-btn question-hidden">삭제</button>
+                <button id="writeAnswerBtn" class="btn-answer question-hidden">답글 작성</button>
+                <button id="editAnswerBtn" class="edit-answer-btn admin-only">답변 수정</button>
+                <button id="deleteAnswerBtn" class="delete-answer-btn admin-only">답변 삭제</button>
             </div>
         </div>
     </div>
+    
+    <!-- 답글 작성 모달 -->
+        <div id="answerModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>답글 작성</h2>
+                    <button class="close-btn" data-close="answerModal">×</button>
+                </div>
+                <form id="answerForm">
+                    <input type="hidden" id="answerQuestionId" value="">
+                    <input type="hidden" id="answerIdForEdit" value="">
+
+                    <div class="form-group">
+                        <label>답글 내용 *</label>
+                        <textarea id="answerContent" rows="8" required placeholder="답글을 입력하세요"></textarea>
+                    </div>
+
+                    <button type="submit" class="submit-btn">답글 등록하기</button>
+                </form>
+            </div>
+        </div>
     `;
 }
 
@@ -110,6 +135,7 @@ export async function questionPageInit() {
 
     const writeModal = document.getElementById("writeModal");
     const detailModal = document.getElementById("detailModal");
+    const answerModal = document.getElementById("answerModal");
 
     // 작성 버튼
     document.getElementById("openWriteModalBtn").onclick = async () => {
@@ -140,7 +166,7 @@ export async function questionPageInit() {
                 <p>${question.content}</p>
             `;
             if (question.answer) {
-                html += `<hr><h3>답변</h3><p>${question.answer}</p>`;
+                html += `<hr><h3>답변</h3><p>${question.answer.content}</p>`;
             } else {
                 html += `
                     <hr>
@@ -153,6 +179,7 @@ export async function questionPageInit() {
 
             const editBtn = document.getElementById("editQuestionBtn");
             const deleteBtn = document.getElementById("deleteQuestionBtn");
+            const answerBtn = document.getElementById("writeAnswerBtn");
 
             const currentUser = getCurrentUser();
             const currentUserId = Number(currentUser.userId);
@@ -174,6 +201,43 @@ export async function questionPageInit() {
                 deleteBtn.onclick = () => handleDeleteQuestion(question.id);
             } else {
                 deleteBtn.classList.add("question-hidden");
+            }
+
+            // 답글 작성 버튼 (관리자만)
+            if (isAdminUser && !question.answer) {
+                answerBtn.classList.remove("question-hidden");
+                answerBtn.onclick = () => openAnswerModal(question.id);
+            } else {
+                answerBtn.classList.add("question-hidden");
+            }
+
+            // 답변 수정 버튼 (관리자만, 답변이 있을 때)
+            const editAnswerBtn = document.getElementById("editAnswerBtn");
+            if (editAnswerBtn) {
+                if (isAdminUser && question.answer) {
+                    editAnswerBtn.classList.remove("question-hidden");
+                    editAnswerBtn.onclick = () => openAnswerEditModal(
+                        question.id,
+                        question.answer.id,
+                        question.answer.content
+                    );
+                } else {
+                    editAnswerBtn.classList.add("question-hidden");
+                }
+            }
+
+            // 답변 삭제 버튼 (관리자만, 답변이 있을 때)
+            const deleteAnswerBtn = document.getElementById("deleteAnswerBtn");
+            if (deleteAnswerBtn) {
+                if (isAdminUser && question.answer) {
+                    deleteAnswerBtn.classList.remove("question-hidden");
+                    deleteAnswerBtn.onclick = () => handleDeleteAnswer(
+                        question.id,
+                        question.answer.id
+                    );
+                } else {
+                    deleteAnswerBtn.classList.add("question-hidden");
+                }
             }
 
             detailModal.classList.add("active");
@@ -221,6 +285,36 @@ export async function questionPageInit() {
             alert(err.message);
         }
     };
+
+    // 답글 등록
+    const answerForm = document.getElementById("answerForm");
+    answerForm.onsubmit = async (e) => {
+        e.preventDefault();
+
+        const questionId = document.getElementById("answerQuestionId").value;
+        const answerId = document.getElementById("answerIdForEdit").value;  // ← 수정모드 여부 체크
+        const content = document.getElementById("answerContent").value;
+
+        const answerData = { content };
+
+        try {
+            if (answerId && answerId.trim() !== "") {
+                await answerApi.updateAnswer(questionId, answerId, answerData);
+                alert("답글이 수정되었습니다.");
+            } else {
+                await answerApi.createAnswer(questionId, answerData);
+                alert("답글이 등록되었습니다.");
+            }
+
+            answerModal.classList.remove("active");
+            detailModal.classList.remove("active");
+            answerForm.reset();
+            location.reload();
+
+        } catch (err) {
+            alert(err.message || "답글 처리 중 오류가 발생했습니다.");
+        }
+    };
 }
 
 function openCreateModal() {
@@ -254,20 +348,57 @@ function openEditModal(q) {
     document.getElementById("writeModal").classList.add("active");
 }
 
+function openAnswerModal(questionId) {
+    const modalTitle = document.querySelector("#answerModal .modal-header h2");
+    const submitBtn = document.querySelector("#answerForm .submit-btn");
+
+    if (modalTitle) modalTitle.textContent = "답글 작성";
+    if (submitBtn) submitBtn.textContent = "답글 등록하기";
+
+    document.getElementById("answerQuestionId").value = questionId;
+    document.getElementById("answerIdForEdit").value = "";
+    document.getElementById("answerContent").value = "";
+    document.getElementById("detailModal").classList.remove("active");
+    document.getElementById("answerModal").classList.add("active");
+}
+
+function openAnswerEditModal(questionId, answerId, answerContent) {
+    const modalTitle = document.querySelector("#answerModal .modal-header h2");
+    const submitBtn = document.querySelector("#answerForm .submit-btn");
+
+    if (modalTitle) modalTitle.textContent = "답글 수정";
+    if (submitBtn) submitBtn.textContent = "답글 수정하기";
+
+    document.getElementById("answerQuestionId").value = questionId;
+    document.getElementById("answerIdForEdit").value = answerId;
+    document.getElementById("answerContent").value = answerContent;
+    document.getElementById("detailModal").classList.remove("active");
+    document.getElementById("answerModal").classList.add("active");
+}
+
+async function handleDeleteAnswer(questionId, answerId) {
+    if (!confirm("정말 답변을 삭제하시겠습니까?")) return;
+
+    try {
+        await answerApi.deleteAnswer(questionId, answerId);
+        alert("답변이 삭제되었습니다.");
+
+        document.getElementById("detailModal").classList.remove("active");
+        questionPageInit();
+    } catch (err) {
+        alert(err.message || "답변 삭제에 실패했습니다.");
+    }
+}
+
 async function handleDeleteQuestion(id) {
     if (!confirm("정말 삭제하시겠습니까?")) return;
 
     try {
         await questionApi.deleteQuestion(id);
-
         alert("문의가 삭제되었습니다.");
 
-        // 모달 닫기
         document.getElementById("detailModal").classList.remove("active");
-
-        // 리스트 다시 불러오기 (새로고침 없이 갱신)
         questionPageInit();
-
     } catch (err) {
         alert(err.message || "삭제에 실패했습니다.");
     }
