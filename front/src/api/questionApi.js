@@ -12,6 +12,12 @@ export const questionApi = {
                },
                 body: JSON.stringify(questionData),
             });
+
+            if (response.status === 401 || response.status === 404) {
+                alert("로그인이 필요합니다.");
+                return;
+            }
+
             const data = await response.json();
 
             if (!response.ok){
@@ -31,6 +37,11 @@ export const questionApi = {
                     "Authorization": localStorage.getItem("accessToken")
                 }
             });
+
+            if (response.status === 401 || response.status === 404) {
+                alert("로그인이 필요합니다.");
+                return;
+            }
 
             const data = await response.json();
 

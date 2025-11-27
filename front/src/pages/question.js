@@ -139,8 +139,10 @@ export async function questionPageInit() {
 
     // 작성 버튼
     document.getElementById("openWriteModalBtn").onclick = async () => {
-        await questionApi.openQuestionModal();
-        openCreateModal();
+        const result = await questionApi.openQuestionModal();  // ⭐ 반환값 확인
+        if (result) {
+            openCreateModal();
+        }
     };
 
     // 닫기 버튼
@@ -177,67 +179,76 @@ export async function questionPageInit() {
 
             detail.innerHTML = html;
 
+            // 버튼 가져오기
             const editBtn = document.getElementById("editQuestionBtn");
             const deleteBtn = document.getElementById("deleteQuestionBtn");
             const answerBtn = document.getElementById("writeAnswerBtn");
+            const editAnswerBtn = document.getElementById("editAnswerBtn");
+            const deleteAnswerBtn = document.getElementById("deleteAnswerBtn");
 
+            // 로그인 여부 안전하게 판별
             const currentUser = getCurrentUser();
-            const currentUserId = Number(currentUser.userId);
-            const isAdminUser = currentUser.userRole === "ADMIN";
+            const currentUserId = currentUser?.userId ? Number(currentUser.userId) : null;
+            const isAdminUser = currentUser?.userRole === "ADMIN";
 
-            if (currentUserId === question.authorId || isAdminUser) {
+
+            // 문의 수정 버튼 (작성자 + 관리자)
+            if (!currentUserId) {
+                editBtn.classList.add("question-hidden");
+                editBtn.onclick = null;
+            } else if (currentUserId === question.authorId || isAdminUser) {
                 editBtn.classList.remove("question-hidden");
                 editBtn.onclick = async () => {
-                    await questionApi.openQuestionModal();  // 사용자 정보 로드
-                    openEditModal(question);
+                    const result = await questionApi.openQuestionModal();
+                    if (result) openEditModal(question);
                 };
             } else {
                 editBtn.classList.add("question-hidden");
+                editBtn.onclick = null;
             }
 
-            // 삭제 버튼 표시
-            if (currentUserId === question.authorId || isAdminUser) {
+            // 문의 삭제 버튼 (작성자 + 관리자)
+            if (!currentUserId) {
+                deleteBtn.classList.add("question-hidden");
+                deleteBtn.onclick = null;
+            } else if (currentUserId === question.authorId || isAdminUser) {
                 deleteBtn.classList.remove("question-hidden");
                 deleteBtn.onclick = () => handleDeleteQuestion(question.id);
             } else {
                 deleteBtn.classList.add("question-hidden");
+                deleteBtn.onclick = null;
             }
 
-            // 답글 작성 버튼 (관리자만)
-            if (isAdminUser && !question.answer) {
+            // 답글 작성 버튼 (관리자만, 답변 없을 때)
+            if (!currentUserId || !isAdminUser || question.answer) {
+                answerBtn.classList.add("question-hidden");
+                answerBtn.onclick = null;
+            } else {
                 answerBtn.classList.remove("question-hidden");
                 answerBtn.onclick = () => openAnswerModal(question.id);
+            }
+
+            // 답글 수정 버튼 (관리자 + 답글 있을 때)
+            if (!currentUserId || !isAdminUser || !question.answer) {
+                editAnswerBtn.classList.add("question-hidden");
+                editAnswerBtn.onclick = null;
             } else {
-                answerBtn.classList.add("question-hidden");
+                editAnswerBtn.classList.remove("question-hidden");
+                editAnswerBtn.onclick = () => openAnswerEditModal(
+                    question.id,
+                    question.answer.id,
+                    question.answer.content
+                );
             }
 
-            // 답변 수정 버튼 (관리자만, 답변이 있을 때)
-            const editAnswerBtn = document.getElementById("editAnswerBtn");
-            if (editAnswerBtn) {
-                if (isAdminUser && question.answer) {
-                    editAnswerBtn.classList.remove("question-hidden");
-                    editAnswerBtn.onclick = () => openAnswerEditModal(
-                        question.id,
-                        question.answer.id,
-                        question.answer.content
-                    );
-                } else {
-                    editAnswerBtn.classList.add("question-hidden");
-                }
-            }
-
-            // 답변 삭제 버튼 (관리자만, 답변이 있을 때)
-            const deleteAnswerBtn = document.getElementById("deleteAnswerBtn");
-            if (deleteAnswerBtn) {
-                if (isAdminUser && question.answer) {
-                    deleteAnswerBtn.classList.remove("question-hidden");
-                    deleteAnswerBtn.onclick = () => handleDeleteAnswer(
-                        question.id,
-                        question.answer.id
-                    );
-                } else {
-                    deleteAnswerBtn.classList.add("question-hidden");
-                }
+            // 답글 삭제 버튼 (관리자 + 답글 있을 때)
+            if (!currentUserId || !isAdminUser || !question.answer) {
+                deleteAnswerBtn.classList.add("question-hidden");
+                deleteAnswerBtn.onclick = null;
+            } else {
+                deleteAnswerBtn.classList.remove("question-hidden");
+                deleteAnswerBtn.onclick = () =>
+                    handleDeleteAnswer(question.id, question.answer.id);
             }
 
             detailModal.classList.add("active");
