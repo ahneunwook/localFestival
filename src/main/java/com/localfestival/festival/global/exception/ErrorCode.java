@@ -13,7 +13,7 @@ public enum ErrorCode {
     INVALID_INPUT_VALUE(HttpStatus.BAD_REQUEST, "잘못된 요청 값입니다."),
     ACCESS_DENIED(HttpStatus.FORBIDDEN, "접근 권한이 없습니다."),
     INVALID_GENDER_VALUE(HttpStatus.BAD_REQUEST, "올바르지 않은 성별 값입니다."),
-
+    INVALID_CATEGORY_VALUE(HttpStatus.BAD_REQUEST, "올바르지 않은 카테고리 값입니다."),
     // 인증, 인가
     SERVER_EXCEPTION_JWT(HttpStatus.INTERNAL_SERVER_ERROR, "토큰이 유효하지 않습니다."),
     TOKEN_EXPIRED(HttpStatus.INTERNAL_SERVER_ERROR, "만료된 토큰입니다."),
@@ -22,7 +22,7 @@ public enum ErrorCode {
 
     // 유저
     DUPLICATE_EMAIL(HttpStatus.BAD_REQUEST, "중복된 이메일 입니다."),
-    USER_NOT_FOUND(HttpStatus.BAD_REQUEST, "유저를 찾을 수 없습니다."),
+    USER_NOT_FOUND(HttpStatus.NOT_FOUND, "유저를 찾을 수 없습니다."),
     PASSWORD_NOT_MATCHED(HttpStatus.BAD_REQUEST, "비밀번호가 일치 하지 않습니다."),
 
 	// 축제
@@ -33,10 +33,17 @@ public enum ErrorCode {
     FESTIVAL_SYNC_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "데이터 동기화에 실패했습니다."),
     FESTIVAL_API_ERROR(HttpStatus.SERVICE_UNAVAILABLE, "API 호출에 실패했습니다."),
     FESTIVAL_API_RESPONSE_ERROR(HttpStatus.BAD_GATEWAY, "API 응답 형식이 올바르지 않습니다."),
-	
-    // 공지사항 api
-	NEWS_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 공지사항을 찾을 수 없습니다.");
 
+    // 공지사항 api
+	NEWS_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 공지사항을 찾을 수 없습니다."),
+
+    // 문의
+    QUESTION_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 문의 글이 없습니다."),
+    NO_AUTHORIZATION_EDIT(HttpStatus.UNAUTHORIZED, "작성자만 수정 할 수 있습니다."),
+    NO_AUTHORIZATION_DELETE(HttpStatus.UNAUTHORIZED, "작성자만 삭제 할 수 있습니다."),
+
+    // 답변
+    ANSWER_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 답변이 없습니다.");
     private final HttpStatus httpStatus;
     private final String message;
 }

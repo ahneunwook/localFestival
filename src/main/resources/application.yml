@@ -72,3 +72,21 @@ external:
       url: https://apis.data.go.kr/B551011/KorService2
       key: ${TOUR_API_KEY}
 
+springdoc:
+  # Swagger UI 설정
+  swagger-ui:
+    path: /swagger-ui.html              # Swagger UI 접근 경로
+    tags-sorter: alpha                  # 태그 알파벳 순 정렬
+    operations-sorter: alpha            # API 알파벳 순 정렬
+    display-request-duration: true      # 요청 소요시간 표시
+    groups-order: DESC                  # 그룹 정렬 순서
+    disable-swagger-default-url: true   # swagger-ui default url 비활성화
+
+  # API 문서 설정
+  api-docs:
+    path: /local-festival                     # API 문서 JSON 경로
+    enabled: true                       # API 문서 활성화
+
+  # 공통 설정
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json

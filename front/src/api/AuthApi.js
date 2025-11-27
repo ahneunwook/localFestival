@@ -13,7 +13,7 @@ export const authApi = {
             const data = await response.json();
 
             if (!response.ok){
-                throw data;
+                throw new Error(data.message);
             }
             return data.data;
 

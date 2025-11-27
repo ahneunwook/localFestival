@@ -1,5 +1,6 @@
 package com.localfestival.festival.global.config;
 
+import com.localfestival.festival.domain.user.repository.UserRepository;
 import com.localfestival.festival.global.jwt.JwtAccessDeniedHandler;
 import com.localfestival.festival.global.jwt.JwtAuthenticationEntryPoint;
 import com.localfestival.festival.global.jwt.JwtFilter;
@@ -39,7 +40,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtUtil jwtUtil) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtUtil jwtUtil, UserRepository userRepository) throws Exception {
         http
         		.cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .httpBasic(AbstractHttpConfigurer::disable)
@@ -47,7 +48,7 @@ public class SecurityConfig {
                 .formLogin(AbstractHttpConfigurer::disable)
                 .logout(AbstractHttpConfigurer::disable)
                 .rememberMe(AbstractHttpConfigurer::disable)
-                .addFilterBefore(new JwtFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtFilter(jwtUtil, userRepository), UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.POST,"/auth/**").permitAll()
@@ -58,6 +59,13 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/news/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PATCH, "/news/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/news/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/questions/**").permitAll()
+                        .requestMatchers(
+                                "/swagger-ui.html",
+                                "/swagger-ui/**",
+                                "/local-festival/**",
+                                "/swagger-resources/**"
+                        ).permitAll()
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(configure -> configure
