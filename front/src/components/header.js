@@ -1,4 +1,6 @@
 export function createHeader(activePage = '') {
+  const isLoggedIn = !!localStorage.getItem("accessToken");
+
   return `
     <header class="header">
       <div class="logo" onclick="window.location.href='/'" style="cursor: pointer;">FESTIVAL</div>
@@ -9,10 +11,17 @@ export function createHeader(activePage = '') {
         <a href="/news" data-link class="${activePage === 'news' ? 'active' : ''}">소식</a>
         <a href="/questions" class="${activePage === 'questions' ? 'active' : ''}">문의</a>
       </nav>
-      <div class="auth-buttons">
-        <span onclick="window.location.href='/login'" style="cursor: pointer;">로그인</span>
-        <span class="active" onclick="window.location.href='/signup'" style="cursor: pointer;">회원가입</span>
+       <div class="auth-buttons">
+        ${isLoggedIn
+      ? `<span id="logoutBtn" style="cursor: pointer;">로그아웃</span>`
+      : `
+             <span onclick="window.location.href='/login'" style="cursor: pointer;">로그인</span>
+             <span onclick="window.location.href='/signup'" style="cursor: pointer;">회원가입</span>
+            `
+  }
       </div>
     </header>
   `;
 }
+
+
