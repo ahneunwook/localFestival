@@ -34,10 +34,12 @@ export const newsApi = {
   // 공지사항 생성
   async createNews(newsData) {
     try {
+	  const token = localStorage.getItem('accessToken');
       const response = await fetch(`${API_BASE_URL}/news`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+		  'Authorization': token
         },
         body: JSON.stringify(newsData),
       });
@@ -55,10 +57,12 @@ export const newsApi = {
   // 공지사항 수정
   async updateNews(id, newsData) {
     try {
+      const token = localStorage.getItem('accessToken');
       const response = await fetch(`${API_BASE_URL}/news/${id}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
+		  'Authorization': token
         },
         body: JSON.stringify(newsData),
       });
@@ -76,8 +80,12 @@ export const newsApi = {
   // 공지사항 삭제
   async deleteNews(id) {
     try {
+	  const token = localStorage.getItem('accessToken');
       const response = await fetch(`${API_BASE_URL}/news/${id}`, {
         method: 'DELETE',
+		headers:{
+			'Authorization': token,
+		}
       });
       if (!response.ok) {
         throw new Error('Network response was not ok');
