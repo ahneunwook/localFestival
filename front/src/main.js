@@ -9,7 +9,7 @@ import './styles/news.css'
 import Router from './router/index.js'
 import { HomePage, setupHomeSearchListeners } from './pages/Home.js'
 import { FestivalListPage } from './pages/FestivalList.js'
-import { FestivalDetailPage } from './pages/FestivalDetail.js'
+import { FestivalDetailPage, setupLikeFeature } from './pages/FestivalDetail.js'
 import {login, LoginPage} from './pages/Login.js'
 import { SignupPage } from './pages/Signup.js'
 import { SearchResultPage, setupSearchListeners } from './pages/SearchResult.js'
@@ -34,7 +34,12 @@ const routes = [
   },
   {
     path: '/festival/detail',
-    component: FestivalDetailPage
+    component: async () => {
+      const html = await FestivalDetailPage();
+      // 페이지 로드 후 좋아요 기능 초기화
+      setTimeout(() => setupLikeFeature(), 0);
+      return html;
+    }
   },
   {
     path: '/search',
