@@ -23,7 +23,7 @@ public class JwtUtil {
     private final SecretKey secretKey;
 
     private static final String BEARER_PREFIX = "Bearer ";
-    private static final long ACCESS_TOKEN_TIME = 15 * 60 * 1000L; // jwt 토큰 시간
+    private static final long ACCESS_TOKEN_TIME = 1 * 60 * 1000; // jwt 토큰 시간
     private static final long REFRESH_TOKEN_TIME = 7 * 24 * 60 * 60 * 1000L; // 7일
 
     /**

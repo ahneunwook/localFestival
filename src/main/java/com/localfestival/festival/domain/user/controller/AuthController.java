@@ -12,7 +12,6 @@ import com.localfestival.festival.global.jwt.JwtUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -56,9 +55,8 @@ public class AuthController {
         if (refreshToken == null || refreshToken.isBlank()) {
             throw new CustomException(ErrorCode.REFRESH_TOKEN_NOT_FOUND);
         }
-        String bearerToken = "Bearer " + refreshToken;
 
-        LoginResponseDto refresh = userService.refresh(bearerToken);
+        LoginResponseDto refresh = userService.refresh(refreshToken);
 
         return BaseResponse.success(HttpStatus.OK, "리프레쉬 토근 발급에 성공하였습니다.", refresh);
     }

@@ -1,3 +1,5 @@
+import { authApi } from './authApi.js';
+
 const API_BASE_URL = 'http://localhost:8080/api';
 
 export async function fetchWithAuth(endpoint, options = {}) {
@@ -21,34 +23,33 @@ export async function fetchWithAuth(endpoint, options = {}) {
 
     // Access Token 만료
     if (response.status === 401) {
-        const refreshResponse = await fetch(`${API_BASE_URL}/auth/refresh`, {
-            method: 'POST',
-            credentials: 'include',
-        });
+        console.log('🔄 Access Token 만료 - Refresh 시도');
 
-        if (!refreshResponse.ok) {
+        try {
+            const refreshData = await authApi.refresh();
+            const newAccessToken = refreshData.data.accessToken;
+
+            console.log('✅ 새 Access Token 발급 성공');
+
+            // 재요청
+            response = await fetch(`${API_BASE_URL}${endpoint}`, {
+                ...options,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${newAccessToken}`,
+                    ...(options.headers || {})
+                },
+                credentials: 'include',
+            });
+        } catch (refreshError) {
+            console.error('❌ Refresh Token 만료 또는 실패:', refreshError);
+
+            // Refresh Token도 만료됨
             localStorage.removeItem('accessToken');
             alert('세션이 만료되었습니다. 다시 로그인해주세요.');
             window.location.href = '/pages/login/login.html';
             throw new Error('로그인 필요');
         }
-
-        const refreshData = await refreshResponse.json();
-        const newAccessToken = refreshData.data.accessToken;
-
-        // 새 accessToken 저장
-        localStorage.setItem('accessToken', newAccessToken);
-
-        // 재요청
-        response = await fetch(`${API_BASE_URL}${endpoint}`, {
-            ...options,
-            headers: {
-                ...defaultHeaders,
-                'Authorization': `Bearer ${newAccessToken}`,
-                ...(options.headers || {})
-            },
-            credentials: 'include',
-        });
     }
 
     // 비어있는 body 방지

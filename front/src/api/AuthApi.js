@@ -40,9 +40,12 @@ export const authApi = {
             }
 
             if (data.data.accessToken) {
-                localStorage.setItem('accessToken', data.data.accessToken);
+                let token = data.data.accessToken;
+                if (token.startsWith('Bearer ')) {
+                    token = token.substring(7);
+                }
+                localStorage.setItem('accessToken', token);
             }
-
             return data;
         } catch (error){
             throw error;
@@ -64,7 +67,11 @@ export const authApi = {
 
             // 새 Access Token 저장
             if (data.data.accessToken) {
-                localStorage.setItem('accessToken', data.data.accessToken);
+                let token = data.data.accessToken;
+                if (token.startsWith('Bearer ')) {
+                    token = token.substring(7);
+                }
+                localStorage.setItem('accessToken', token);
             }
 
             return data;
