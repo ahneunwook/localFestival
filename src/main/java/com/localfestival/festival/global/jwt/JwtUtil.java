@@ -24,6 +24,7 @@ public class JwtUtil {
 
     private static final String BEARER_PREFIX = "Bearer ";
     private static final long ACCESS_TOKEN_TIME = 15 * 60 * 1000L; // jwt 토큰 시간
+    private static final long REFRESH_TOKEN_TIME = 7 * 24 * 60 * 60 * 1000L; // 7일
 
     /**
      * 서버에 등록한 jwt 키를 base64로 디코딩 후 HMAC Key 로 만드는 과정
@@ -58,6 +59,21 @@ public class JwtUtil {
                     .issuedAt(date)
                     .signWith(secretKey)
                     .compact();
+    }
+
+    public String createRefreshToken(Long userId){
+        Date date = new Date();
+        String jti = UUID.randomUUID().toString();
+
+        return BEARER_PREFIX +
+                Jwts.builder()
+                        .subject(String.valueOf(userId))
+                        .id(jti)
+                        .claim("type", "refresh")
+                        .expiration(new Date(date.getTime() + REFRESH_TOKEN_TIME))
+                        .issuedAt(date)
+                        .signWith(secretKey)
+                        .compact();
     }
 
     /**
@@ -99,4 +115,54 @@ public class JwtUtil {
         }
     }
 
+    // 토큰 유효성 검증
+    public boolean validateToken(String bearerToken) {
+        try {
+            parseToken(bearerToken);
+            return true;
+        } catch (CustomException e) {
+            return false;
+        }
+    }
+
+    /**
+     * 토큰에서 userId 추출
+     */
+    public Long getUserIdFromToken(String bearerToken) {
+        Claims claims = parseToken(bearerToken);
+        return Long.parseLong(claims.getSubject());
+    }
+
+    /**
+     * 토큰에서 userName 추출
+     */
+    public String getUserNameFromToken(String bearerToken) {
+        Claims claims = parseToken(bearerToken);
+        return claims.get("userName", String.class);
+    }
+
+    /**
+     * 토큰에서 userRole 추출
+     */
+    public Role getUserRoleFromToken(String bearerToken) {
+        Claims claims = parseToken(bearerToken);
+        String roleName = claims.get("userRole", String.class);
+        return Role.valueOf(roleName);
+    }
+
+    // 토큰 타입 확인 (access / refresh)
+    public String getTokenType(String bearerToken) {
+        Claims claims = parseToken(bearerToken);
+        return claims.get("type", String.class);
+    }
+
+    // Refresh Token인지 확인
+    public boolean isRefreshToken(String bearerToken) {
+        return "refresh".equals(getTokenType(bearerToken));
+    }
+
+    //Access Token인지 확인
+    public boolean isAccessToken(String bearerToken) {
+        return "access".equals(getTokenType(bearerToken));
+    }
 }

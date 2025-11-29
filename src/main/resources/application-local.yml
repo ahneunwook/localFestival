@@ -5,9 +5,12 @@ spring:
     username: ${LOCAL_DB_USERNAME}
     password: ${LOCAL_DB_PASSWORD}
 
-  jpa:
-    hibernate:
-      ddl-auto: update
+  data:
+    redis:
+      host: ${LOCAL_REDIS_HOST}
+      port: ${LOCAL_REDIS_PORT}
+      password: ${LOCAL_REDIS_PASSWORD}
+      timeout: 3000
 
 springdoc:
   api-docs:

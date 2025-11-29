@@ -9,9 +9,14 @@ import com.localfestival.festival.domain.user.repository.UserRepository;
 import com.localfestival.festival.global.exception.CustomException;
 import com.localfestival.festival.global.exception.ErrorCode;
 import com.localfestival.festival.global.jwt.JwtUtil;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.Duration;
 
 @Service
 @RequiredArgsConstructor
@@ -20,6 +25,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
+    private final RefreshTokenService refreshTokenService;
 
     public SignupResponseDto signup(SignupRequestDto signupRequestDto) {
 
@@ -51,8 +57,46 @@ public class UserService {
     // 토큰 발급 로직
     private LoginResponseDto generateToken(User user){
         String accessToken = jwtUtil.createAccessToken(user.getId(), user.getUserName(), user.getRole());
+        String refreshToken = jwtUtil.createRefreshToken(user.getId());
 
-        return new LoginResponseDto(accessToken);
+        refreshTokenService.saveRefreshToken(user.getId(), jwtUtil.subStringToken(refreshToken));
+
+        return LoginResponseDto.both(accessToken, refreshToken);
+    }
+
+    @Transactional(readOnly = true)
+    public LoginResponseDto refresh(String refreshToken) {
+        // Refresh Token 검증
+        if (!jwtUtil.validateToken(refreshToken)){
+            throw new CustomException(ErrorCode.TOKEN_INVALID);
+        }
+
+        // Refresh Token 타입 확인
+        if (!jwtUtil.isRefreshToken(refreshToken)) {
+            throw new CustomException(ErrorCode.TOKEN_INVALID, "Refresh Token이 아닙니다.");
+        }
+
+        // userId 추출
+        Long userId = jwtUtil.getUserIdFromToken(refreshToken);
+
+        // Redis에 저장된 Refresh Token과 비교
+        String storedToken = refreshTokenService.find(userId);
+        String cleanToken = jwtUtil.subStringToken(refreshToken);
+
+        if (storedToken == null || !storedToken.equals(cleanToken)) {
+            throw new CustomException(ErrorCode.REFRESH_TOKEN_NOT_FOUND);
+        }
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        // 6. 새로운 Access Token 발급
+        String newAccessToken = jwtUtil.createAccessToken(
+                user.getId(),
+                user.getUserName(),
+                user.getRole()
+        );
+
+        return LoginResponseDto.onlyAccess(newAccessToken);
     }
 
     // 비밀번호 검증 로직
