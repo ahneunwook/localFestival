@@ -31,6 +31,19 @@ class Router {
       this.currentRoute = route;
       const app = document.querySelector('#app');
       app.innerHTML = await route.component();
+
+      this.afterRender();
+    }
+  }
+
+  afterRender() {
+    // 로그아웃 버튼 이벤트 등록
+    const logoutBtn = document.getElementById("logoutBtn");
+    if (logoutBtn) {
+      logoutBtn.onclick = () => {
+        localStorage.removeItem("accessToken");
+        window.location.href = "/";
+      };
     }
   }
 

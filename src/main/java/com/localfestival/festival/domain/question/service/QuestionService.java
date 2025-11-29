@@ -77,6 +77,7 @@ public class QuestionService {
             throw new CustomException(ErrorCode.NO_AUTHORIZATION_DELETE);
         }
 
+        answerRepository.deleteByQuestionId(questionId);
         questionRepository.delete(question);
     }
 

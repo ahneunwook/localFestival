@@ -10,7 +10,7 @@ import Router from './router/index.js'
 import { HomePage, setupHomeSearchListeners } from './pages/Home.js'
 import { FestivalListPage } from './pages/FestivalList.js'
 import { FestivalDetailPage, setupLikeFeature } from './pages/FestivalDetail.js'
-import {login, LoginPage} from './pages/Login.js'
+import { login, LoginPage} from './pages/Login.js'
 import { SignupPage } from './pages/Signup.js'
 import { SearchResultPage, setupSearchListeners } from './pages/SearchResult.js'
 import {questionPage, questionPageInit} from "./pages/question.js";

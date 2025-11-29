@@ -13,11 +13,13 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 public class AnswerResponseDto {
+    private Long id;
     private String content;
     private LocalDateTime createdAt;
 
     public static AnswerResponseDto toDetailDto(Answer answer){
         return AnswerResponseDto.builder()
+                .id(answer.getId())
                 .content(answer.getContent())
                 .createdAt(answer.getCreatedAt())
                 .build();
