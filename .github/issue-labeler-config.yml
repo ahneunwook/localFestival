@@ -1,10 +1,27 @@
 feature:
-  - '(?i)\[FEAT\]|feature|기능'
+  - '\[FEAT\]'
+  - '[Ff]eature'
+  - '기능'
+
 bug:
-  - '(?i)\[FIX\]|bug|버그|오류'
+  - '\[FIX\]'
+  - '[Bb]ug'
+  - '버그'
+  - '오류'
+
 refactor:
-  - '(?i)\[REFACTOR\]|refactor|리팩토'
+  - '\[REFACTOR\]'
+  - '[Rr]efactor'
+  - '리팩토'
+
 docs:
-  - '(?i)\[DOCS\]|docs|문서'
+  - '\[DOCS\]'
+  - '[Dd]ocs'
+  - '문서'
+
 design:
-  - '(?i)\[DESIGN\]|design|디자인|UI|UX'
+  - '\[DESIGN\]'
+  - '[Dd]esign'
+  - '디자인'
+  - 'UI'
+  - 'UX'
