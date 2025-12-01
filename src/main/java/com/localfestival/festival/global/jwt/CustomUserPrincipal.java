@@ -1,5 +1,6 @@
 package com.localfestival.festival.global.jwt;
 
+import com.localfestival.festival.domain.user.entity.User;
 import com.localfestival.festival.domain.user.enums.Role;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
@@ -12,14 +13,16 @@ import java.util.List;
 @Getter
 public class CustomUserPrincipal implements UserDetails, Principal {
 
+    private final User user;
     private final Long id;
     private final String userName;
     private final Role userRole;
 
-    public CustomUserPrincipal(Long id, String userName, Role role){
-        this.id = id;
-        this.userName = userName;
-        this.userRole = role;
+    public CustomUserPrincipal(User user){
+        this.user = user;
+        this.id = user.getId();
+        this.userName = user.getUserName();
+        this.userRole = user.getRole();
     }
 
     @Override

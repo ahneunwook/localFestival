@@ -1,0 +1,14 @@
+package com.localfestival.festival.domain.answer.repository;
+
+import com.localfestival.festival.domain.answer.entity.Answer;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.Optional;
+
+public interface AnswerRepository extends JpaRepository<Answer, Long> {
+    Optional<Answer> findByQuestionId(Long questionId);
+
+    long countByQuestionId(Long questionId);
+
+    void deleteByQuestionId(Long questionId);
+}
