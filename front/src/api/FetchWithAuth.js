@@ -5,6 +5,10 @@ const API_BASE_URL = 'http://localhost:8080/api';
 export async function fetchWithAuth(endpoint, options = {}) {
     let accessToken = localStorage.getItem('accessToken');
 
+    if (accessToken?.startsWith('Bearer')) {
+        accessToken = accessToken.substring(6).trim();
+    }
+
     // 요청 기본 설정
     const defaultHeaders = {
         'Content-Type': 'application/json',
@@ -23,31 +27,38 @@ export async function fetchWithAuth(endpoint, options = {}) {
 
     // Access Token 만료
     if (response.status === 401) {
-        console.log('🔄 Access Token 만료 - Refresh 시도');
-
         try {
             const refreshData = await authApi.refresh();
-            const newAccessToken = refreshData.data.accessToken;
+            let newAccessToken = refreshData.data.accessToken;
 
-            console.log('✅ 새 Access Token 발급 성공');
+            if (newAccessToken?.startsWith('Bearer ')) {
+                newAccessToken = newAccessToken.substring(7);
+            }
+
+            const retryHeaders = {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${newAccessToken}`,
+                ...Object.fromEntries(
+                    Object.entries(options.headers || {})
+                        .filter(([key]) => key.toLowerCase() !== 'authorization')
+                )
+            };
 
             // 재요청
             response = await fetch(`${API_BASE_URL}${endpoint}`, {
                 ...options,
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${newAccessToken}`,
-                    ...(options.headers || {})
-                },
+                headers: retryHeaders,
                 credentials: 'include',
             });
+
+
         } catch (refreshError) {
-            console.error('❌ Refresh Token 만료 또는 실패:', refreshError);
+            console.error('Refresh Token 만료 또는 실패:', refreshError);
 
             // Refresh Token도 만료됨
             localStorage.removeItem('accessToken');
             alert('세션이 만료되었습니다. 다시 로그인해주세요.');
-            window.location.href = '/pages/login/login.html';
+            window.location.href = '/login';
             throw new Error('로그인 필요');
         }
     }

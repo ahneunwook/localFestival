@@ -66,6 +66,11 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public LoginResponseDto refresh(String refreshToken) {
+        // 쿠키가 없거나 비어있으면 예외
+        if (refreshToken == null || refreshToken.isBlank()) {
+            throw new CustomException(ErrorCode.REFRESH_TOKEN_NOT_FOUND);
+        }
+
         // Refresh Token 검증
         if (!jwtUtil.validateToken(refreshToken)){
             throw new CustomException(ErrorCode.TOKEN_INVALID);
@@ -86,10 +91,11 @@ public class UserService {
         if (storedToken == null || !storedToken.equals(cleanToken)) {
             throw new CustomException(ErrorCode.REFRESH_TOKEN_NOT_FOUND);
         }
+
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
-        // 6. 새로운 Access Token 발급
+        // 새로운 Access Token 발급
         String newAccessToken = jwtUtil.createAccessToken(
                 user.getId(),
                 user.getUserName(),

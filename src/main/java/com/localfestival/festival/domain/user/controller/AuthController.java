@@ -10,6 +10,8 @@ import com.localfestival.festival.global.exception.CustomException;
 import com.localfestival.festival.global.exception.ErrorCode;
 import com.localfestival.festival.global.jwt.JwtUtil;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -51,10 +53,6 @@ public class AuthController {
     public ResponseEntity<BaseResponse<LoginResponseDto>> refresh(
             @CookieValue(value = "refreshToken", required = false) String refreshToken
     ) {
-        // 쿠키가 없거나 비어있으면 예외
-        if (refreshToken == null || refreshToken.isBlank()) {
-            throw new CustomException(ErrorCode.REFRESH_TOKEN_NOT_FOUND);
-        }
 
         LoginResponseDto refresh = userService.refresh(refreshToken);
 
@@ -66,9 +64,9 @@ public class AuthController {
 
         ResponseCookie cookie = ResponseCookie.from("refreshToken", cleanRefresh)
                 .httpOnly(true)           // JavaScript 접근 불가 (XSS 방지)
-                .secure(true)              // HTTPS에서만 전송 (운영: true, 로컬: false)
+                .secure(false)              // HTTPS에서만 전송 (운영: true, 로컬: false)
                 .path("/")                // 모든 경로에서 접근 가능
-                .sameSite("Strict")       // CSRF 방지
+                .sameSite("Lax")       // CSRF 방지
                 .maxAge(Duration.ofDays(7))  // 7일
                 .build();
 

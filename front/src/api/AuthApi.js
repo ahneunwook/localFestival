@@ -40,10 +40,13 @@ export const authApi = {
             }
 
             if (data.data.accessToken) {
-                let token = data.data.accessToken;
+                let token = data.data.accessToken.trim()
+                    .replace(/\s+/g, '');
+
                 if (token.startsWith('Bearer ')) {
                     token = token.substring(7);
                 }
+
                 localStorage.setItem('accessToken', token);
             }
             return data;

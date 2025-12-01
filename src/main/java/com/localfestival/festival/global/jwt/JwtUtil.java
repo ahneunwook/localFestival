@@ -79,12 +79,16 @@ public class JwtUtil {
     /**
      * Authorization 헤더에서 "Bearer " 제거 후 실제 JWT 값만 반환한다.
      */
-    public String subStringToken(String bearerToken){
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)){
-            return bearerToken.substring(7);
+    public String subStringToken(String token){
+        if (!StringUtils.hasText(token)) {
+            throw new CustomException(ErrorCode.SERVER_EXCEPTION_JWT);
         }
 
-        throw new CustomException(ErrorCode.SERVER_EXCEPTION_JWT);
+        if (token.startsWith(BEARER_PREFIX)) {
+            return token.substring(7);
+        }
+
+        return token;  // Bearer 없어도 정상 처리
     }
 
     /**
@@ -159,10 +163,5 @@ public class JwtUtil {
     // Refresh Token인지 확인
     public boolean isRefreshToken(String bearerToken) {
         return "refresh".equals(getTokenType(bearerToken));
-    }
-
-    //Access Token인지 확인
-    public boolean isAccessToken(String bearerToken) {
-        return "access".equals(getTokenType(bearerToken));
     }
 }
