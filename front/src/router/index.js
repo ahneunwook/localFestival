@@ -27,11 +27,12 @@ class Router {
     // 라우트 찾기
     const route = this.routes.find(r => r.path === path) || this.routes.find(r => r.path === '*');
     
-    if (route) {
-      this.currentRoute = route;
-      const app = document.querySelector('#app');
-      app.innerHTML = await route.component();
-    }
+	if (route) {
+	  this.currentRoute = route;
+	  const app = document.querySelector('#app');
+	  const result = await route.component();
+	  app.innerHTML = typeof result === 'string' ? result : result.html;
+	}
   }
 
   init() {

@@ -9,12 +9,11 @@ import './styles/news.css'
 import Router from './router/index.js'
 import { HomePage, setupHomeSearchListeners } from './pages/Home.js'
 import { FestivalListPage } from './pages/FestivalList.js'
-import { FestivalDetailPage, setupLikeFeature } from './pages/FestivalDetail.js'
+import { FestivalDetailPage, setupLikeFeature, initFestivalDetail } from './pages/FestivalDetail.js'
 import {login, LoginPage} from './pages/Login.js'
 import { SignupPage } from './pages/Signup.js'
 import { SearchResultPage, setupSearchListeners } from './pages/SearchResult.js'
 import {questionPage, questionPageInit} from "./pages/question.js";
-
 import { NewsPage, setupNewsListeners } from './pages/News.js'
 
 // 라우트 정의
@@ -33,13 +32,19 @@ const routes = [
     component: FestivalListPage
   },
   {
-    path: '/festival/detail',
-    component: async () => {
-      const html = await FestivalDetailPage();
-      // 페이지 로드 후 좋아요 기능 초기화
-      setTimeout(() => setupLikeFeature(), 0);
-      return html;
-    }
+	path: '/festival/detail',
+	component: async () => {
+	  const html = await FestivalDetailPage();
+	  // 페이지 로드 후 초기화
+	  setTimeout(() => {
+	    setupLikeFeature();
+	    if (html.festival) {
+	      initFestivalDetail(html.festival);
+	    }
+	  }, 0);
+	  
+	  return html;
+	}
   },
   {
     path: '/search',
