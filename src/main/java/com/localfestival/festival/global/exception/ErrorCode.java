@@ -19,6 +19,7 @@ public enum ErrorCode {
     TOKEN_EXPIRED(HttpStatus.INTERNAL_SERVER_ERROR, "만료된 토큰입니다."),
     TOKEN_INVALID(HttpStatus.INTERNAL_SERVER_ERROR, "잘못된 형식의 토큰 입니다"),
     TOKEN_EMPTY(HttpStatus.INTERNAL_SERVER_ERROR, "토큰 정보가 비어 있습니다."),
+    REFRESH_TOKEN_NOT_FOUND(HttpStatus.INTERNAL_SERVER_ERROR, "RefreshToken을 찾을 수 없습니다."),
 
     // 유저
     DUPLICATE_EMAIL(HttpStatus.BAD_REQUEST, "중복된 이메일 입니다."),
