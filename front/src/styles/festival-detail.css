@@ -208,6 +208,44 @@
   color: #c2185b;
 }
 
+/* 지도 스타일 */
+#kakaoMap {
+  width: 100%;
+  height: 400px;
+  margin-top: 24px;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  border: 3px solid #f0f0f0;
+  transition: all 0.3s ease;
+}
+
+#kakaoMap:hover {
+  box-shadow: 0 4px 20px rgba(168, 216, 234, 0.2);
+  border-color: #a8d8ea;
+}
+
+/* 지도 컨테이너 (선택사항 - 타이틀 추가하고 싶으면) */
+.map-section {
+  background: white;
+  border-radius: 16px;
+  padding: 32px;
+  margin-top: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.map-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #333;
+  margin: 0 0 20px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid #f0f0f0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 /* 액션 버튼 */
 .action-buttons {
   display: flex;

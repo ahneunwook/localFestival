@@ -23,33 +23,34 @@ class Router {
     this.loadRoute(path);
   }
 
-  async loadRoute(path) {
-    // 라우트 찾기
-    const route = this.routes.find(r => r.path === path) || this.routes.find(r => r.path === '*');
+async loadRoute(path) {
+  // 라우트 찾기
+  const route = this.routes.find(r => r.path === path) || this.routes.find(r => r.path === '*');
+  
+  if (route) {
+    this.currentRoute = route;
+    const app = document.querySelector('#app');
     
-    if (route) {
-      this.currentRoute = route;
-      const app = document.querySelector('#app');
-      app.innerHTML = await route.component();
-
-      this.afterRender();
-    }
+    // 객체/문자열 처리
+    const result = await route.component();
+    app.innerHTML = typeof result === 'string' ? result : result.html;
+    this.afterRender();
   }
+}
 
-  afterRender() {
-    // 로그아웃 버튼 이벤트 등록
-    const logoutBtn = document.getElementById("logoutBtn");
-    if (logoutBtn) {
-      logoutBtn.onclick = () => {
-        localStorage.removeItem("accessToken");
-        window.location.href = "/";
-      };
-    }
+afterRender() {
+  // 로그아웃 버튼 이벤트 등록
+  const logoutBtn = document.getElementById("logoutBtn");
+  if (logoutBtn) {
+    logoutBtn.onclick = () => {
+      localStorage.removeItem("accessToken");
+      window.location.href = "/";
+    };
   }
+}
 
-  init() {
-    this.loadRoute(window.location.pathname || '/');
-  }
+init() {
+  this.loadRoute(window.location.pathname || '/');
 }
 
 export default Router;

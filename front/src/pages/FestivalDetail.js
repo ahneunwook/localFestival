@@ -1,6 +1,7 @@
 import { createHeader } from '../components/header.js';
 import { festivalApi } from '../api/FestivalApi.js';
 import { isLoggedIn } from '../utils/auth.js';
+import { loadKakaoMap } from '../api/KakaoApi.js';
 
 export async function FestivalDetailPage() {
   // URL에서 축제 ID 가져오기
@@ -8,156 +9,167 @@ export async function FestivalDetailPage() {
   const id = urlParams.get('id');
   
   if (!id) {
-    return `
-      ${createHeader('detail')}
-      <main class="detail-page">
-        <div class="error-container">
-          <h2>잘못된 접근입니다</h2>
-          <p>축제 ID가 없습니다.</p>
-          <a href="/" data-link class="btn-back">홈으로 돌아가기</a>
-        </div>
-      </main>
-    `;
+    return {
+      html: `
+        ${createHeader('detail')}
+        <main class="detail-page">
+          <div class="error-container">
+            <h2>잘못된 접근입니다</h2>
+            <p>축제 ID가 없습니다.</p>
+            <a href="/" data-link class="btn-back">홈으로 돌아가기</a>
+          </div>
+        </main>
+      `,
+      festival: null
+    };
   }
 
   try {
     const festival = await festivalApi.getDetail(id);
     
-    return `
-      ${createHeader('detail')}
-      <main class="detail-page">
-        <div class="detail-container">
-          <!-- 헤더 이미지 -->
-          <div class="detail-header">
-            ${festival.imageUrl ? 
-              `<img src="${festival.imageUrl}" alt="${festival.title}" class="detail-image">` :
-              `<div class="detail-image-placeholder">
-                <span class="placeholder-icon">🎪</span>
-              </div>`
-            }
-            <div class="detail-overlay">
-              <div class="detail-title-section">
-                <span class="detail-category">${festival.category || '기타'}</span>
-                <h1 class="detail-title">${festival.title}</h1>
-                <div class="detail-meta">
-                  <span class="meta-item">📍 ${festival.region || '-'}</span>
-                  <span class="meta-item">🎫 ${getStatusBadge(festival.eventStatus)}</span>
-                  <button id="likeButton" class="like-button" data-festival-id="${festival.id}">
-                    <span class="like-icon">❤️</span>
-                    <span class="like-count">0</span>
-                  </button>
+    return {
+      html: `
+        ${createHeader('detail')}
+        <main class="detail-page">
+          <div class="detail-container">
+            <!-- 헤더 이미지 -->
+            <div class="detail-header">
+              ${festival.imageUrl ? 
+                `<img src="${festival.imageUrl}" alt="${festival.title}" class="detail-image">` :
+                `<div class="detail-image-placeholder">
+                  <span class="placeholder-icon">🎪</span>
+                </div>`
+              }
+              <div class="detail-overlay">
+                <div class="detail-title-section">
+                  <span class="detail-category">${festival.category || '기타'}</span>
+                  <h1 class="detail-title">${festival.title}</h1>
+                  <div class="detail-meta">
+                    <span class="meta-item">📍 ${festival.region || '-'}</span>
+                    <span class="meta-item">🎫 ${getStatusBadge(festival.eventStatus)}</span>
+                    <button id="likeButton" class="like-button" data-festival-id="${festival.id}">
+                      <span class="like-icon">❤️</span>
+                      <span class="like-count">0</span>
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          <!-- 내용 섹션 -->
-          <div class="detail-content">
-            <!-- 기본 정보 -->
-            <section class="info-section">
-              <h2 class="section-title">📅 축제 정보</h2>
-              <div class="info-grid">
-                <div class="info-item">
-                  <span class="info-label">기간</span>
-                  <span class="info-value">${formatDate(festival.startDate)} ~ ${formatDate(festival.endDate)}</span>
+            <!-- 내용 섹션 -->
+            <div class="detail-content">
+              <!-- 기본 정보 -->
+              <section class="info-section">
+                <h2 class="section-title">📅 축제 정보</h2>
+                <div class="info-grid">
+                  <div class="info-item">
+                    <span class="info-label">기간</span>
+                    <span class="info-value">${formatDate(festival.startDate)} ~ ${formatDate(festival.endDate)}</span>
+                  </div>
+                  <div class="info-item">
+                    <span class="info-label">장소</span>
+                    <span class="info-value">${festival.venue || '-'}</span>
+                  </div>
+                  <div class="info-item">
+                    <span class="info-label">주소</span>
+                    <span class="info-value">${festival.address || '-'}</span>
+                  </div>
+                  ${festival.tel ? `
+                  <div class="info-item">
+                    <span class="info-label">문의</span>
+                    <span class="info-value">${festival.tel}</span>
+                  </div>
+                  ` : ''}
                 </div>
-                <div class="info-item">
-                  <span class="info-label">장소</span>
-                  <span class="info-value">${festival.venue || '-'}</span>
-                </div>
-                <div class="info-item">
-                  <span class="info-label">주소</span>
-                  <span class="info-value">${festival.address || '-'}</span>
-                </div>
-                ${festival.tel ? `
-                <div class="info-item">
-                  <span class="info-label">문의</span>
-                  <span class="info-value">${festival.tel}</span>
-                </div>
-                ` : ''}
-              </div>
-            </section>
+              </section>
 
-            <!-- 상세 설명 -->
-            ${festival.description ? `
-            <section class="info-section">
-              <h2 class="section-title">📝 축제 소개</h2>
-              <div class="description-box">
-                ${festival.description.replace(/\n/g, '<br>')}
-              </div>
-            </section>
-            ` : ''}
-
-            <!-- 주최/주관 정보 -->
-            ${festival.organizer || festival.host || festival.sponsor ? `
-            <section class="info-section">
-              <h2 class="section-title">🏛️ 주최/주관</h2>
-              <div class="info-grid">
-                ${festival.organizer ? `
-                <div class="info-item">
-                  <span class="info-label">주최</span>
-                  <span class="info-value">${festival.organizer}</span>
+              <!-- 상세 설명 -->
+              ${festival.description ? `
+              <section class="info-section">
+                <h2 class="section-title">📝 축제 소개</h2>
+                <div class="description-box">
+                  ${festival.description.replace(/\n/g, '<br>')}
                 </div>
-                ` : ''}
-                ${festival.host ? `
-                <div class="info-item">
-                  <span class="info-label">주관</span>
-                  <span class="info-value">${festival.host}</span>
-                </div>
-                ` : ''}
-                ${festival.sponsor ? `
-                <div class="info-item">
-                  <span class="info-label">후원</span>
-                  <span class="info-value">${festival.sponsor}</span>
-                </div>
-                ` : ''}
-              </div>
-            </section>
-            ` : ''}
-
-            <!-- 관련 정보 -->
-            ${festival.relatedInfo ? `
-            <section class="info-section">
-              <h2 class="section-title">ℹ️ 관련 정보</h2>
-              <div class="description-box">
-                ${festival.relatedInfo}
-              </div>
-            </section>
-            ` : ''}
-
-            <!-- 링크 버튼 -->
-            <div class="action-buttons">
-              ${festival.homepageUrl ? `
-                <a href="${festival.homepageUrl}" target="_blank" class="btn btn-primary">
-                  🌐 홈페이지 방문
-                </a>
+              </section>
               ` : ''}
-              ${festival.latitude && festival.longitude ? `
-                <a href="https://map.kakao.com/link/map/${festival.title},${festival.latitude},${festival.longitude}" 
-                   target="_blank" class="btn btn-secondary">
-                  🗺️ 지도 보기
-                </a>
+
+              <!-- 주최/주관 정보 -->
+              ${festival.organizer || festival.host || festival.sponsor ? `
+              <section class="info-section">
+                <h2 class="section-title">🏛️ 주최/주관</h2>
+                <div class="info-grid">
+                  ${festival.organizer ? `
+                  <div class="info-item">
+                    <span class="info-label">주최</span>
+                    <span class="info-value">${festival.organizer}</span>
+                  </div>
+                  ` : ''}
+                  ${festival.host ? `
+                  <div class="info-item">
+                    <span class="info-label">주관</span>
+                    <span class="info-value">${festival.host}</span>
+                  </div>
+                  ` : ''}
+                  ${festival.sponsor ? `
+                  <div class="info-item">
+                    <span class="info-label">후원</span>
+                    <span class="info-value">${festival.sponsor}</span>
+                  </div>
+                  ` : ''}
+                </div>
+              </section>
               ` : ''}
-              <a href="/festivals" data-link class="btn btn-outline">
-                📋 목록으로
-              </a>
+
+              <!-- 관련 정보 -->
+              ${festival.relatedInfo ? `
+              <section class="info-section">
+                <h2 class="section-title">ℹ️ 관련 정보</h2>
+                <div class="description-box">
+                  ${festival.relatedInfo}
+                </div>
+              </section>
+              ` : ''}
+              
+              <!-- 지도 -->
+			  ${festival.latitude && festival.longitude ? `
+			    <section class="map-section">
+			      <h2 class="map-title">📍 위치</h2>
+			      <div id="kakaoMap"></div>
+			    </section>
+			  ` : ''}
+              
+              <!-- 링크 버튼 -->
+              <div class="action-buttons">
+                ${festival.homepageUrl ? `
+                  <a href="${festival.homepageUrl}" target="_blank" class="btn btn-primary">
+                    🌐 홈페이지 방문
+                  </a>
+                ` : ''}
+                <a href="/festivals" data-link class="btn btn-outline">
+                  📋 목록으로
+                </a>
+              </div>
             </div>
           </div>
-        </div>
-      </main>
-    `;
+        </main>
+      `,
+      festival: festival
+    };
   } catch (error) {
     console.error('축제 상세 조회 오류:', error);
-    return `
-      ${createHeader('detail')}
-      <main class="detail-page">
-        <div class="error-container">
-          <h2>축제 정보를 불러올 수 없습니다</h2>
-          <p>잠시 후 다시 시도해주세요.</p>
-          <a href="/festivals" data-link class="btn-back">목록으로 돌아가기</a>
-        </div>
-      </main>
-    `;
+    return {
+      html: `
+        ${createHeader('detail')}
+        <main class="detail-page">
+          <div class="error-container">
+            <h2>축제 정보를 불러올 수 없습니다</h2>
+            <p>잠시 후 다시 시도해주세요.</p>
+            <a href="/festivals" data-link class="btn-back">목록으로 돌아가기</a>
+          </div>
+        </main>
+      `,
+      festival: null
+    };
   }
 }
 
@@ -230,4 +242,25 @@ function updateLikeButton(button, likeInfo) {
   }
   
   likeCountEl.textContent = likeInfo.likeCount;
+}
+
+// 지도 생성
+export async function initFestivalDetail(festival) {
+  // 위도 경도 없으면 지도 생성 스킵
+  if (!festival.latitude || !festival.longitude) return;
+
+  const mapEl = document.getElementById("kakaoMap");
+  if (!mapEl) return; // 렌더 안 된 경우
+
+  const kakao = await loadKakaoMap();
+
+  const map = new kakao.maps.Map(mapEl, {
+    center: new kakao.maps.LatLng(festival.latitude, festival.longitude),
+    level: 3,
+  });
+
+  new kakao.maps.Marker({
+    position: new kakao.maps.LatLng(festival.latitude, festival.longitude),
+    map: map,
+  });
 }
