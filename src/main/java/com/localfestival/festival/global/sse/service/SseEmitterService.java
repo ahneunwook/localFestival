@@ -2,6 +2,7 @@ package com.localfestival.festival.global.sse.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.async.AsyncRequestNotUsableException;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
@@ -13,8 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 @Service
 public class SseEmitterService {
-
-    // 사용자별로 SSE 연결 관리
+    
     private final Map<Long, SseEmitter> emitters = new ConcurrentHashMap<>();
 
     /**
@@ -30,23 +30,36 @@ public class SseEmitterService {
         // Map에 저장
         emitters.put(userId, emitter);
         log.info("SSE 연결 생성: userId={}", userId);
-
+        
         // 연결 종료 시 정리
         emitter.onCompletion(() -> {
             emitters.remove(userId);
-            log.info("SSE 연결 완료: userId={}", userId);
+            log.info("SSE 연결 정상 종료: userId={}", userId);
         });
-
+        
         emitter.onTimeout(() -> {
             emitters.remove(userId);
             log.info("SSE 연결 타임아웃: userId={}", userId);
         });
-
+        
+        // 에러 타입에 따라 로그 레벨 분리
         emitter.onError((e) -> {
             emitters.remove(userId);
-            log.error("SSE 연결 에러: userId={}, error={}", userId, e.getMessage());
+            
+            // 클라이언트가 연결을 끊은 경우 (정상 동작)
+            if (e instanceof AsyncRequestNotUsableException) {
+                log.debug("SSE 클라이언트 연결 종료: userId={}", userId);
+            } 
+            // IOException도 대부분 정상적인 연결 종료
+            else if (e instanceof IOException) {
+                log.debug("SSE 연결 종료 : userId={}, message={}", userId, e.getMessage());
+            }
+            // 진짜 예외적인 에러만 ERROR 레벨로
+            else {
+                log.error("SSE 연결 에러: userId={}, error={}", userId, e.getMessage(), e);
+            }
         });
-
+        
         // 연결 직후 초기 데이터 전송 (연결 확인용)
         try {
             emitter.send(SseEmitter.event()
@@ -54,9 +67,9 @@ public class SseEmitterService {
                 .data("SSE 연결 성공"));
         } catch (IOException e) {
             emitters.remove(userId);
-            log.error("초기 데이터 전송 실패: userId={}", userId);
+            log.error("초기 데이터 전송 실패: userId={}", userId, e);
         }
-
+        
         return emitter;
     }
 
@@ -68,7 +81,7 @@ public class SseEmitterService {
      */
     public void sendToAll(String eventName, Object data) {
         List<Long> deadEmitters = new ArrayList<>();
-
+        
         emitters.forEach((userId, emitter) -> {
             try {
                 emitter.send(SseEmitter.event()
@@ -77,12 +90,16 @@ public class SseEmitterService {
                 log.info("알림 전송 성공: userId={}, event={}", userId, eventName);
             } catch (IOException e) {
                 deadEmitters.add(userId);
-                log.error("알림 전송 실패: userId={}, error={}", userId, e.getMessage());
+                log.debug("알림 전송 실패 (연결 종료됨): userId={}, event={}", userId, eventName);
             }
         });
-
+        
         // 죽은 연결 정리
         deadEmitters.forEach(emitters::remove);
+        
+        if (!deadEmitters.isEmpty()) {
+            log.info("정리된 연결 수: {}, 남은 연결 수: {}", deadEmitters.size(), emitters.size());
+        }
     }
 
     /**
@@ -102,8 +119,10 @@ public class SseEmitterService {
                 log.info("개별 알림 전송 성공: userId={}, event={}", userId, eventName);
             } catch (IOException e) {
                 emitters.remove(userId);
-                log.error("개별 알림 전송 실패: userId={}, error={}", userId, e.getMessage());
+                log.debug("개별 알림 전송 실패 (연결 종료됨): userId={}, event={}", userId, eventName);
             }
+        } else {
+            log.warn("SSE 연결을 찾을 수 없음: userId={}", userId);
         }
     }
 
