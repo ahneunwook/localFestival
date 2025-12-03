@@ -9,7 +9,13 @@ import com.localfestival.festival.domain.news.repository.NewsRepository;
 import com.localfestival.festival.global.common.PageResponse;
 import com.localfestival.festival.global.exception.CustomException;
 import com.localfestival.festival.global.exception.ErrorCode;
+import com.localfestival.festival.global.sse.service.SseEmitterService;
+
 import lombok.RequiredArgsConstructor;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -21,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class NewsService {
 
 	private final NewsRepository newsRepository;
+	private final SseEmitterService sseEmitterService;
 
 	// 공지사항 목록 조회 (페이징)
 	public PageResponse<NewsListResponse> getNewsList(Pageable pageable) {
@@ -47,6 +54,16 @@ public class NewsService {
 				.build();
 
 		News savedNews = newsRepository.save(news);
+		
+        if (savedNews.getImportant()) {
+            Map<String, Object> notificationData = new HashMap<>();
+            notificationData.put("newsId", savedNews.getId());
+            notificationData.put("title", savedNews.getTitle());
+            notificationData.put("message", "새로운 중요 공지사항이 등록되었습니다.");
+            
+            sseEmitterService.sendToAll("important-news", notificationData);
+        }
+        
 		return NewsResponse.from(savedNews);
 	}
 

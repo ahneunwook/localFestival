@@ -1,4 +1,5 @@
 import {authApi} from "../api/AuthApi.js";
+import { initNotifications } from '../utils/notifications.js';
 
 export function LoginPage() {
   return `

@@ -6,6 +6,7 @@ import './styles/search-result.css'
 import './styles/festival-detail.css'
 import './styles/question.css'
 import './styles/news.css'
+import './styles/notifications.css'
 import Router from './router/index.js'
 import { HomePage, setupHomeSearchListeners } from './pages/Home.js'
 import { FestivalListPage } from './pages/FestivalList.js'
@@ -15,6 +16,7 @@ import { SignupPage } from './pages/Signup.js'
 import { SearchResultPage, setupSearchListeners } from './pages/SearchResult.js'
 import {questionPage, questionPageInit} from "./pages/question.js";
 import { NewsPage, setupNewsListeners } from './pages/News.js'
+import { initNotifications, closeNotifications } from './utils/notifications.js'
 
 // 라우트 정의
 const routes = [
@@ -94,3 +96,22 @@ const routes = [
 // 라우터 초기화
 const router = new Router(routes);
 router.init();
+
+// 페이지 로드 시 SSE 연결 (로그인 상태면)
+const token = localStorage.getItem('accessToken');
+if (token) {
+  initNotifications();
+}
+
+// 로그인 시 SSE 연결
+window.addEventListener('storage', (e) => {
+  if (e.key === 'accessToken') {
+    if (e.newValue) {
+      // 로그인됨
+      initNotifications();
+    } else {
+      // 로그아웃됨
+      closeNotifications();
+    }
+  }
+});
