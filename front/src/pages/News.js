@@ -359,6 +359,14 @@ export function setupNewsListeners() {
   // 등록/수정 버튼
   document.getElementById('btnSubmitNews')?.addEventListener('click', submitNews);
   
-  // 초기 데이터 로드
-  loadNews(0);
+  // URL 파라미터 확인
+  const params = new URLSearchParams(window.location.search);
+  const newsId = params.get('id');
+
+  // 목록 로드 후, id가 있으면 상세 자동 로드
+  loadNews(0).then(() => {
+    if (newsId) {
+      loadNewsDetail(parseInt(newsId));
+    }
+  });
 }

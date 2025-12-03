@@ -1,0 +1,131 @@
+/* 알림 컨테이너 */
+.notification-container {
+  position: fixed;
+  top: 100px;
+  right: 20px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 400px;
+  pointer-events: none; /* 배경 클릭 가능하도록 */
+}
+
+/* 알림 팝업 */
+.notification-popup {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  padding: 20px;
+  border-left: 4px solid #a8d8ea;
+  pointer-events: all; /* 알림 자체는 클릭 가능 */
+  transform: translateX(450px);
+  opacity: 0;
+  transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.notification-popup.show {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.notification-popup.hide {
+  transform: translateX(450px);
+  opacity: 0;
+}
+
+/* 알림 헤더 */
+.notification-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.notification-icon {
+  font-size: 24px;
+  animation: bell-ring 0.5s ease-in-out;
+}
+
+@keyframes bell-ring {
+  0%, 100% { transform: rotate(0deg); }
+  10%, 30%, 50%, 70%, 90% { transform: rotate(-10deg); }
+  20%, 40%, 60%, 80% { transform: rotate(10deg); }
+}
+
+.notification-header strong {
+  flex: 1;
+  font-size: 16px;
+  color: #333;
+  font-weight: 600;
+}
+
+.notification-close {
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: #999;
+  cursor: pointer;
+  padding: 0;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s;
+  line-height: 1;
+}
+
+.notification-close:hover {
+  background: #f5f5f5;
+  color: #333;
+}
+
+/* 알림 메시지 */
+.notification-message {
+  font-size: 14px;
+  color: #666;
+  line-height: 1.5;
+  margin: 0 0 12px;
+}
+
+/* 알림 링크 */
+.notification-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 14px;
+  color: #a8d8ea;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.2s;
+  padding: 4px 0;
+}
+
+.notification-link:hover {
+  color: #8bc9e0;
+  gap: 8px;
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+  .notification-container {
+    right: 10px;
+    left: 10px;
+    top: 80px;
+    max-width: none;
+  }
+
+  .notification-popup {
+    padding: 16px;
+  }
+
+  .notification-header strong {
+    font-size: 14px;
+  }
+
+  .notification-message {
+    font-size: 13px;
+  }
+}
