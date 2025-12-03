@@ -1,92 +1,53 @@
-import {fetchWithAuth} from "./FetchWithAuth.js";
-
-const API_BASE_URL = 'http://localhost:8080/api';
+import { apiFetch } from '../config/api.js';
 
 export const questionApi = {
-
     // 문의 생성
     async createQuestion(questionData) {
-        try {
-            const data = await fetchWithAuth('/questions', {
-                method: 'POST',
-                body: JSON.stringify(questionData),
-            });
-            return data.data;
-        } catch (error) {
-            if (error.message === '로그인 필요') {
-                alert("로그인이 필요합니다.");
-                return;
-            }
-            throw error;
-        }
+        return await apiFetch('/questions', {
+            method: 'POST',
+            body: JSON.stringify(questionData)
+        });
     },
 
+    // 현재 사용자 정보 조회 (문의 작성용)
+    async getCurrentUserInfo() {
+        return await apiFetch('/questions/users/me');
+    },
+
+    // openQuestionModal - DOM 조작과 API 호출이 섞여 있음
+    // 이 함수는 나중에 분리하는 것이 좋지만, 일단 apiFetch로 변경
     async openQuestionModal() {
-        try {
-            const data = await fetchWithAuth('/questions/users/me');
-
-            document.getElementById("name").value = data.data.userName;
-            document.getElementById("email").value = data.data.email;
-            document.getElementById("writeModal").classList.add("active");
-
-            return data.data;
-        } catch (error) {
-            if (error.message === '로그인 필요') {
-                alert("로그인이 필요합니다.");
-                return;
-            }
-            throw error;
-        }
+        const userData = await apiFetch('/questions/users/me');
+        
+        document.getElementById("name").value = userData.userName;
+        document.getElementById("email").value = userData.email;
+        document.getElementById("writeModal").classList.add("active");
+        
+        return userData;
     },
 
-    async getQuestionList(){
-        try {
-            const response = await fetch(`${API_BASE_URL}/questions`);
-
-            const data = await response.json();
-            if (!response.ok){
-                throw new Error(data.message);
-            }
-            return data.data;
-        } catch (error){
-            throw error;
-        }
+    // 문의 목록 조회
+    async getQuestionList() {
+        return await apiFetch('/questions');
     },
 
-    async getQuestionDetail(id){
-        try {
-            const response = await fetch(`${API_BASE_URL}/questions/${id}`);
-
-            const data = await response.json();
-            if (!response.ok){
-                throw new Error(data.message);
-            }
-            return data.data;
-        } catch (error){
-            throw error;
-        }
+    // 문의 상세 조회
+    async getQuestionDetail(id) {
+        return await apiFetch(`/questions/${id}`);
     },
 
+    // 문의 수정
     async updateQuestion(id, questionData) {
-        try {
-            const data = await fetchWithAuth(`/questions/${id}`, {
-                method: 'PUT',
-                body: JSON.stringify(questionData),
-            });
-            return data.data;
-        } catch (error) {
-            throw error;
-        }
+        return await apiFetch(`/questions/${id}`, {
+            method: 'PUT',
+            body: JSON.stringify(questionData)
+        });
     },
 
+    // 문의 삭제
     async deleteQuestion(id) {
-        try {
-            const data = await fetchWithAuth(`/questions/${id}`, {
-                method: 'DELETE',
-            });
-            return data.data;
-        } catch (error) {
-            throw error;
-        }
+        return await apiFetch(`/questions/${id}`, {
+            method: 'DELETE'
+        });
     }
 }
