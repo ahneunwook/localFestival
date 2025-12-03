@@ -61,9 +61,7 @@ export function login(){
 
     try {
       const result = await authApi.login(loginRequest);
-	  
-      localStorage.setItem("accessToken", result.data.accessToken);
-	  initNotifications();
+
       alert("로그인이 완료되었습니다.");
       window.location.href = "/";
     } catch (err) {

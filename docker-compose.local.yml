@@ -20,5 +20,29 @@ services:
       timeout: 5s
       retries: 5
 
+  redis:
+    image: redis:7.2-alpine
+    container_name: redis-local
+    restart: always
+    ports:
+      - "${LOCAL_REDIS_PORT:-6379}:6379"
+    command: >
+      redis-server
+      --requirepass ${LOCAL_REDIS_PASSWORD}
+      --appendonly yes
+      --appendfsync everysec
+      --maxmemory 256mb
+      --maxmemory-policy allkeys-lru
+    environment:
+      - TZ=Asia/Seoul
+    volumes:
+      - redisdata-local:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${LOCAL_REDIS_PASSWORD}", "PING"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
 volumes:
   pgdata-local:
+  redisdata-local:

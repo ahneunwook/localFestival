@@ -1,3 +1,5 @@
+import {fetchWithAuth} from "./FetchWithAuth.js";
+
 const API_BASE_URL = 'http://localhost:8080/api';
 
 export const festivalApi = {
@@ -118,16 +120,9 @@ export const festivalApi = {
 	// 좋아요 토글 (추가/취소)
 	async toggleLike(festivalId) {
 	  try {
-	    const token = localStorage.getItem('accessToken');
-	    if (!token) {
-	      throw new Error('로그인이 필요합니다.');
-	    }
 
-	    const response = await fetch(`${API_BASE_URL}/festivals/${festivalId}/like`, {
+	    const response = await fetchWithAuth(`/festivals/${festivalId}/like`, {
 	      method: 'POST',
-	      headers: {
-	        'Authorization': token
-	      }
 	    });
 
 	    if (!response.ok) {
