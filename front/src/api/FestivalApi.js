@@ -126,7 +126,7 @@ export const festivalApi = {
 	    const response = await fetch(`${API_BASE_URL}/festivals/${festivalId}/like`, {
 	      method: 'POST',
 	      headers: {
-	        'Authorization': token  // 이미 "Bearer "가 포함되어 있음
+	        'Authorization': token
 	      }
 	    });
 

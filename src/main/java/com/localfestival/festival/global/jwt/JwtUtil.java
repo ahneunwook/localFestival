@@ -98,5 +98,34 @@ public class JwtUtil {
             throw new CustomException(ErrorCode.SERVER_EXCEPTION_JWT, "지원하지 않는 토큰입니다.");
         }
     }
+    
+    /**
+     * Query Parameter나 Cookie에서 온 순수 토큰 파싱
+     * "Bearer " 접두사가 없는 토큰을 직접 파싱
+     * 
+     * @param token 순수 JWT 토큰 (Bearer 접두사 없음)
+     * @return Claims 객체
+     */
+    public Claims parseRawToken(String token) {
+        try {
+            return Jwts.parser()
+                    .verifyWith(secretKey)
+                    .build()
+                    .parseSignedClaims(token)
+                    .getPayload();
+        } catch (ExpiredJwtException e) {
+            log.warn("토큰이 만료 되었습니다. : {}", e.getMessage());
+            throw new CustomException(ErrorCode.TOKEN_EXPIRED);
+        } catch (SecurityException | MalformedJwtException | UnsupportedJwtException e) {
+            log.warn("잘못된 형식의 토큰입니다.: {}", e.getMessage());
+            throw new CustomException(ErrorCode.TOKEN_INVALID);
+        } catch (IllegalArgumentException e) {
+            log.warn("토큰 정보가 비어있습니다.: {}", e.getMessage());
+            throw new CustomException(ErrorCode.TOKEN_EMPTY);
+        } catch (JwtException e) {
+            log.error("지원하지 않는 토큰입니다.: {}", e.getMessage());
+            throw new CustomException(ErrorCode.SERVER_EXCEPTION_JWT, "지원하지 않는 토큰입니다.");
+        }
+    }
 
 }

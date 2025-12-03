@@ -1,56 +1,59 @@
+import { closeNotifications } from '../utils/notifications.js'
 // Simple SPA Router
 class Router {
-  constructor(routes) {
-    this.routes = routes;
-    this.currentRoute = null;
-    
-    // 뒤로가기/앞으로가기 처리
-    window.addEventListener('popstate', () => {
-      this.loadRoute(window.location.pathname);
-    });
+	constructor(routes) {
+		this.routes = routes;
+		this.currentRoute = null;
 
-    // 링크 클릭 이벤트 처리
-    document.addEventListener('click', (e) => {
-      if (e.target.matches('[data-link]')) {
-        e.preventDefault();
-        this.navigate(e.target.getAttribute('href'));
-      }
-    });
-  }
+		// 뒤로가기/앞으로가기 처리
+		window.addEventListener('popstate', () => {
+			this.loadRoute(window.location.pathname);
+		});
 
-  navigate(path) {
-    window.history.pushState(null, null, path);
-    this.loadRoute(path);
-  }
+		// 링크 클릭 이벤트 처리
+		document.addEventListener('click', (e) => {
+			if (e.target.matches('[data-link]')) {
+				e.preventDefault();
+				this.navigate(e.target.getAttribute('href'));
+			}
+		});
+	}
 
-async loadRoute(path) {
-  // 라우트 찾기
-  const route = this.routes.find(r => r.path === path) || this.routes.find(r => r.path === '*');
-  
-  if (route) {
-    this.currentRoute = route;
-    const app = document.querySelector('#app');
-    
-    // 객체/문자열 처리
-    const result = await route.component();
-    app.innerHTML = typeof result === 'string' ? result : result.html;
-    this.afterRender();
-  }
-}
+	navigate(path) {
+		window.history.pushState(null, null, path);
+		this.loadRoute(path);
+	}
 
-afterRender() {
-  // 로그아웃 버튼 이벤트 등록
-  const logoutBtn = document.getElementById("logoutBtn");
-  if (logoutBtn) {
-    logoutBtn.onclick = () => {
-      localStorage.removeItem("accessToken");
-      window.location.href = "/";
-    };
-  }
-}
+	async loadRoute(path) {
+		// 라우트 찾기
+		const route = this.routes.find(r => r.path === path) || this.routes.find(r => r.path === '*');
 
-init() {
-  this.loadRoute(window.location.pathname || '/');
+		if (route) {
+			this.currentRoute = route;
+			const app = document.querySelector('#app');
+
+			// 객체/문자열 처리
+			const result = await route.component();
+			app.innerHTML = typeof result === 'string' ? result : result.html;
+			this.afterRender();
+		}
+	}
+
+	afterRender() {
+		// 로그아웃 버튼 이벤트 등록
+		const logoutBtn = document.getElementById("logoutBtn");
+		if (logoutBtn) {
+			logoutBtn.onclick = () => {
+				localStorage.removeItem("accessToken");
+				closeNotifications();
+				window.location.href = "/";
+			};
+		}
+	}
+
+	init() {
+		this.loadRoute(window.location.pathname || '/');
+	}
 }
 
 export default Router;

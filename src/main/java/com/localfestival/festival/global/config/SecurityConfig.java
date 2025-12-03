@@ -66,6 +66,7 @@ public class SecurityConfig {
                                 "/local-festival/**",
                                 "/swagger-resources/**"
                         ).permitAll()
+                        .requestMatchers("/sse/**").authenticated()
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(configure -> configure
