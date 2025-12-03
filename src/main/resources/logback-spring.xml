@@ -103,6 +103,9 @@
     <springProfile name="local">
         <root level="INFO">
             <appender-ref ref="CONSOLE" />
+            <appender-ref ref="FILE_INFO" />
+            <appender-ref ref="FILE_WARN" />
+            <appender-ref ref="FILE_ERROR" />
         </root>
     </springProfile>
 
