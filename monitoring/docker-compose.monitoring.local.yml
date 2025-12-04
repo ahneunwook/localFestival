@@ -1,0 +1,42 @@
+version: "3.8"
+
+services:
+  loki:
+    image: grafana/loki:2.9.0
+    container_name: loki-local
+    ports:
+      - "3100:3100"
+    volumes:
+      - ./loki/loki-local.yaml:/etc/loki/config.yaml
+      - ./loki/data:/loki
+    command: -config.file=/etc/loki/config.yaml
+
+  promtail:
+    image: grafana/promtail:2.9.0
+    container_name: promtail-local
+    volumes:
+      - ./promtail/promtail-local.yaml:/etc/promtail/config.yaml
+      - ../logs:/app/logs
+    command: -config.file=/etc/promtail/config.yaml
+    depends_on:
+      - loki
+
+  grafana:
+    image: grafana/grafana:10.2.0
+    container_name: grafana-local
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./grafana:/var/lib/grafana
+    depends_on:
+      - loki
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus-local
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'

@@ -39,3 +39,6 @@ out/
 .env
 /build.gradle
 /settings.gradle
+
+*.log
+logs/

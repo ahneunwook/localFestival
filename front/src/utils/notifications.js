@@ -30,7 +30,7 @@ export function initNotifications() {
   isConnecting = true
   	
   // Bearer 제거
-  const cleanToken = token.startsWith('Bearer ') ? token.substring(7) : token;
+  const cleanToken = token.replace(/^Bearer\s*/i, '').trim();
 
   // Query Parameter로 토큰 전달
   eventSource = new EventSource(`${API_BASE_URL}/sse/subscribe?token=${cleanToken}`);
