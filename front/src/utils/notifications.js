@@ -1,5 +1,7 @@
+import { API_BASE_URL } from '../config/api.js';
+
 let eventSource = null;
-const API_BASE_URL = 'http://localhost:8080/api';
+let isConnecting = false;
 
 /**
  * SSE 연결 초기화
@@ -11,15 +13,22 @@ export function initNotifications() {
     console.log('로그인 필요 - SSE 연결 안 함');
     return;
   }
-
+  
+  // 연결 시도 중이면 바로 리턴
+  if (isConnecting) {
+      console.log('⏳ SSE 연결 시도 중...');
+      return;
+  }
+  
   // 이미 연결되어 있으면 중복 연결 방지
   if (eventSource) {
-    console.log('이미 SSE 연결됨');
-    return;
+	eventSource.close();
+	eventSource = null;
   }
 
   console.log('SSE 연결 시도...');
-
+  isConnecting = true
+  	
   // Bearer 제거
   const cleanToken = token.replace(/^Bearer\s*/i, '').trim();
 
@@ -29,6 +38,7 @@ export function initNotifications() {
   // 연결 성공
   eventSource.addEventListener('connected', (event) => {
     console.log('✅ SSE 연결 성공:', event.data);
+	isConnecting = false;
   });
 
   // 중요 공지 알림
@@ -42,7 +52,7 @@ export function initNotifications() {
   eventSource.onerror = (error) => {
     console.error('❌ SSE 연결 에러:', error);
     closeNotifications();
-
+	isConnecting = false;
     // 5초 후 재연결 시도
     setTimeout(() => {
       console.log('🔄 SSE 재연결 시도...');
@@ -106,13 +116,13 @@ function showNotification(data) {
     window.dispatchEvent(new PopStateEvent('popstate'));
     removeNotification(notification);
   });
-  
+
   // 닫기 버튼
   const closeBtn = notification.querySelector('.notification-close');
   closeBtn.addEventListener('click', () => {
     removeNotification(notification);
   });
-  
+
 
   // 5초 후 자동 제거
   setTimeout(() => {
