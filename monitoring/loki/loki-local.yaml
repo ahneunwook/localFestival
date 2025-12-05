@@ -1,0 +1,78 @@
+# 인증 기능 비활성화
+# 로컬 개발 환경에서는 인증 없이 접근 허용.
+# 운영 환경에서는 false이면 위험할 수 있으나 로컬은 문제 없음.
+auth_enabled: false
+
+server:
+  http_listen_port: 3100
+  # Loki HTTP API가 사용하는 포트.
+  # Grafana가 Loki와 통신할 때 이 포트로 접근함.
+
+  grpc_listen_port: 9096
+  # Loki 내부 구성요소 간 gRPC 통신 포트.
+  # 단일 인스턴스면 크게 신경 안 써도 됨.
+
+common:
+  path_prefix: /loki
+  # Loki가 내부 파일(로그 저장용 chunk, index 등)을 넣을 기본 디렉토리 경로.
+  # docker-compose에서는 /loki가 volume으로 바인딩됨
+
+  storage:
+    filesystem:
+      chunks_directory: /loki/chunks
+      # 실제 로그 데이터(청크)가 저장되는 디렉토리.
+      # Promtail이 보내는 로그가 chunk 단위로 여기 저장됨.
+
+      rules_directory: /loki/rules
+      # Loki alert rule 파일 저장 경로.
+      # Grafana Loki Alerting 사용할 때 룰 파일이 생성됨.
+
+  replication_factor: 1
+  # 복제본 수. 단일 인스턴스(로컬)에서는 1.
+  # 운영 환경에서는 3 등으로 설정해 데이터 유실 방지.
+
+  ring:
+    instance_addr: 127.0.0.1
+    # ring은 Loki의 분산 구조에서 노드 위치를 관리하는 구성.
+    # 단일 노드라 로컬 주소 사용.
+
+    kvstore:
+      store: inmemory
+      # ring 정보를 어디 저장할지(KV store).
+      # 로컬이라 in-memory 사용 → 재시작하면 사라짐.
+      # 운영에서는 consul 또는 memberlist 등을 사용.
+
+schema_config:
+  configs:
+    - from: 2025-12-01
+      # 이 스키마 버전 적용 시작 날짜.
+
+      store: boltdb-shipper
+      # Loki 스토리지 방식.
+      # boltdb-shipper는 chunk + index 파일을 모두 로컬 파일시스템에 저장하는 경량 스토리지 방식.
+      # 운영에서는 S3, GCS, MinIO 같은 object storage와 함께 많이 씀.
+
+      object_store: filesystem
+      # object storage를 로컬 파일시스템으로 지정.
+      # 운영에서는 여기에 "s3" 또는 "gcs" 를 사용함.
+
+      schema: v13
+      # Loki의 스키마 버전. 최신 버전.
+
+      index:
+        prefix: loki_index_
+        # 인덱스 파일 이름 prefix.
+        # 폴더 내부에 loki_index_2024-01-01 이런 식으로 생성함.
+
+        period: 24h
+        # 인덱스가 하루 주기로 생성됨.
+        # 하루치 로그가 하나의 index 파일로 관리된다는 의미.
+
+table_manager:
+  retention_deletes_enabled: true
+  # 보관 기간(retention) 지난 로그를 자동 삭제할지 여부.
+  # 단일 환경에서는 true로 쓰는 게 일반적.
+
+  retention_period: 168h
+  # 로그 보관 기간: 168시간 = 7일.
+  # 즉, 7일 지나면 로그 자동 삭제됨.

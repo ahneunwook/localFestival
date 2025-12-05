@@ -1,5 +1,6 @@
 package com.localfestival.festival.domain.festival.dto.external;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
@@ -10,12 +11,14 @@ import java.util.List;
  * 공공데이터포털 - 전국문화축제표준데이터
  */
 @Data
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class FestivalApiResponse {
 
     @JsonProperty("response")
     private Response response;
 
     @Data
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Response {
         @JsonProperty("header")
         private Header header;
@@ -25,6 +28,7 @@ public class FestivalApiResponse {
     }
 
     @Data
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Header {
         @JsonProperty("resultCode")
         private String resultCode;
@@ -34,6 +38,7 @@ public class FestivalApiResponse {
     }
 
     @Data
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Body {
         @JsonProperty("items")
         private List<FestivalItem> items;
@@ -49,6 +54,7 @@ public class FestivalApiResponse {
     }
 
     @Data
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class FestivalItem {
         @JsonProperty("fstvlNm")
         private String fstvlNm;  // 축제명
@@ -126,8 +132,8 @@ public class FestivalApiResponse {
     }
 
     public boolean isSuccess() {
-        return response != null 
-            && response.getHeader() != null 
-            && "00".equals(response.getHeader().getResultCode());
+        return response != null
+                && response.getHeader() != null
+                && "00".equals(response.getHeader().getResultCode());
     }
 }

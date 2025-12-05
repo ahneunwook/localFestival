@@ -61,6 +61,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.DELETE, "/news/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/questions").permitAll()
                         .requestMatchers(HttpMethod.GET, "/questions/*").permitAll()
+                        .requestMatchers("/actuator/**").permitAll()
                         .requestMatchers(
                                 "/swagger-ui.html",
                                 "/swagger-ui/**",
