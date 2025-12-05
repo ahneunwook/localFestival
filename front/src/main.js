@@ -7,6 +7,7 @@ import './styles/festival-detail.css'
 import './styles/question.css'
 import './styles/news.css'
 import './styles/notifications.css'
+import './styles/region-festival.css'
 import Router from './router/index.js'
 import { HomePage, setupHomeSearchListeners } from './pages/Home.js'
 import { FestivalListPage } from './pages/FestivalList.js'
@@ -17,6 +18,7 @@ import { SearchResultPage, setupSearchListeners } from './pages/SearchResult.js'
 import {questionPage, questionPageInit} from "./pages/question.js";
 import { NewsPage, setupNewsListeners } from './pages/News.js'
 import { initNotifications, closeNotifications } from './utils/notifications.js'
+import {RegionPage, setupRegionListeners} from './pages/regionFestival.js';
 
 // 라우트 정의
 const routes = [
@@ -84,6 +86,15 @@ const routes = [
       const html = questionPage();
       // 페이지 로드 후 이벤트 리스너 설정
       setTimeout(() => questionPageInit(), 0);
+      return html;
+    }
+  },
+  {
+    path: '/festivals/regions',
+    component: async () => {
+      const html = RegionPage();
+      // 페이지 로드 후 이벤트 리스너 설정
+      setTimeout(() => setupRegionListeners(), 0);
       return html;
     }
   },

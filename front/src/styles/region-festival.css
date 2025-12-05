@@ -1,0 +1,156 @@
+.region-page {
+    padding: 60px 80px;
+    max-width: 1400px;
+    margin: 0 auto;
+    min-height: calc(100vh - 80px);
+}
+
+.region-header {
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.page-title {
+    font-size: 36px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.page-subtitle {
+    font-size: 18px;
+    color: #666;
+}
+
+/* 지역 그리드 */
+.region-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 25px;
+}
+
+.region-card {
+    background: white;
+    padding: 35px 30px;
+    border-radius: 15px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    transition: all 0.3s;
+    cursor: pointer;
+    position: relative;
+    border: 1px solid #f0f0f0;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.region-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+    border-color: var(--region-color);
+}
+
+.region-icon {
+    width: 60px;
+    height: 60px;
+    flex-shrink: 0;
+    opacity: 0.8;
+}
+
+.region-icon svg {
+    width: 100%;
+    height: 100%;
+}
+
+.region-info {
+    flex: 1;
+}
+
+.region-name {
+    font-size: 22px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+.region-count {
+    display: flex;
+    align-items: baseline;
+    gap: 5px;
+}
+
+.count-number {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--region-color);
+}
+
+.count-label {
+    font-size: 14px;
+    color: #999;
+    font-weight: 500;
+}
+
+/* 반응형 - 태블릿 */
+@media (max-width: 1024px) {
+    .region-page {
+        padding: 60px 50px;
+    }
+
+    .region-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 20px;
+    }
+
+    .page-title {
+        font-size: 32px;
+    }
+
+    .page-subtitle {
+        font-size: 16px;
+    }
+}
+
+/* 반응형 - 모바일 */
+@media (max-width: 768px) {
+    .region-page {
+        padding: 40px 20px;
+    }
+
+    .region-header {
+        margin-bottom: 35px;
+    }
+
+    .page-title {
+        font-size: 28px;
+    }
+
+    .page-subtitle {
+        font-size: 15px;
+    }
+
+    .region-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    .region-card {
+        padding: 25px 20px;
+    }
+
+    .region-icon {
+        width: 50px;
+        height: 50px;
+    }
+
+    .region-name {
+        font-size: 20px;
+    }
+
+    .count-number {
+        font-size: 24px;
+    }
+
+    .count-label {
+        font-size: 13px;
+    }
+}

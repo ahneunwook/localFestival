@@ -91,6 +91,8 @@
   transform: translateY(-3px);
   box-shadow: 0 6px 20px rgba(0,0,0,0.1);
   border-color: #a8d8ea;
+  text-decoration: none;
+
 }
 
 .quick-icon {
@@ -130,12 +132,15 @@
   cursor: pointer;
   position: relative;
   border: 1px solid #f0f0f0;
+  text-decoration: none;
+  color: inherit;
 }
 
 .info-card:hover {
   transform: translateY(-5px);
   box-shadow: 0 8px 25px rgba(0,0,0,0.12);
   border-color: #e0e0e0;
+  text-decoration: none;
 }
 
 .info-card .icon {
