@@ -31,6 +31,7 @@ export function FestivalListPage() {
           <button class="filter-tab" data-category="예술">예술</button>
           <button class="filter-tab" data-category="음식">음식</button>
           <button class="filter-tab" data-category="전통">전통</button>
+          <button class="filter-tab" data-category="기타">기타</button>
         </div>
       </div>
 

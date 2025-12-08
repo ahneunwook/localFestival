@@ -45,15 +45,6 @@ public class FestivalController {
         return BaseResponse.success(HttpStatus.OK, "카테고리별 축제 조회 성공", result);
     }
 
-    // 지역별 조회
-    @GetMapping("/region/{region}")
-    public ResponseEntity<BaseResponse<PageResponse<FestivalListResponse>>> getFestivalsByRegion(
-            @PathVariable("region") String region,
-            @PageableDefault(size = 12, sort = "startDate", direction = Sort.Direction.DESC) Pageable pageable) {
-        PageResponse<FestivalListResponse> result = festivalService.getFestivalsByRegion(region, pageable);
-        return BaseResponse.success(HttpStatus.OK, "지역별 축제 조회 성공", result);
-    }
-
     // 진행 중인 축제
     @GetMapping("/ongoing")
     public ResponseEntity<BaseResponse<PageResponse<FestivalListResponse>>> getOngoingFestivals(

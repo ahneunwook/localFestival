@@ -1,5 +1,6 @@
 package com.localfestival.festival.domain.festival.repository;
 
+import com.localfestival.festival.domain.festival.dto.response.RegionCountResponse;
 import com.localfestival.festival.domain.festival.entity.Festival;
 
 import org.springframework.data.domain.Page;
@@ -46,4 +47,17 @@ public interface FestivalRepository extends JpaRepository<Festival, Long> {
             Sort sort);
 
     boolean existsByUniqueKey(String uniqueKey);
+
+    @Query("""
+        SELECT new com.localfestival.festival.domain.festival.dto.response.RegionCountResponse(
+            f.region, count(f)
+        )
+         FROM Festival f
+          WHERE
+             (f.startDate <= :today AND f.endDate >= :today)
+             OR
+             (f.startDate > :today)
+          GROUP BY f.region
+         """)
+    List<RegionCountResponse> countByRegion(@Param("today") LocalDate today);
 }
