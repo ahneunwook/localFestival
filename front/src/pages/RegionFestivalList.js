@@ -251,15 +251,16 @@ async function loadRegionFestivals(append = false) {
 }
 
 function createFestivalCard(festival) {
+    console.log(festival);
     const startDate = new Date(festival.startDate);
     const endDate = new Date(festival.endDate);
     const today = new Date();
 
-    const formatDate = (date) => {
-        const month = date.getMonth() + 1;
-        const day = date.getDate();
-        return `${month}.${day}`;
-    };
+    // const formatDate = (date) => {
+    //     const month = date.getMonth() + 1;
+    //     const day = date.getDate();
+    //     return `${month}.${day}`;
+    // };
 
     // 축제 상태 결정
     let statusBadge = '';
@@ -290,7 +291,7 @@ function createFestivalCard(festival) {
         <div class="festival-meta">
           <div class="meta-item">
             <span class="meta-icon">📅</span>
-            <span class="meta-text">${formatDate(startDate)} - ${formatDate(endDate)}</span>
+            <span class="meta-text">${festival.startDate} - ${festival.endDate}</span>
           </div>
           <div class="meta-item">
             <span class="meta-icon">📍</span>
