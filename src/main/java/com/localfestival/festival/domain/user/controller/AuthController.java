@@ -9,6 +9,7 @@ import com.localfestival.festival.global.common.BaseResponse;
 import com.localfestival.festival.global.exception.CustomException;
 import com.localfestival.festival.global.exception.ErrorCode;
 import com.localfestival.festival.global.jwt.JwtUtil;
+import io.jsonwebtoken.Claims;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -58,6 +59,28 @@ public class AuthController {
 
         return BaseResponse.success(HttpStatus.OK, "리프레쉬 토근 발급에 성공하였습니다.", refresh);
     }
+
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(
+            @CookieValue(value = "refreshToken", required = false) String refreshToken
+    ) {
+
+        userService.logout(refreshToken);
+
+        // RefreshToken 쿠키 삭제
+        ResponseCookie cookie = ResponseCookie.from("refreshToken", "")
+                .httpOnly(true)
+                .secure(false)   // 로컬에서는 false (운영에서는 true)
+                .path("/")
+                .sameSite("Lax") // 로컬은 Lax (운영은 None)
+                .maxAge(0)
+                .build();
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, cookie.toString())
+                .body("로그아웃이 되었습니다.");
+    }
+
 
     private void setRefreshTokenCookie(HttpServletResponse response, String refreshToken) {
         String cleanRefresh = jwtUtil.subStringToken(refreshToken);

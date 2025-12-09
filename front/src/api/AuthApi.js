@@ -26,6 +26,7 @@ export const authApi = {
             headers: {
                 'Content-Type': 'application/json',
             },
+            credentials: 'include',
             body: JSON.stringify(loginRequest)
         });
 
@@ -56,5 +57,24 @@ export const authApi = {
         }
 
         return data;
+    },
+
+    async logout() {
+        const response = await fetch(`${API_BASE_URL}/auth/logout`, {
+            method: 'POST',
+            credentials: 'include',
+        });
+
+        if (!response.ok) {
+            throw new Error('토큰 갱신 실패');
+        }
+
+        // 서버에서 String 응답이므로 JSON이 아니라 text()로 받아야 함
+        const message = await response.text();
+
+        // accessToken 제거
+        localStorage.removeItem('accessToken');
+
+        return message;
     }
 }
