@@ -55,5 +55,10 @@ export const festivalApi = {
 	// 좋아요 정보 조회
 	async getLikeInfo(festivalId) {
 		return await apiFetch(`/festivals/${festivalId}/like`);
+	},
+
+	// 월별 축제 조회
+	async getFestivalsByMonth(startDate, endDate) {
+		return await apiFetch(`/festivals/month?startDate=${startDate}&endDate=${endDate}`);
 	}
 }

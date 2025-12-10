@@ -1,5 +1,6 @@
 import { createHeader } from '../components/header.js';
 import { festivalApi } from '../api/FestivalApi.js';
+import { getCategoryEmoji, formatDateRange, formatLocation, getCategoryColor } from '../utils/festivalHelpers.js';
 
 // 전역 변수
 let currentPage = 0;
@@ -43,17 +44,6 @@ export function FestivalListPage() {
       </div>
     </main>
   `;
-}
-
-// 이모지 매핑
-const categoryEmojis = {
-  '음악': '🎵',
-  '문화': '🎨',
-  '예술': '🎭',
-  '음식': '🍜',
-  '전통': '🏮',
-  '지역축제': '🌸',
-  '기타': '🎪'
 };
 
 // 페이지 초기화
@@ -173,7 +163,7 @@ function displayFestivals(festivals, append = false) {
     <div class="festival-card" onclick="window.location.href='/festival/detail?id=${festival.id}'" style="cursor: pointer;">
       <div class="festival-image">${getCategoryEmoji(festival.category)}</div>
       <div class="festival-info">
-        <span class="festival-category">${festival.category || '기타'}</span>
+        <span class="festival-category" style="background-color: ${getCategoryColor(festival.category)}; color: white;">${festival.category || '기타'}</span>
         <h3 class="festival-title">${festival.title}</h3>
         <p class="festival-date">📅 ${formatDateRange(festival.startDate, festival.endDate)}</p>
         <p class="festival-location">📍 ${formatLocation(festival.region, festival.venue)}</p>
@@ -212,40 +202,6 @@ window.loadMore = async function() {
 };
 
 // 카테고리 이모지 가져오기
-function getCategoryEmoji(category) {
-  return categoryEmojis[category] || categoryEmojis['기타'];
-}
-
-// 날짜 범위 포맷팅
-function formatDateRange(startDate, endDate) {
-  if (!startDate && !endDate) return '미정';
-  
-  const start = startDate ? formatDate(startDate) : '미정';
-  const end = endDate ? formatDate(endDate) : '미정';
-  
-  return `${start} - ${end}`;
-}
-
-// 날짜 포맷팅
-function formatDate(dateString) {
-  if (!dateString) return '미정';
-  
-  const date = new Date(dateString);
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-  
-  return `${year}.${month}.${day}`;
-}
-
-// 위치 포맷팅
-function formatLocation(region, venue) {
-  if (!region && !venue) return '정보없음';
-  if (!venue) return region;
-  if (!region) return venue;
-  return `${region} ${venue}`;
-}
-
 // 필터 초기화
 function initializeFilters() {
   const filterTabs = document.querySelectorAll('.filter-tab');

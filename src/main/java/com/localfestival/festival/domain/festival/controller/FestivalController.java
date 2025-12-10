@@ -1,15 +1,18 @@
 package com.localfestival.festival.domain.festival.controller;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.localfestival.festival.domain.festival.dto.request.FestivalSearchRequest;
@@ -85,5 +88,14 @@ public class FestivalController {
             @PageableDefault(size = 12, sort = "startDate", direction = Sort.Direction.DESC) Pageable pageable) {
         List<FestivalListResponse> result = festivalService.searchFestivals(request, pageable);
         return BaseResponse.success(HttpStatus.OK, "축제 검색 성공", result);
+    }
+    
+    @GetMapping("/month")
+    public ResponseEntity<BaseResponse<List<FestivalListResponse>>> getFestivalsByMonth(
+            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
+            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate) {
+        
+    	List<FestivalListResponse> result = festivalService.getFestivalsByMonth(startDate, endDate);
+        return BaseResponse.success(HttpStatus.OK, "월별 축제 조회 성공", result);
     }
 }
