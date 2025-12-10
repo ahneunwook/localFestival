@@ -124,19 +124,19 @@ export function getStatusBadge(status) {
 }
 
 /**
- * 카테고리별 색상 반환
+ * 카테고리별 색상 반환 (알록달록 버전)
  * @param {string} category - 카테고리명
  * @returns {string} 색상 코드
  */
 export function getCategoryColor(category) {
   const colors = {
-    '음악': '#a8d8ea', 
-    '문화': '#7ab8d4',
-    '예술': '#5da8c5',
-    '음식': '#8ed1e6',
-    '전통': '#6bb6d0',
-    '지역축제': '#9ed6e8',
-    '기타': '#a8d8ea'
+    '음악': '#9b59b6',     // 보라색
+    '문화': '#e84393',     // 핑크색
+    '예술': '#ff9595',     // 파란색
+    '음식': '#ff6b6b',     // 빨간색
+    '전통': '#f39c12',     // 주황색
+    '지역축제': '#1abc9c', // 청록색
+    '기타': '#95a5a6'      // 회색
   };
   return colors[category] || colors['기타'];
 }
