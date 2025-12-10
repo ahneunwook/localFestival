@@ -35,14 +35,6 @@ public class FestivalService {
         return PageResponse.from(festivalPage);
     }
 
-    // 지역별 조회
-    public PageResponse<FestivalListResponse>  getFestivalsByRegion(String region, Pageable pageable) {
-        Page<FestivalListResponse> festivalPage = festivalRepository.findByRegion(region, pageable)
-                .map(FestivalListResponse::from);
-        
-        return PageResponse.from(festivalPage);
-    }
-
     // 카테고리별 조회
     public PageResponse<FestivalListResponse> getFestivalsByCategory(String category, Pageable pageable) {
         Page<FestivalListResponse> festivalPage = festivalRepository.findByCategory(category, pageable)

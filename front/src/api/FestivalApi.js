@@ -55,5 +55,22 @@ export const festivalApi = {
 	// 좋아요 정보 조회
 	async getLikeInfo(festivalId) {
 		return await apiFetch(`/festivals/${festivalId}/like`);
+	},
+
+	// 지역 조회
+	async getRegionCount(){
+		return await apiFetch(`/festivals/regions/counts`);
+	},
+
+	// 지역별 조회
+	async getRegionFestival(region, page = 0, status = 'all', category = null) {
+		let url = `/festivals/regions?region=${encodeURIComponent(region)}&page=${page}&status=${status}`;
+
+		if (category) {
+			url += `&category=${encodeURIComponent(category)}`;
+		}
+
+		return await apiFetch(url);
 	}
+
 }
