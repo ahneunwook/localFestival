@@ -9,8 +9,10 @@ import com.localfestival.festival.domain.user.repository.UserRepository;
 import com.localfestival.festival.global.exception.CustomException;
 import com.localfestival.festival.global.exception.ErrorCode;
 import com.localfestival.festival.global.jwt.JwtUtil;
+import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,7 @@ import java.time.Duration;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UserService {
 
     private final UserRepository userRepository;
@@ -103,6 +106,24 @@ public class UserService {
         );
 
         return LoginResponseDto.onlyAccess(newAccessToken);
+    }
+
+    public void logout(String refreshToken) {
+        if (refreshToken != null) {
+            try {
+                // RefreshToken 파싱하여 userId 추출
+                Claims claims = jwtUtil.parseToken(refreshToken);
+                Long userId = Long.parseLong(claims.getSubject());
+
+                // Redis에 저장된 RefreshToken 삭제
+                refreshTokenService.delete(userId);
+
+                log.info("사용자 {}의 RefreshToken 삭제 완료", userId);
+
+            } catch (Exception e) {
+                log.warn("RefreshToken 삭제 중 오류 발생", e);
+            }
+        }
     }
 
     // 비밀번호 검증 로직
