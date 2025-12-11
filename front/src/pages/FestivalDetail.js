@@ -2,6 +2,7 @@ import { createHeader } from '../components/header.js';
 import { festivalApi } from '../api/FestivalApi.js';
 import { isLoggedIn } from '../utils/auth.js';
 import { loadKakaoMap } from '../api/KakaoApi.js';
+import { formatDate, getStatusBadge, getCategoryColor } from '../utils/festivalHelpers.js';
 
 export async function FestivalDetailPage() {
   // URL에서 축제 ID 가져오기
@@ -42,7 +43,7 @@ export async function FestivalDetailPage() {
               }
               <div class="detail-overlay">
                 <div class="detail-title-section">
-                  <span class="detail-category">${festival.category || '기타'}</span>
+                  <span class="detail-category" style="background-color: ${getCategoryColor(festival.category)}; color: white;">${festival.category || '기타'}</span>
                   <h1 class="detail-title">${festival.title}</h1>
                   <div class="detail-meta">
                     <span class="meta-item">📍 ${festival.region || '-'}</span>
@@ -173,25 +174,6 @@ export async function FestivalDetailPage() {
   }
 }
 
-// 날짜 포맷
-function formatDate(dateStr) {
-  if (!dateStr) return '-';
-  const date = new Date(dateStr);
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-  return `${year}.${month}.${day}`;
-}
-
-// 상태 배지
-function getStatusBadge(status) {
-  const badges = {
-    'SCHEDULED': '<span class="badge badge-scheduled">예정</span>',
-    'ONGOING': '<span class="badge badge-ongoing">진행중</span>',
-    'ENDED': '<span class="badge badge-ended">종료</span>'
-  };
-  return badges[status] || '-';
-}
 
 // 좋아요 기능 초기화
 export async function setupLikeFeature() {
