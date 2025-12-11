@@ -8,6 +8,7 @@ import './styles/question.css'
 import './styles/news.css'
 import './styles/notifications.css'
 import './styles/region-festival.css'
+import './styles/calendar.css'
 import './styles/region-festival-list.css'
 import Router from './router/index.js'
 import { HomePage, setupHomeSearchListeners } from './pages/Home.js'
@@ -19,6 +20,8 @@ import { SearchResultPage, setupSearchListeners } from './pages/SearchResult.js'
 import {questionPage, questionPageInit} from "./pages/question.js";
 import { NewsPage, setupNewsListeners } from './pages/News.js'
 import { initNotifications, closeNotifications } from './utils/notifications.js'
+import { CalendarPage, setupCalendarListeners } from './pages/Calendar.js';
+import {RegionPage, setupRegionListeners} from './pages/regionFestival.js';
 import { RegionPage, setupRegionListeners } from './pages/regionFestival.js';
 import { RegionFestivalListPage } from './pages/RegionFestivalList.js';
 
@@ -106,6 +109,15 @@ const routes = [
 
       const html = RegionPage();           // 지역 목록 페이지
       setTimeout(() => setupRegionListeners(), 0);
+      return html;
+    }
+  },
+  {
+    path: '/calendar',
+    component: async () => {
+      const html = CalendarPage();
+      // 페이지 로드 후 이벤트 리스너 설정
+      setTimeout(() => setupCalendarListeners(), 0);
       return html;
     }
   },

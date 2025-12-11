@@ -57,6 +57,9 @@ export const festivalApi = {
 		return await apiFetch(`/festivals/${festivalId}/like`);
 	},
 
+	// 월별 축제 조회
+	async getFestivalsByMonth(startDate, endDate) {
+		return await apiFetch(`/festivals/month?startDate=${startDate}&endDate=${endDate}`);
 	// 지역 조회
 	async getRegionCount(){
 		return await apiFetch(`/festivals/regions/counts`);

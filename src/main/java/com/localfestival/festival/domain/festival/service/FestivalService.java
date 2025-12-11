@@ -82,4 +82,12 @@ public class FestivalService {
 
         return results;
     }
+    
+    // 월별 축제 조회
+    public List<FestivalListResponse> getFestivalsByMonth(LocalDate startDate, LocalDate endDate) {
+        return festivalRepository.findByDateRange(startDate, endDate)
+                .stream()
+                .map(FestivalListResponse::from)
+                .collect(Collectors.toList());
+    }
 }

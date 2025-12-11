@@ -46,6 +46,10 @@ public interface FestivalRepository extends JpaRepository<Festival, Long> {
             @Param("region") String region,
             @Param("category") String category,
             Sort sort);
+    
+    @Query("SELECT f FROM Festival f WHERE ((f.startDate <= :endDate AND f.endDate >= :startDate))")
+    	List<Festival> findByDateRange(@Param("startDate") LocalDate startDate, 
+    	                                @Param("endDate") LocalDate endDate);
 
     boolean existsByUniqueKey(String uniqueKey);
 
