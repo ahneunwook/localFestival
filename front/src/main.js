@@ -9,6 +9,7 @@ import './styles/news.css'
 import './styles/notifications.css'
 import './styles/region-festival.css'
 import './styles/region-festival-list.css'
+import './styles/reviews.css'
 import Router from './router/index.js'
 import { HomePage, setupHomeSearchListeners } from './pages/Home.js'
 import { FestivalListPage } from './pages/FestivalList.js'
@@ -21,6 +22,8 @@ import { NewsPage, setupNewsListeners } from './pages/News.js'
 import { initNotifications, closeNotifications } from './utils/notifications.js'
 import { RegionPage, setupRegionListeners } from './pages/regionFestival.js';
 import { RegionFestivalListPage } from './pages/RegionFestivalList.js';
+import {ReviewPage} from "./pages/Review.js";
+import {ReviewWritePage} from "./pages/ReviewWrite.js";
 
 
 // 라우트 정의
@@ -107,6 +110,18 @@ const routes = [
       const html = RegionPage();           // 지역 목록 페이지
       setTimeout(() => setupRegionListeners(), 0);
       return html;
+    }
+  },
+  {
+    path: '/reviews',
+        component: async () => {
+          return ReviewPage();
+        }
+  },
+  {
+    path: '/reviews/write',
+    component: async () => {
+      return ReviewWritePage();
     }
   },
   {

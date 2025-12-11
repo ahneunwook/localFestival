@@ -2,15 +2,13 @@ package com.localfestival.festival.domain.festival.controller;
 
 import java.util.List;
 
+import com.localfestival.festival.domain.festival.dto.response.FestivalSearchNameResponse;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.localfestival.festival.domain.festival.dto.request.FestivalSearchRequest;
 import com.localfestival.festival.domain.festival.dto.response.FestivalResponse;
@@ -75,6 +73,15 @@ public class FestivalController {
             FestivalSearchRequest request,
             @PageableDefault(size = 12, sort = "startDate", direction = Sort.Direction.DESC) Pageable pageable) {
         List<FestivalListResponse> result = festivalService.searchFestivals(request, pageable);
+        return BaseResponse.success(HttpStatus.OK, "축제 검색 성공", result);
+    }
+
+    // 리뷰 작성 할 때의 검색
+    @GetMapping("/names")
+    public ResponseEntity<BaseResponse<List<FestivalSearchNameResponse>>> searchFestivalsByTitle(
+            @RequestParam(required = false) String name
+    ) {
+        List<FestivalSearchNameResponse> result = festivalService.searchFestivalsByTitle(name);
         return BaseResponse.success(HttpStatus.OK, "축제 검색 성공", result);
     }
 }

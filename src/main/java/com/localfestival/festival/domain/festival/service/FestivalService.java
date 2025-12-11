@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 
+import com.localfestival.festival.domain.festival.dto.response.FestivalSearchNameResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -79,6 +80,21 @@ public class FestivalService {
         ).stream()
                 .map(FestivalListResponse::from)
                 .collect(Collectors.toList());
+
+        return results;
+    }
+
+    public List<FestivalSearchNameResponse> searchFestivalsByTitle(String name) {
+
+        List<FestivalSearchNameResponse> results;
+
+        if (name == null || name.isBlank()){
+            results = festivalRepository.findAll().stream()
+                    .map(FestivalSearchNameResponse::festivalSearchNameResponse).toList();
+        } else {
+            results = festivalRepository.findByTitleFestivals(name);
+
+        }
 
         return results;
     }

@@ -1,0 +1,48 @@
+package com.localfestival.festival.domain.review.entity;
+
+import com.localfestival.festival.domain.festival.entity.Festival;
+import com.localfestival.festival.global.common.BaseEntity;
+import jakarta.persistence.*;
+import lombok.*;
+
+@Entity
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(name = "reviews")
+@Getter
+public class Review extends BaseEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "festival_id", nullable = false)
+    private Festival festival;
+
+    @Column(nullable = false)
+    private Integer rating;
+
+    @Column(length = 100, nullable = false)
+    private String title;
+
+    @Column(length = 2000, nullable = false)
+    private String content;
+
+    @Builder
+    public Review(Festival festival, Integer rating, String title, String content) {
+        this.festival = festival;
+        this.rating = rating;
+        this.title = title;
+        this.content = content;
+    }
+
+    public static Review create(Festival festival, Integer rating, String title, String content){
+        return Review.builder()
+                .festival(festival)
+                .rating(rating)
+                .title(title)
+                .content(content)
+                .build();
+    }
+
+}

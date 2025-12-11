@@ -12,6 +12,11 @@ spring:
     servlet:
       path: /api
 
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 100MB
+
   jpa:
     open-in-view: false
     show-sql: true
@@ -110,5 +115,5 @@ springdoc:
     path: /local-festival
     enabled: true
 
-  default-consumes-media-type: application/json
-  default-produces-media-type: application/json
+#  default-consumes-media-type: application/json
+#  default-produces-media-type: application/json
