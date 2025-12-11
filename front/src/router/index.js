@@ -1,4 +1,6 @@
 import { closeNotifications } from '../utils/notifications.js'
+import { authApi } from '../api/AuthApi.js'
+
 // Simple SPA Router
 class Router {
 	constructor(routes) {
@@ -43,8 +45,13 @@ class Router {
 		// 로그아웃 버튼 이벤트 등록
 		const logoutBtn = document.getElementById("logoutBtn");
 		if (logoutBtn) {
-			logoutBtn.onclick = () => {
-				localStorage.removeItem("accessToken");
+			logoutBtn.onclick = async () => {
+
+				try {
+					await authApi.logout();  // 서버에서 refreshToken 삭제 + 쿠키 삭제
+				} catch (e) {
+					console.error("로그아웃 실패:", e);
+				}
 				closeNotifications();
 				window.location.href = "/";
 			};

@@ -1,64 +1,118 @@
 .region-page {
-    padding: 60px 80px;
     max-width: 1400px;
     margin: 0 auto;
-    min-height: calc(100vh - 80px);
+    padding: 40px 20px;
 }
 
 .region-header {
     text-align: center;
-    margin-bottom: 50px;
+    margin-bottom: 60px;
 }
 
 .page-title {
-    font-size: 36px;
-    font-weight: 700;
-    color: #333;
-    margin-bottom: 15px;
+    font-size: 3rem;
+    font-weight: 800;
+    color: #2d3748;
+    margin-bottom: 12px;
 }
 
 .page-subtitle {
-    font-size: 18px;
-    color: #666;
+    font-size: 1.2rem;
+    color: #718096;
 }
 
-/* 지역 그리드 */
+
+.section-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #2d3748;
+    margin-bottom: 24px;
+}
+
+.rank-badge {
+    font-size: 3rem;
+    margin-bottom: 16px;
+}
+
+.region-icon-large {
+    font-size: 4rem;
+    margin-bottom: 16px;
+}
+
+.region-name-large {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+
+.region-count-large {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 6px;
+}
+
+.region-count-large .count-number {
+    font-size: 3rem;
+    font-weight: 800;
+}
+
+.region-count-large .count-label {
+    font-size: 1.2rem;
+    opacity: 0.9;
+}
+
+/* 지역 섹션 */
+.region-section {
+    margin-bottom: 60px;
+}
+
 .region-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 25px;
+    gap: 20px;
 }
 
 .region-card {
     background: white;
-    padding: 35px 30px;
-    border-radius: 15px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-    transition: all 0.3s;
-    cursor: pointer;
-    position: relative;
-    border: 1px solid #f0f0f0;
+    border-radius: 16px;
+    padding: 24px;
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    text-decoration: none;
+    color: inherit;
+    border: 2px solid transparent;
+    position: relative;
+    overflow: hidden;
+}
+
+.region-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    transform: scaleY(0);
+    transition: transform 0.3s ease;
+}
+
+.region-card:hover::before {
+    transform: scaleY(1);
 }
 
 .region-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 25px rgba(0,0,0,0.12);
-    border-color: var(--region-color);
+    transform: translateX(8px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
 }
 
 .region-icon {
-    width: 60px;
-    height: 60px;
+    font-size: 2.5rem;
     flex-shrink: 0;
-    opacity: 0.8;
-}
-
-.region-icon svg {
-    width: 100%;
-    height: 100%;
 }
 
 .region-info {
@@ -66,91 +120,138 @@
 }
 
 .region-name {
-    font-size: 22px;
+    font-size: 1.4rem;
     font-weight: 700;
-    color: #333;
-    margin-bottom: 8px;
+    color: #2d3748;
+    margin-bottom: 6px;
 }
 
 .region-count {
     display: flex;
     align-items: baseline;
-    gap: 5px;
+    gap: 4px;
 }
 
 .count-number {
-    font-size: 28px;
-    font-weight: 700;
-    color: var(--region-color);
+    font-size: 1.8rem;
+    font-weight: 800;
 }
 
 .count-label {
-    font-size: 14px;
-    color: #999;
+    font-size: 0.9rem;
+    color: #718096;
     font-weight: 500;
 }
 
-/* 반응형 - 태블릿 */
-@media (max-width: 1024px) {
-    .region-page {
-        padding: 60px 50px;
-    }
-
-    .region-grid {
-        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-        gap: 20px;
-    }
-
-    .page-title {
-        font-size: 32px;
-    }
-
-    .page-subtitle {
-        font-size: 16px;
-    }
+.arrow-icon {
+    font-size: 1.5rem;
+    opacity: 0;
+    transition: opacity 0.3s ease;
 }
 
-/* 반응형 - 모바일 */
+.region-card:hover .arrow-icon {
+    opacity: 1;
+}
+
+/* 지역 정보 배너 (FestivalList 페이지용) */
+.region-info-banner {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 16px;
+    padding: 20px 32px;
+    margin-bottom: 32px;
+    box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
+}
+
+.region-banner-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.region-banner-icon {
+    font-size: 1.5rem;
+}
+
+.region-banner-text {
+    color: white;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.clear-filter-btn {
+    background: white;
+    color: #667eea;
+    padding: 8px 20px;
+    border-radius: 20px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+}
+
+.clear-filter-btn:hover {
+    background: #f7fafc;
+    transform: scale(1.05);
+}
+
+/* Breadcrumb */
+.breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+    font-size: 0.95rem;
+    color: #718096;
+}
+
+.breadcrumb a {
+    color: #667eea;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.breadcrumb a:hover {
+    color: #764ba2;
+}
+
+.breadcrumb .separator {
+    color: #cbd5e0;
+}
+
+.breadcrumb .current {
+    color: #2d3748;
+    font-weight: 600;
+}
+
+/* 반응형 */
 @media (max-width: 768px) {
-    .region-page {
-        padding: 40px 20px;
-    }
-
-    .region-header {
-        margin-bottom: 35px;
-    }
-
     .page-title {
-        font-size: 28px;
+        font-size: 2rem;
     }
 
-    .page-subtitle {
-        font-size: 15px;
+    .popular-grid {
+        grid-template-columns: 1fr;
     }
 
     .region-grid {
         grid-template-columns: 1fr;
-        gap: 15px;
     }
 
     .region-card {
-        padding: 25px 20px;
+        padding: 20px;
     }
 
     .region-icon {
-        width: 50px;
-        height: 50px;
+        font-size: 2rem;
     }
 
     .region-name {
-        font-size: 20px;
+        font-size: 1.2rem;
     }
 
     .count-number {
-        font-size: 24px;
-    }
-
-    .count-label {
-        font-size: 13px;
+        font-size: 1.5rem;
     }
 }
