@@ -1,11 +1,17 @@
 package com.localfestival.festival.domain.festival.service;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
 
+import com.localfestival.festival.domain.festival.dto.response.FestivalSearchNameResponse;
+import com.localfestival.festival.domain.review.dto.response.ReviewResponseDto;
+import com.localfestival.festival.domain.review.entity.Review;
+import com.localfestival.festival.domain.review.entity.ReviewImage;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -82,7 +88,22 @@ public class FestivalService {
 
         return results;
     }
-    
+
+    public List<FestivalSearchNameResponse> searchFestivalsByTitle(String name) {
+
+        List<FestivalSearchNameResponse> results;
+
+        if (name == null || name.isBlank()){
+            return Collections.emptyList();
+
+        } else {
+            results = festivalRepository.findByTitleFestivals(name);
+
+        }
+
+        return results;
+    }
+
     // 월별 축제 조회
     public List<FestivalListResponse> getFestivalsByMonth(LocalDate startDate, LocalDate endDate) {
         return festivalRepository.findByDateRange(startDate, endDate)

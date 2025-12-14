@@ -10,6 +10,7 @@ import './styles/notifications.css'
 import './styles/region-festival.css'
 import './styles/calendar.css'
 import './styles/region-festival-list.css'
+import './styles/reviews.css'
 import Router from './router/index.js'
 import { HomePage, setupHomeSearchListeners } from './pages/Home.js'
 import { FestivalListPage } from './pages/FestivalList.js'
@@ -21,9 +22,10 @@ import {questionPage, questionPageInit} from "./pages/question.js";
 import { NewsPage, setupNewsListeners } from './pages/News.js'
 import { initNotifications, closeNotifications } from './utils/notifications.js'
 import { CalendarPage, setupCalendarListeners } from './pages/Calendar.js';
-import {RegionPage, setupRegionListeners} from './pages/regionFestival.js';
 import { RegionPage, setupRegionListeners } from './pages/regionFestival.js';
 import { RegionFestivalListPage } from './pages/RegionFestivalList.js';
+import {ReviewPage} from "./pages/Review.js";
+import {ReviewWritePage} from "./pages/ReviewWrite.js";
 
 
 // 라우트 정의
@@ -119,6 +121,18 @@ const routes = [
       // 페이지 로드 후 이벤트 리스너 설정
       setTimeout(() => setupCalendarListeners(), 0);
       return html;
+    }
+  },
+  {
+    path: '/reviews',
+        component: async () => {
+          return ReviewPage();
+        }
+  },
+  {
+    path: '/reviews/write',
+    component: async () => {
+      return ReviewWritePage();
     }
   },
   {

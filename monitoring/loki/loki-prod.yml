@@ -1,0 +1,49 @@
+auth_enabled: false
+
+server:
+  http_listen_port: 3100
+
+common:
+  path_prefix: /loki
+  storage:
+    filesystem:
+      chunks_directory: /loki/chunks
+      rules_directory: /loki/rules
+  ring:
+    instance_addr: 127.0.0.1
+    kvstore:
+      store: inmemory
+  replication_factor: 1
+
+schema_config:
+  configs:
+    - from: 2025-12-01
+      store: tsdb
+      object_store: filesystem
+      schema: v13
+      index:
+        prefix: loki_index_
+        period: 24h
+
+limits_config:
+  retention_period: 168h  # 7일 보관
+  ingestion_rate_mb: 16
+  ingestion_burst_size_mb: 32
+  max_query_series: 500
+  max_query_parallelism: 32
+
+
+compactor:
+  working_directory: /loki/compactor
+  retention_enabled: true
+  retention_delete_delay: 2h
+  retention_delete_worker_count: 150
+
+chunk_store_config:
+  max_look_back_period: 168h  # retention과 맞춤
+
+querier:
+  max_concurrent: 4
+
+query_range:
+  parallelise_shardable_queries: true

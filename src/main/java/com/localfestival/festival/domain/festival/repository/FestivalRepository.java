@@ -1,5 +1,6 @@
 package com.localfestival.festival.domain.festival.repository;
 
+import com.localfestival.festival.domain.festival.dto.response.FestivalSearchNameResponse;
 import com.localfestival.festival.domain.festival.dto.response.RegionCountResponse;
 import com.localfestival.festival.domain.festival.dto.response.RegionCountResult;
 import com.localfestival.festival.domain.festival.entity.Festival;
@@ -62,4 +63,13 @@ public interface FestivalRepository extends JpaRepository<Festival, Long> {
           GROUP BY f.region
          """)
     List<RegionCountResult> countByRegion(@Param("today") LocalDate today);
+
+    @Query("""
+        SELECT new com.localfestival.festival.domain.festival.dto.response.FestivalSearchNameResponse(
+            f.id, f.title
+        )
+         FROM Festival f
+          WHERE f.title like %:title%
+         """)
+    List<FestivalSearchNameResponse> findByTitleFestivals(String title);
 }
