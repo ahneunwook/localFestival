@@ -1,12 +1,16 @@
 // pages/ReviewPage.js
 import { createHeader } from '../components/header.js';
 import { festivalApi } from '../api/FestivalApi.js';
+import { reviewApi } from "../api/ReviewApi.js";
 
 // 전역 변수
 let currentPage = 0;
 let currentSort = 'latest';  // latest, likes, views
 let currentRating = 'all';   // all, 5, 4, 3
 let hasMorePages = false;
+
+// API 베이스 URL (실제 서버 주소로 변경하세요)
+const API_BASE_URL = 'http://localhost:8080'; // 또는 실제 서버 URL
 
 export function ReviewPage() {
     requestAnimationFrame(() => {
@@ -29,29 +33,6 @@ export function ReviewPage() {
           </button>
         </div>
         <p class="header-subtitle">리뷰 <span id="total-reviews">0</span>개 · 생생한 축제 경험담</p>
-      </div>
-
-      <!-- 통계 카드 -->
-      <div class="stats-grid" id="stats-grid">
-        <div class="stat-card">
-          <div class="stat-label">전체 후기</div>
-          <div class="stat-value" id="stat-total">-</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">평균 평점</div>
-          <div class="stat-value">
-            <span class="star-icon">⭐</span>
-            <span id="stat-avg-rating">-</span>
-          </div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">최다 지역</div>
-          <div class="stat-value" id="stat-top-region">-</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">인기 축제</div>
-          <div class="stat-value" style="font-size: 20px;" id="stat-popular">-</div>
-        </div>
       </div>
 
       <!-- 필터 섹션 -->
@@ -165,17 +146,15 @@ async function loadReviews(append = false) {
                 </div>
             `;
         }
+        console.log('API 호출 시작 - page:', currentPage);
 
         // API 호출
-        const data = await festivalApi.getReviews(currentPage, currentSort, currentRating);
+        const response = await reviewApi.getReviews(currentPage);
+
+        const data = response;
 
         const reviews = data.content || [];
         const hasNext = data.hasNext || false;
-
-        // 통계 업데이트 (첫 페이지만)
-        if (!append && data.stats) {
-            updateStats(data.stats);
-        }
 
         // 첫 페이지면 그리드 초기화
         if (!append) {
@@ -217,28 +196,36 @@ async function loadReviews(append = false) {
     }
 }
 
-function updateStats(stats) {
-    document.getElementById('total-reviews').textContent = stats.totalReviews || 0;
-    document.getElementById('stat-total').textContent = `${stats.totalReviews || 0}개`;
-    document.getElementById('stat-avg-rating').textContent = stats.avgRating || '-';
-    document.getElementById('stat-top-region').textContent = stats.topRegion || '-';
-    document.getElementById('stat-popular').textContent = stats.mostPopular || '-';
-}
-
 function createReviewCard(review) {
+    console.log(review)
     const stars = renderStars(review.rating);
-    const images = review.images && review.images.length > 0
-        ? createImagePreview(review.images)
+
+    // 이미지 URL을 절대 경로로 변환
+    const imageUrls = review.images?.map(img => {
+        const url = img.url || img.imageUrl || img.src;
+        // 상대 경로면 API_BASE_URL을 붙임
+        return url.startsWith('http')
+            ? url
+            : `${API_BASE_URL}/api${url}`;
+    }) || [];
+
+    const images = imageUrls.length > 0
+        ? createImagePreview(imageUrls)
         : '';
 
+    const cleanTitle = review.title.replace(/^"|"$/g, '');
+    const cleanContent = review.content.replace(/^"|"$/g, '');
+
+    const formattedDate = new Date(review.createdDate).toLocaleDateString('ko-KR');
+
     return `
-    <a href="/reviews/${review.id}" class="review-card">
+    <a href="/reviews/${review.reviewId}" class="review-card">
       <div class="review-card-header">
-        <div class="festival-info">
+        <div class="festival-info-review">
           <div class="festival-name">${review.festivalName}</div>
-          <div class="festival-meta">
+          <div class="festival-meta-review">
             <span class="region-badge">${review.region}</span>
-            <span class="category-badge">${review.category}</span>
+            <span class="category-badge">${review.festivalCategory}</span>
           </div>
         </div>
         <div class="rating-stars">
@@ -246,28 +233,16 @@ function createReviewCard(review) {
         </div>
       </div>
       
-      <h3 class="review-title">${review.title}</h3>
+      <h3 class="review-title">${cleanTitle}</h3>
       
-      <p class="review-content">
-        ${review.content}
-      </p>
+      <p class="review-content">${cleanContent}</p>
       
       ${images}
       
       <div class="review-footer">
         <div class="author-info">
           <span class="author-name">${review.authorName}</span>
-          <span class="review-date">${review.createdDate}</span>
-        </div>
-        <div class="review-stats">
-          <div class="stat-item">
-            <span>👍</span>
-            <span>${review.likes}</span>
-          </div>
-          <div class="stat-item">
-            <span>👁️</span>
-            <span>${formatNumber(review.views)}</span>
-          </div>
+          <span class="review-date">${formattedDate}</span>
         </div>
       </div>
     </a>

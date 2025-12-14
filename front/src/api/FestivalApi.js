@@ -60,6 +60,8 @@ export const festivalApi = {
 	// 월별 축제 조회
 	async getFestivalsByMonth(startDate, endDate) {
 		return await apiFetch(`/festivals/month?startDate=${startDate}&endDate=${endDate}`);
+	},
+
 	// 지역 조회
 	async getRegionCount(){
 		return await apiFetch(`/festivals/regions/counts`);
@@ -74,6 +76,14 @@ export const festivalApi = {
 		}
 
 		return await apiFetch(url);
-	}
+	},
 
+	async searchFestivalsByTitle(name) {
+
+		const url = name
+			? `/festivals/names?name=${encodeURIComponent(name)}`
+			: `/festivals/names`;  // 전체 목록 또는 빈 검색
+
+		return await apiFetch(url);
+	}
 }

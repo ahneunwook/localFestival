@@ -53,9 +53,14 @@ export async function apiFetch(endpoint, options = {}) {
 
   // 2. 기본 헤더 설정
   const headers = {
-    'Content-Type': 'application/json',
     ...options.headers,
   };
+
+  // FormData가 아닌 경우에만 Content-Type을 application/json으로 설정
+  // FormData는 브라우저가 자동으로 multipart/form-data + boundary 설정
+  if (!(options.body instanceof FormData)) {
+    headers['Content-Type'] = 'application/json';
+  }
 
   // 3. 토큰이 있으면 Authorization 헤더 추가
   if (token) {
@@ -85,6 +90,11 @@ export async function apiFetch(endpoint, options = {}) {
             ...headers,
             'Authorization': `Bearer ${newToken}`,
           };
+
+          // 재요청 시에도 FormData 체크
+          if (!(options.body instanceof FormData)) {
+            retryHeaders['Content-Type'] = 'application/json';
+          }
 
           fetch(`${API_BASE_URL}${endpoint}`, {
             ...options,

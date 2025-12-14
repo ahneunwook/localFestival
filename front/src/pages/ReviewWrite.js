@@ -1,6 +1,7 @@
 // pages/ReviewWritePage.js
 import { createHeader } from '../components/header.js';
 import { festivalApi } from '../api/FestivalApi.js';
+import {reviewApi} from "../api/ReviewApi.js";
 
 // 전역 변수
 let selectedFestival = null;
@@ -170,13 +171,30 @@ async function initializeWritePage() {
 // 축제 목록 불러오기
 async function loadFestivalList() {
     try {
-        const data = await festivalApi.getActiveFestivals();
-        renderFestivalList(data.content || []);
+        const response = await festivalApi.searchFestivalsByTitle(' ');
+        const festivals = response || [];
+        console.log(festivals);
+        renderFestivalList(festivals);
     } catch (error) {
         console.error('Error loading festivals:', error);
         document.getElementById('festival-list').innerHTML = `
             <div class="dropdown-error">
                 <p>축제 목록을 불러오는데 실패했습니다</p>
+            </div>
+        `;
+    }
+}
+
+async function searchFestivals(keyword) {
+    try {
+        const response = await festivalApi.searchFestivalsByTitle(keyword);
+        const festivals = response || [];
+        renderFestivalList(festivals);
+    } catch (error) {
+        console.error('Error searching festivals:', error);
+        document.getElementById('festival-list').innerHTML = `
+            <div class="dropdown-error">
+                <p>검색에 실패했습니다</p>
             </div>
         `;
     }
@@ -195,16 +213,9 @@ function renderFestivalList(festivals) {
     }
 
     listElement.innerHTML = festivals.map(festival => `
-        <div class="festival-item" data-id="${festival.id}" data-name="${festival.title}">
+        <div class="festival-item" data-id="${festival.id}" data-name="${festival.name}">
             <div class="festival-item-info">
-                <div class="festival-item-name">${festival.title}</div>
-                <div class="festival-item-meta">
-                    <span class="festival-region">${festival.region}</span>
-                    <span class="festival-category">${festival.category}</span>
-                </div>
-            </div>
-            <div class="festival-item-date">
-                ${festival.startDate} ~ ${festival.endDate}
+                <div class="festival-item-name">${festival.name}</div>
             </div>
         </div>
     `).join('');
@@ -232,15 +243,15 @@ function setupFestivalSelect() {
         }
     });
 
-    // 검색
+    let searchTimeout;
     searchInput.addEventListener('input', (e) => {
-        const keyword = e.target.value.toLowerCase();
-        const items = document.querySelectorAll('.festival-item');
+        const keyword = e.target.value.trim();
 
-        items.forEach(item => {
-            const name = item.dataset.name.toLowerCase();
-            item.style.display = name.includes(keyword) ? 'flex' : 'none';
-        });
+        // 디바운싱: 300ms 후에 검색
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => {
+            searchFestivals(keyword);
+        }, 300);
     });
 
     // 축제 선택
@@ -490,7 +501,7 @@ function setupFormSubmit() {
                 formData.append('images', img.file);
             });
 
-            await festivalApi.createReview(formData);
+            await reviewApi.createReview(formData);
 
             alert('후기가 작성되었습니다!');
             window.location.href = '/reviews';

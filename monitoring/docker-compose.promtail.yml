@@ -1,0 +1,18 @@
+version: "3.8"
+
+services:
+  promtail:
+    image: grafana/promtail:2.9.0
+    container_name: promtail-prod
+    volumes:
+      - ./promtail-prod.yml:/etc/promtail/config.yaml
+      - /var/log/festival:/var/log/festival
+    command: -config.file=/etc/promtail/config.yaml
+    restart: always
+
+  node-exporter:
+    image: prom/node-exporter:latest
+    container_name: node-exporter-app
+    ports:
+      - "9100:9100"
+    restart: always

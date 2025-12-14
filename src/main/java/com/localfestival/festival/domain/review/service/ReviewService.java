@@ -7,15 +7,23 @@ import com.localfestival.festival.domain.review.entity.Review;
 import com.localfestival.festival.domain.review.entity.ReviewImage;
 import com.localfestival.festival.domain.review.repository.ReviewImageRepository;
 import com.localfestival.festival.domain.review.repository.ReviewRepository;
+import com.localfestival.festival.domain.user.entity.User;
+import com.localfestival.festival.global.common.PageResponse;
 import com.localfestival.festival.global.exception.CustomException;
 import com.localfestival.festival.global.exception.ErrorCode;
 import com.localfestival.festival.global.utils.LocalFileStorage;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -26,11 +34,12 @@ public class ReviewService {
     private final ReviewImageRepository reviewImageRepository;
     private final LocalFileStorage fileStorage;
 
-    public ReviewResponseDto createReview(Long festivalId, Integer rating, String title, String content, List<MultipartFile> images) {
+    @Transactional
+    public ReviewResponseDto createReview(User user, Long festivalId, Integer rating, String title, String content, List<MultipartFile> images) {
         Festival festival = festivalRepository.findById(festivalId)
                 .orElseThrow(() -> new CustomException(ErrorCode.FESTIVAL_NOT_FOUND));
 
-        Review review = Review.create(festival, rating, title, content);
+        Review review = Review.create(user, festival, rating, title, content);
 
         reviewRepository.save(review);
 
@@ -49,5 +58,39 @@ public class ReviewService {
         }
 
         return ReviewResponseDto.toDto(review, savedImages);
+    }
+
+    @Transactional(readOnly = true)
+    public PageResponse<ReviewResponseDto> getReviews(Pageable pageable) {
+        Page<Review> reviews = reviewRepository.findAllWithFestivalAndUser(pageable);
+
+        // 리뷰 ID 목록 추출
+        List<Long> reviewIds = reviews.getContent().stream()
+                .map(Review::getId)
+                .toList();
+
+        // 이미지 전체 조회
+        List<ReviewImage> allImages = reviewImageRepository.findByReviewIdIn(reviewIds);
+
+        // 이미지들을 reviewId 기준으로 그룹핑
+        Map<Long, List<ReviewImage>> imageMap = allImages.stream()
+                .collect(Collectors.groupingBy(img -> img.getReview().getId()));
+
+        List<ReviewResponseDto> dtoList = reviews.getContent().stream()
+                .map(review ->
+                        ReviewResponseDto.toDto(
+                                review,
+                                imageMap.getOrDefault(review.getId(), List.of())
+                        )
+                )
+                .toList();
+
+        Page<ReviewResponseDto> responseDtos = new PageImpl<>(
+                dtoList,
+                pageable,
+                reviews.getTotalElements()
+        );
+
+        return PageResponse.from(responseDtos);
     }
 }

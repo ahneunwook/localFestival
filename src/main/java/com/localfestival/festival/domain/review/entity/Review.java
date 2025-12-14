@@ -1,6 +1,7 @@
 package com.localfestival.festival.domain.review.entity;
 
 import com.localfestival.festival.domain.festival.entity.Festival;
+import com.localfestival.festival.domain.user.entity.User;
 import com.localfestival.festival.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -19,6 +20,10 @@ public class Review extends BaseEntity {
     @JoinColumn(name = "festival_id", nullable = false)
     private Festival festival;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
     @Column(nullable = false)
     private Integer rating;
 
@@ -29,15 +34,17 @@ public class Review extends BaseEntity {
     private String content;
 
     @Builder
-    public Review(Festival festival, Integer rating, String title, String content) {
+    public Review(User user, Festival festival, Integer rating, String title, String content) {
+        this.user = user;
         this.festival = festival;
         this.rating = rating;
         this.title = title;
         this.content = content;
     }
 
-    public static Review create(Festival festival, Integer rating, String title, String content){
+    public static Review create(User user, Festival festival, Integer rating, String title, String content){
         return Review.builder()
+                .user(user)
                 .festival(festival)
                 .rating(rating)
                 .title(title)
