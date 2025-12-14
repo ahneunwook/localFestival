@@ -1,6 +1,27 @@
 version: "3.8"
 
 services:
+  # 1. 스프링 부트
+  spring-app:
+    build: .
+    container_name: spring-app
+    ports:
+      - "8080:8080"
+    # [.env 파일 읽기] 로컬 설정값들이 들어옵니다.
+    env_file:
+      - .env
+    # .env에 뭐라고 적혀있든, 여기 설정이 이깁니다.
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod            # 프로필 강제 적용
+      - PROD_DB_HOST=postgres-container        # localhost -> 컨테이너 이름
+      - PROD_REDIS_HOST=redis-container        # localhost -> 컨테이너 이름
+    depends_on:
+      - postgres
+      - redis
+    volumes:
+      - /var/log/festival:/var/log/festival
+    restart: always
+
   postgres:
     image: postgres:latest
     container_name: postgres-container
