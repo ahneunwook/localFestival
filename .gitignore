@@ -43,3 +43,7 @@ out/
 *.log
 logs/
 monitoring/prometheus/*.generated.yml
+
+# Q클래스
+src/main/generated/
+/generated/
