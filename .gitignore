@@ -37,9 +37,12 @@ out/
 .vscode/
 # Environment files
 .env
-/build.gradle
-/settings.gradle
 
 *.log
 logs/
 monitoring/prometheus/*.generated.yml
+
+*.tar
+monitoring/prometheus/data/
+monitoring/loki/data/
+uploads/

@@ -3,7 +3,7 @@ version: "3.8"
 services:
   # 1. 스프링 부트
   spring-app:
-    build: .
+    image: festival-api:1.0
     container_name: spring-app
     ports:
       - "8080:8080"
@@ -34,7 +34,7 @@ services:
       POSTGRES_PASSWORD: ${PROD_DB_PASSWORD}
       TZ: Asia/Seoul
     volumes:
-      - /home/festival/pgdata:/var/lib/postgresql/data
+      - ./pgdata:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${PROD_DB_USERNAME}"]
       interval: 10s

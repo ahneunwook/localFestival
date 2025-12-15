@@ -1,5 +1,5 @@
 # 자바 실행 환경 (JDK 17 기준, 21이면 17을 21로 변경)
-FROM openjdk:17-jdk-slim
+FROM eclipse-temurin:17-jdk-jammy
 
 # 작업 디렉토리 생성
 WORKDIR /app
