@@ -99,14 +99,16 @@
 
 .fc .fc-day-today .fc-daygrid-day-number {
   background: linear-gradient(135deg, #a8d8ea 0%, #8bc9e0 100%);
-  color: white;
+  color: white !important;
   border-radius: 50%;
   width: 32px;
   height: 32px;
-  display: flex;
+  display: flex !important;
   align-items: center;
   justify-content: center;
   font-weight: 600;
+  padding: 0 !important;
+  line-height: 1;
 }
 
 /* 이벤트(축제) */

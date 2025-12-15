@@ -46,3 +46,7 @@ monitoring/prometheus/*.generated.yml
 monitoring/prometheus/data/
 monitoring/loki/data/
 uploads/
+
+# Q클래스
+src/main/generated/
+/generated/
