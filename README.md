@@ -68,5 +68,3 @@ Local Festival은 전국 지역 축제 정보를 조회하고 참여할 수 있�
 ## 📚 API Documentation
 프론트엔드와의 협업 및 테스트 편의성을 위해 **Swagger UI**를 도입하여 API 명세를 관리하고 있습니다.
 <br>
-*(👇 여기에 아까 찍은 Swagger 화면 캡처를 넣으세요)*
-![Swagger UI](./images/swagger_screenshot.png)
