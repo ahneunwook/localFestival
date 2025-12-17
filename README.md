@@ -36,7 +36,7 @@ Local Festival은 전국 지역 축제 정보를 조회하고 참여할 수 있�
 
 ### 1. 모니터링 환경 구축 (PLG Stack)
 * **배경:** AWS EC2 프리티어 환경의 제한된 리소스를 효율적으로 관제하고, 컨테이너 기반 환경에서의 로그 관리가 필요함.
-* **해결:** 무거운 ELK Stack 대신 경량화된 **PLG Stack(Promtail, Loki, Grafana)**을 도입하여 실시간 로그 수집 및 시각화 환경 구축.
+* **해결:** 무거운 ELK Stack 대신 경량화된 PLG Stack(Promtail, Loki, Grafana)을 도입하여 실시간 로그 수집 및 시각화 환경 구축.
 * **성과:** **JVM Heap Memory, Thread 상태, 실시간 에러 로그**를 통합 대시보드에서 관제 가능.
   <br>
   ![Monitoring Dashboard](./images/grafana_dashboard.png)
@@ -47,7 +47,7 @@ Local Festival은 전국 지역 축제 정보를 조회하고 참여할 수 있�
 * **성과:** 데이터 양과 무관하게 **일정한 조회 속도(O(1))** 보장.
 
 ### 3. OneToOne 관계 지연 로딩(Lazy) 미작동 이슈 해결
-* **문제:** `FetchType.LAZY` 설정을 적용했으나, **`OneToOne` 양방향 관계의 프록시 생성 한계(Null 여부 확인 불가)**로 인해 지연 로딩이 무시됨. 이로 인해 메인 엔티티(`Question`) 조회 직후, 연관된 엔티티(`Answer`)를 찾기 위한 **추가적인 SELECT 쿼리가 강제로 실행**되는 현상 확인.
+* **문제:** `FetchType.LAZY` 설정을 적용했으나, `OneToOne` 양방향 관계의 프록시 생성 한계(Null 여부 확인 불가)로 인해 지연 로딩이 무시됨. 이로 인해 메인 엔티티(`Question`) 조회 직후, 연관된 엔티티(`Answer`)를 찾기 위한 **추가적인 SELECT 쿼리가 강제로 실행**되는 현상 확인.
 * **해결:** 양방향 매핑을 제거하고 **`ManyToOne` 단방향 관계**로 리팩토링하여 구조를 단순화함.
 * **성과:** 의도치 않게 발생하던 **추가 SELECT 쿼리를 100% 제거**하여 조회 성능 최적화.
 
