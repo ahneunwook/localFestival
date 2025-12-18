@@ -46,7 +46,7 @@ export function HomePage() {
           <div class="card-subtitle">현재 전국에서 진행되고 있는 축제</div>
         </a>
 
-        <a href="/festivals?sort=popular" class="info-card">
+        <a href="/top10" class="info-card">
           <div class="icon">
             <svg viewBox="0 0 50 50" fill="none" stroke="#d4a5d8" stroke-width="1.5">
               <polygon points="25,8 30,20 43,22 34,31 36,44 25,38 14,44 16,31 7,22 20,20"/>

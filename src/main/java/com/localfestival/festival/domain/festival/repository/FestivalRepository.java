@@ -42,11 +42,11 @@ public interface FestivalRepository extends JpaRepository<Festival, Long> {
            "AND (:keyword IS NULL OR :keyword = '' OR f.title LIKE %:keyword% OR f.description LIKE %:keyword%) " +
            "AND (:region IS NULL OR :region = '' OR f.region = :region) " +
            "AND (:category IS NULL OR :category = '' OR f.category = :category)")
-    List<Festival> searchFestivals(
+    Page<Festival> searchFestivals(
             @Param("keyword") String keyword,
             @Param("region") String region,
             @Param("category") String category,
-            Sort sort);
+            Pageable pageable);
     
     @Query("SELECT f FROM Festival f WHERE ((f.startDate <= :endDate AND f.endDate >= :startDate))")
     	List<Festival> findByDateRange(@Param("startDate") LocalDate startDate, 
@@ -72,4 +72,15 @@ public interface FestivalRepository extends JpaRepository<Festival, Long> {
           WHERE f.title like %:title%
          """)
     List<FestivalSearchNameResponse> findByTitleFestivals(String title);
+
+    // 좋아요순 TOP 10
+    @Query("SELECT f FROM Festival f " +
+           "LEFT JOIN FestivalLike fl ON fl.festival.id = f.id " +
+           "WHERE f.isActive = true " +
+           "GROUP BY f.id " +
+           "ORDER BY COUNT(fl.id) DESC")
+    Page<Festival> findTop10ByLikes(Pageable pageable);
+
+    // 조회순 TOP 10
+    Page<Festival> findTop10ByIsActiveTrueOrderByViewCountDesc(Pageable pageable);
 }
