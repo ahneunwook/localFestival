@@ -2,6 +2,8 @@ import { API_BASE_URL } from '../config/api.js';
 
 let eventSource = null;
 let isConnecting = false;
+let reconnectAttempts = 0;
+const MAX_RECONNECT_ATTEMPTS = 3;
 
 /**
  * SSE 연결 초기화
@@ -10,13 +12,11 @@ export function initNotifications() {
   const token = localStorage.getItem('accessToken');
 
   if (!token) {
-    console.log('로그인 필요 - SSE 연결 안 함');
     return;
   }
   
   // 연결 시도 중이면 바로 리턴
   if (isConnecting) {
-      console.log('⏳ SSE 연결 시도 중...');
       return;
   }
   
@@ -26,7 +26,6 @@ export function initNotifications() {
 	eventSource = null;
   }
 
-  console.log('SSE 연결 시도...');
   isConnecting = true
   	
   // Bearer 제거
@@ -37,25 +36,63 @@ export function initNotifications() {
 
   // 연결 성공
   eventSource.addEventListener('connected', (event) => {
-    console.log('✅ SSE 연결 성공:', event.data);
 	isConnecting = false;
+	reconnectAttempts = 0; // 성공 시 재연결 카운터 리셋
   });
 
   // 중요 공지 알림
   eventSource.addEventListener('important-news', (event) => {
-    console.log('🔔 알림 수신:', event.data);
     const data = JSON.parse(event.data);
     showNotification(data);
   });
 
   // 연결 에러
-  eventSource.onerror = (error) => {
-    console.error('❌ SSE 연결 에러:', error);
+  eventSource.onerror = async (error) => {
     closeNotifications();
-	isConnecting = false;
-    // 5초 후 재연결 시도
+    isConnecting = false;
+    
+    // 토큰 유효성 체크
+    const token = localStorage.getItem('accessToken');
+    
+    if (!token) {
+      return;
+    }
+    
+    // 재연결 시도 횟수 체크
+    reconnectAttempts++;
+    if (reconnectAttempts > MAX_RECONNECT_ATTEMPTS) {     
+      // 토큰 갱신 시도
+      try {
+        const response = await fetch(`${API_BASE_URL}/auth/refresh`, {
+          method: 'POST',
+          credentials: 'include',
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          const newToken = data.data?.accessToken || data.accessToken;
+          
+          if (newToken) {
+            // Bearer 제거 후 저장
+            const cleanNewToken = newToken.replace(/^Bearer\s*/i, '').trim();
+            localStorage.setItem('accessToken', cleanNewToken);
+            reconnectAttempts = 0;
+            setTimeout(() => initNotifications(), 1000);
+          } else {
+            throw new Error('새 토큰을 받지 못했습니다');
+          }
+        } else {
+          throw new Error('토큰 갱신 실패');
+        }
+      } catch (err) {
+        localStorage.removeItem('accessToken');
+        window.location.href = '/login';
+      }
+      return;
+    }
+    
+    // 네트워크 에러 - 5초 후 재연결
     setTimeout(() => {
-      console.log('🔄 SSE 재연결 시도...');
       initNotifications();
     }, 5000);
   };
@@ -68,8 +105,8 @@ export function closeNotifications() {
   if (eventSource) {
     eventSource.close();
     eventSource = null;
-    console.log('🔌 SSE 연결 종료');
   }
+  reconnectAttempts = 0;
 }
 
 /**
