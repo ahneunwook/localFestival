@@ -6,6 +6,7 @@ positions:
   filename: /tmp/positions.yaml
 
 clients:
+  # [서버 배포 시] 아래 변수를 실제 앱 서버 사설 IP로 변경해야 함
   - url: http://OBS_EC2_PRIVATE_IP:3100/loki/api/v1/push
 
 scrape_configs:

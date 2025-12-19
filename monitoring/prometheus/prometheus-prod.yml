@@ -13,6 +13,7 @@ scrape_configs:
   - job_name: "spring-boot-app"
     metrics_path: "/api/actuator/prometheus"
     static_configs:
+      # [서버 배포 시] 아래 변수를 실제 앱 서버 사설 IP로 변경해야 함
       - targets: ["${APP_SERVER_PRIVATE_IP}:8080"]
         labels:
           application: "festival-api"
@@ -25,6 +26,7 @@ scrape_configs:
 
   # ✔ Node Exporter (EC2 #1)
   - job_name: "node-exporter-app"
+    # [서버 배포 시] 아래 변수를 실제 앱 서버 사설 IP로 변경해야 함
     static_configs:
       - targets: ["${APP_SERVER_PRIVATE_IP}:9100"]
         labels:
