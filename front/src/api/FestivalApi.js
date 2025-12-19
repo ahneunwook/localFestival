@@ -85,5 +85,15 @@ export const festivalApi = {
 			: `/festivals/names`;  // 전체 목록 또는 빈 검색
 
 		return await apiFetch(url);
+	},
+	
+	// 좋아요순 TOP 10
+	async getTop10ByLikes() {
+		return await apiFetch('/festivals/top10/likes');
+	},
+
+	// 조회순 TOP 10
+	async getTop10ByViews() {
+		return await apiFetch('/festivals/top10/views');
 	}
 }

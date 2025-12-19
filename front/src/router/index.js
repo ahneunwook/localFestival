@@ -9,14 +9,19 @@ class Router {
 
 		// 뒤로가기/앞으로가기 처리
 		window.addEventListener('popstate', () => {
-			this.loadRoute(window.location.pathname);
+			this.loadRoute(window.location.pathname + window.location.search);
 		});
 
 		// 링크 클릭 이벤트 처리
 		document.addEventListener('click', (e) => {
-			if (e.target.matches('[data-link]')) {
-				e.preventDefault();
-				this.navigate(e.target.getAttribute('href'));
+			const link = e.target.closest('a');
+			
+			if (link && link.href) {
+				const url = new URL(link.href);
+				if (url.origin === window.location.origin) {
+					e.preventDefault();
+					this.navigate(url.pathname + url.search);
+				}
 			}
 		});
 	}
@@ -27,8 +32,11 @@ class Router {
 	}
 
 	async loadRoute(path) {
+		// 쿼리 파라미터 제거하고 경로만 추출
+		const pathname = path.split('?')[0];
+		
 		// 라우트 찾기
-		const route = this.routes.find(r => r.path === path) || this.routes.find(r => r.path === '*');
+		const route = this.routes.find(r => r.path === pathname) || this.routes.find(r => r.path === '*');
 
 		if (route) {
 			this.currentRoute = route;
@@ -59,7 +67,7 @@ class Router {
 	}
 
 	init() {
-		this.loadRoute(window.location.pathname || '/');
+		this.loadRoute(window.location.pathname + window.location.search || '/');
 	}
 }
 

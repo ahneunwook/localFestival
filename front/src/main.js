@@ -11,6 +11,7 @@ import './styles/region-festival.css'
 import './styles/calendar.css'
 import './styles/region-festival-list.css'
 import './styles/reviews.css'
+import './styles/top-festivals.css'
 import Router from './router/index.js'
 import { HomePage, setupHomeSearchListeners } from './pages/Home.js'
 import { FestivalListPage } from './pages/FestivalList.js'
@@ -25,6 +26,7 @@ import { CalendarPage, setupCalendarListeners } from './pages/Calendar.js';
 import { RegionPage, setupRegionListeners } from './pages/regionFestival.js';
 import { RegionFestivalListPage } from './pages/RegionFestivalList.js';
 import {ReviewPage} from "./pages/Review.js";
+import { TopFestivalsPage, setupTopFestivalsListeners } from './pages/TopFestivals.js'
 import {ReviewWritePage} from "./pages/ReviewWrite.js";
 
 
@@ -124,6 +126,15 @@ const routes = [
     }
   },
   {
+    path: '/top10',
+    component: async () => {
+      const html = TopFestivalsPage();
+      // 페이지 로드 후 이벤트 리스너 설정
+      setTimeout(() => setupTopFestivalsListeners(), 0);
+      return html;
+    }
+  },
+  {
     path: '/reviews',
         component: async () => {
           return ReviewPage();
@@ -143,6 +154,7 @@ const routes = [
 
 // 라우터 초기화
 const router = new Router(routes);
+window.router = router;  // 전역으로 노출 (다른 파일에서 router.navigate() 사용 가능)
 router.init();
 
 // 페이지 로드 시 SSE 연결 (로그인 상태면)

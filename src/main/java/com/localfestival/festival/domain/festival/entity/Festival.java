@@ -13,7 +13,8 @@ import java.time.LocalDate;
     @Index(name = "idx_active_region", columnList = "isActive, region"),
     @Index(name = "idx_title", columnList = "title"),
     @Index(name = "idx_last_synced", columnList = "lastSyncedAt"),
-    @Index(name = "idx_event_status", columnList = "eventStatus")
+    @Index(name = "idx_event_status", columnList = "eventStatus"),
+    @Index(name = "idx_view_count", columnList = "viewCount")
 })
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -84,6 +85,10 @@ public class Festival extends BaseEntity {
 
     @Column(length = 20)
     private String eventStatus; // SCHEDULED, ONGOING, ENDED
+    
+    @Column(nullable = false)
+    @Builder.Default
+    private Long viewCount = 0L; // 조회수
 
     // 외부 API 동기화 시간
     private LocalDate lastSyncedAt;
@@ -129,5 +134,10 @@ public class Festival extends BaseEntity {
 
     public void activate() {
         this.isActive = true;
+    }
+    
+    // 조회수 증가
+    public void incrementViewCount() {
+        this.viewCount++;
     }
 }

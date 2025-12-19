@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import com.localfestival.festival.domain.festival.dto.request.FestivalSearchRequest;
 import com.localfestival.festival.domain.festival.dto.response.FestivalResponse;
 import com.localfestival.festival.domain.festival.dto.response.FestivalListResponse;
+import com.localfestival.festival.domain.festival.dto.response.FestivalRankingResponse;
 import com.localfestival.festival.domain.festival.service.FestivalService;
 import com.localfestival.festival.global.common.BaseResponse;
 import com.localfestival.festival.global.common.PageResponse;
@@ -76,10 +77,10 @@ public class FestivalController {
     
     // 축제 검색
     @GetMapping("/search")
-    public ResponseEntity<BaseResponse<List<FestivalListResponse>>> searchFestivals(
+    public ResponseEntity<BaseResponse<PageResponse<FestivalListResponse>>> searchFestivals(
             FestivalSearchRequest request,
             @PageableDefault(size = 12, sort = "startDate", direction = Sort.Direction.DESC) Pageable pageable) {
-        List<FestivalListResponse> result = festivalService.searchFestivals(request, pageable);
+        PageResponse<FestivalListResponse> result = festivalService.searchFestivals(request, pageable);
         return BaseResponse.success(HttpStatus.OK, "축제 검색 성공", result);
     }
 
@@ -99,5 +100,21 @@ public class FestivalController {
     ) {
         List<FestivalSearchNameResponse> result = festivalService.searchFestivalsByTitle(name);
         return BaseResponse.success(HttpStatus.OK, "축제 검색 성공", result);
+    }
+    
+    // 좋아요순 TOP 10
+    @GetMapping("/top10/likes")
+    public ResponseEntity<BaseResponse<PageResponse<FestivalRankingResponse>>> getTop10ByLikes(
+            @PageableDefault(size = 10) Pageable pageable) {
+        PageResponse<FestivalRankingResponse> result = festivalService.getTop10ByLikes(pageable);
+        return BaseResponse.success(HttpStatus.OK, "좋아요순 TOP 10 조회 성공", result);
+    }
+
+    // 조회순 TOP 10
+    @GetMapping("/top10/views")
+    public ResponseEntity<BaseResponse<PageResponse<FestivalRankingResponse>>> getTop10ByViews(
+            @PageableDefault(size = 10) Pageable pageable) {
+        PageResponse<FestivalRankingResponse> result = festivalService.getTop10ByViews(pageable);
+        return BaseResponse.success(HttpStatus.OK, "조회순 TOP 10 조회 성공", result);
     }
 }
