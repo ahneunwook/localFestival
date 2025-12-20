@@ -40,9 +40,10 @@ public class ReviewController {
 
     @GetMapping
     public ResponseEntity<BaseResponse<PageResponse<ReviewResponseDto>>> getReviews(
+            @RequestParam(value = "rating", required = false) Integer rating,
             @PageableDefault(size = 12, sort = "modifiedAt", direction = Sort.Direction.DESC) Pageable pageable
     ){
-        PageResponse<ReviewResponseDto> response = reviewService.getReviews(pageable);
+        PageResponse<ReviewResponseDto> response = reviewService.getReviews(rating, pageable);
         return BaseResponse.success(HttpStatus.OK, "리뷰 조회 성공", response);
     }
 

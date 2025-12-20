@@ -37,16 +37,16 @@ export function ReviewPage() {
 
       <!-- 필터 섹션 -->
       <div class="filter-section">
-        <div class="filter-row">
-          <span class="filter-label">정렬</span>
-          <div class="filter-buttons">
-            <button class="filter-btn active" data-sort="latest">최신순</button>
-            <button class="filter-btn" data-sort="likes">좋아요순</button>
-            <button class="filter-btn" data-sort="views">조회순</button>
-          </div>
-        </div>
+<!--        <div class="filter-row">-->
+<!--          <span class="filter-label">정렬</span>-->
+<!--          <div class="filter-buttons">-->
+<!--            <button class="filter-btn active" data-sort="latest">최신순</button>-->
+<!--            <button class="filter-btn" data-sort="likes">좋아요순</button>-->
+<!--            <button class="filter-btn" data-sort="views">조회순</button>-->
+<!--          </div>-->
+<!--        </div>-->
         
-        <div class="divider"></div>
+<!--        <div class="divider"></div>-->
         
         <div class="filter-row">
           <span class="filter-label">평점</span>
@@ -145,10 +145,14 @@ async function loadReviews(append = false) {
                 </div>
             `;
         }
-        console.log('API 호출 시작 - page:', currentPage);
+
+        let ratingParam = null;
+        if (currentRating && currentRating !== 'all') {
+            ratingParam = parseInt(currentRating);
+        }
 
         // API 호출
-        const response = await reviewApi.getReviews(currentPage);
+        const response = await reviewApi.getReviews(currentPage, ratingParam);
 
         const data = response;
 

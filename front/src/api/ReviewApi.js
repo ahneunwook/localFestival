@@ -11,8 +11,13 @@ export const reviewApi = {
     },
 
     // 후기 조회
-    async getReviews(page = 0) {
+    async getReviews(page = 0, rating = null) {
         let url = `/reviews?page=${page}`;
+
+        // rating 값이 있을 때만 URL 뒤에 붙여줌
+        if (rating) {
+            url += `&rating=${rating}`;
+        }
 
         return await apiFetch(url);
     },

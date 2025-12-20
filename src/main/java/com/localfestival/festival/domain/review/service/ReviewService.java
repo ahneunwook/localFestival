@@ -5,6 +5,7 @@ import com.localfestival.festival.domain.festival.repository.FestivalRepository;
 import com.localfestival.festival.domain.review.dto.response.ReviewResponseDto;
 import com.localfestival.festival.domain.review.entity.Review;
 import com.localfestival.festival.domain.review.entity.ReviewImage;
+import com.localfestival.festival.domain.review.repository.FestivalReviewRepository;
 import com.localfestival.festival.domain.review.repository.ReviewImageRepository;
 import com.localfestival.festival.domain.review.repository.ReviewRepository;
 import com.localfestival.festival.domain.user.entity.User;
@@ -22,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -33,6 +35,7 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final FestivalRepository festivalRepository;
     private final ReviewImageRepository reviewImageRepository;
+    private final FestivalReviewRepository festivalReviewRepository;
     private final LocalFileStorage fileStorage;
 
     @Transactional
@@ -62,30 +65,35 @@ public class ReviewService {
     }
 
     @Transactional(readOnly = true)
-    public PageResponse<ReviewResponseDto> getReviews(Pageable pageable) {
-        Page<Review> reviews = reviewRepository.findAllWithFestivalAndUser(pageable);
+    public PageResponse<ReviewResponseDto> getReviews(Integer rating, Pageable pageable) { // rating 파라미터 추가
 
-        // 리뷰 ID 목록 추출
+        Page<Review> reviews = festivalReviewRepository.findReviewsByRating(rating, pageable);
+
+        if (reviews.isEmpty()) {
+            return PageResponse.from(Page.empty(pageable));
+        }
+
+        // 2. 리뷰 ID 목록 추출
         List<Long> reviewIds = reviews.getContent().stream()
                 .map(Review::getId)
                 .toList();
 
-        // 이미지 전체 조회
         List<ReviewImage> allImages = reviewImageRepository.findByReviewIdIn(reviewIds);
 
-        // 이미지들을 reviewId 기준으로 그룹핑
         Map<Long, List<ReviewImage>> imageMap = allImages.stream()
                 .collect(Collectors.groupingBy(img -> img.getReview().getId()));
 
+        // 5. DTO 변환 (리뷰 + 이미지 조립)
         List<ReviewResponseDto> dtoList = reviews.getContent().stream()
                 .map(review ->
                         ReviewResponseDto.toDto(
                                 review,
-                                imageMap.getOrDefault(review.getId(), List.of())
+                                imageMap.getOrDefault(review.getId(), Collections.emptyList())
                         )
                 )
                 .toList();
 
+        // 6. Page 객체 재조립 (DTO 리스트로 교체)
         Page<ReviewResponseDto> responseDtos = new PageImpl<>(
                 dtoList,
                 pageable,
