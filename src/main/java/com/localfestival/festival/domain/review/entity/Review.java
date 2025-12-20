@@ -52,4 +52,14 @@ public class Review extends BaseEntity {
                 .build();
     }
 
+    public void update(Festival festival, String title, String content, Integer rating) {
+        this.festival = festival;
+        this.title = title;
+        this.content = content;
+        this.rating = rating;
+    }
+
+    public boolean isAuthor(Long userId){
+        return this.user.getId().equals(userId);
+    }
 }

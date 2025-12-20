@@ -1,6 +1,7 @@
 // pages/ReviewDetailPage.js
 import { createHeader } from '../components/header.js';
 import { reviewApi } from "../api/ReviewApi.js";
+import {getCurrentUser} from "../utils/auth.js";
 
 const API_BASE_URL = 'http://localhost:8080';
 
@@ -39,14 +40,24 @@ export function ReviewDetailPage(params) {
             </div>
 
             <div class="article-title-section">
-                <h1 id="detail-title">제목이 들어갑니다</h1>
-                <div class="meta-info">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 10px;">
+                    
+                    <h1 id="detail-title" style="margin: 0; flex: 1;">제목 로딩 중...</h1>
+                    
+                    <div id="owner-buttons" style="display: flex; gap: 8px; flex-shrink: 0;">
+                        <button id="edit-btn" style="display: none; padding: 4px 10px; cursor: pointer; border: 1px solid #ccc; background: #fff; border-radius: 4px;">수정</button>
+                        <button id="delete-btn" style="display: none; padding: 4px 10px; cursor: pointer; border: 1px solid #ff4d4f; background: #fff; color: #ff4d4f; border-radius: 4px;">삭제</button>
+                    </div>
+
+                </div>
+
+                <div class="meta-info" style="margin-top: 10px;">
                     <div class="author-profile">
                         <div class="avatar-placeholder">👤</div>
                         <span id="detail-author">작성자</span>
                     </div>
                     <span class="separator">·</span>
-                    <span id="detail-date">2025. 12. 19</span>
+                    <span id="detail-date">YYYY. MM. DD</span>
                     <span class="separator">·</span>
                     <div id="detail-rating" class="stars"></div>
                 </div>
@@ -79,9 +90,13 @@ async function loadReviewDetail(id) {
     try {
         const data = await reviewApi.getReviewDetail(id);
 
+        if (!data.id) {
+            data.id = id;
+        }
+
         // 데이터 바인딩
         document.getElementById('detail-title').textContent = data.title.replace(/^"|"$/g, '');
-        document.getElementById('detail-desc').innerText = data.content.replace(/^"|"$/g, ''); // innerText로 줄바꿈 유지
+        document.getElementById('detail-desc').innerText = data.content.replace(/^"|"$/g, '');
         document.getElementById('detail-author').textContent = data.authorName;
         document.getElementById('detail-date').textContent = new Date(data.createdDate).toLocaleDateString('ko-KR');
         document.getElementById('detail-festival-name').textContent = data.festivalName;
@@ -118,6 +133,8 @@ async function loadReviewDetail(id) {
         loadingEl.style.display = 'none';
         contentEl.style.display = 'block';
 
+        handleButtonVisibility(data);
+
     } catch (error) {
         console.error(error);
         loadingEl.innerHTML = `<p class="error">내용을 불러올 수 없습니다. :(</p>`;
@@ -131,4 +148,50 @@ function renderStars(rating) {
         stars += i <= rating ? '<span class="star filled">★</span>' : '<span class="star empty">★</span>';
     }
     return stars;
+}
+
+function handleButtonVisibility(review) {
+    // 보내주신 인증 로직 적용
+    const currentUser = getCurrentUser();
+    const currentUserId = currentUser?.userId ? Number(currentUser.userId) : null;
+    const isAdminUser = currentUser?.userRole === "ADMIN";
+
+    const btnGroup = document.getElementById('owner-buttons');
+    const editBtn = document.getElementById('edit-btn');
+    const deleteBtn = document.getElementById('delete-btn');
+
+    // 권한 체크 (내 ID와 리뷰의 authorId 비교)
+    const isOwner = currentUserId && (currentUserId === review.authorId);
+
+    // 작성자이거나 관리자이면 버튼 보이기
+    if (isOwner || isAdminUser) {
+        btnGroup.style.display = 'flex'; // 버튼 그룹 컨테이너 보이기
+        editBtn.style.display = 'block';
+        deleteBtn.style.display = 'block';
+
+        // 삭제 이벤트
+        deleteBtn.onclick = async () => {
+            if (confirm("정말로 삭제하시겠습니까?")) {
+                try {
+                    await reviewApi.deleteReview(review.id);
+                    alert("삭제되었습니다.");
+                    window.location.href = '/reviews';
+                } catch (error) {
+                    alert("삭제 실패");
+                    console.error(error);
+                }
+            }
+        };
+
+        // 수정 이벤트
+        editBtn.onclick = () => {
+            window.location.href = `/reviews/write?id=${review.id}&mode=edit`;
+        };
+
+    } else {
+        // 권한 없으면 숨기기
+        btnGroup.style.display = 'none';
+        editBtn.onclick = null;
+        deleteBtn.onclick = null;
+    }
 }

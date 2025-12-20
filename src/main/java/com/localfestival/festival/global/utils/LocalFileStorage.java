@@ -5,6 +5,7 @@ import com.localfestival.festival.global.exception.ErrorCode;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -47,4 +48,22 @@ public class LocalFileStorage {
             throw new CustomException(ErrorCode.FILE_SAVE_FAIL);
         }
     }
+
+    public void delete(String fileUrl) {
+        if (fileUrl == null || fileUrl.isEmpty()) {
+            return;
+        }
+
+        try {
+            String filename = fileUrl.substring(fileUrl.lastIndexOf("/") + 1);
+
+            Path filePath = Paths.get(uploadDir).resolve(filename);
+
+            Files.deleteIfExists(filePath);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 }
