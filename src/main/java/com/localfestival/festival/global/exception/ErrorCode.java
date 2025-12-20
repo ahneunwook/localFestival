@@ -48,7 +48,8 @@ public enum ErrorCode {
     INVALID_ANSWER_RELATION(HttpStatus.INTERNAL_SERVER_ERROR, "해당 답변이 "),
 
     // 리뷰
-    FILE_SAVE_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "파일 저장 실패");
+    FILE_SAVE_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "파일 저장 실패"),
+    REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 리뷰가 없습니다.");
 
     private final HttpStatus httpStatus;
     private final String message;

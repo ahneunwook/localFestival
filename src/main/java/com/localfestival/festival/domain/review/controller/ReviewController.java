@@ -45,4 +45,13 @@ public class ReviewController {
         PageResponse<ReviewResponseDto> response = reviewService.getReviews(pageable);
         return BaseResponse.success(HttpStatus.OK, "리뷰 조회 성공", response);
     }
+
+    @GetMapping("/{reviewId}")
+    public ResponseEntity<BaseResponse<ReviewResponseDto>> getDetailReview(
+            @PathVariable("reviewId") Long reviewId
+    ){
+        ReviewResponseDto response = reviewService.getDetailReview(reviewId);
+
+        return BaseResponse.success(HttpStatus.OK, "리뷰 조회 성공", response);
+    }
 }

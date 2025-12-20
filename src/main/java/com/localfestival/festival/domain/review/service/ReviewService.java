@@ -93,4 +93,14 @@ public class ReviewService {
 
         return PageResponse.from(responseDtos);
     }
+
+    @Transactional(readOnly = true)
+    public ReviewResponseDto getDetailReview(Long reviewId) {
+        Review review = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_FOUND));
+
+        List<ReviewImage> reviewImages = reviewImageRepository.findAllByReview(review);
+
+        return ReviewResponseDto.toDto(review, reviewImages);
+    }
 }

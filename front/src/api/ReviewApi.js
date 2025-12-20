@@ -15,5 +15,12 @@ export const reviewApi = {
         let url = `/reviews?page=${page}`;
 
         return await apiFetch(url);
+    },
+
+    // 후기 조회
+    async getReviewDetail(reviewId) {
+        let url = `/reviews/${reviewId}`;
+
+        return await apiFetch(url);
     }
 }
