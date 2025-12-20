@@ -40,9 +40,45 @@ public class ReviewController {
 
     @GetMapping
     public ResponseEntity<BaseResponse<PageResponse<ReviewResponseDto>>> getReviews(
+            @RequestParam(value = "rating", required = false) Integer rating,
             @PageableDefault(size = 12, sort = "modifiedAt", direction = Sort.Direction.DESC) Pageable pageable
     ){
-        PageResponse<ReviewResponseDto> response = reviewService.getReviews(pageable);
+        PageResponse<ReviewResponseDto> response = reviewService.getReviews(rating, pageable);
         return BaseResponse.success(HttpStatus.OK, "리뷰 조회 성공", response);
+    }
+
+    @GetMapping("/{reviewId}")
+    public ResponseEntity<BaseResponse<ReviewResponseDto>> getDetailReview(
+            @PathVariable("reviewId") Long reviewId
+    ){
+        ReviewResponseDto response = reviewService.getDetailReview(reviewId);
+
+        return BaseResponse.success(HttpStatus.OK, "리뷰 조회 성공", response);
+    }
+
+    @PutMapping(value = "/{reviewId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<BaseResponse<ReviewResponseDto>> updateReview(
+            @PathVariable("reviewId") Long reviewId,
+            @RequestParam("festivalId") Long festivalId,
+            @RequestParam("rating") Integer rating,
+            @RequestParam("title") String title,
+            @RequestParam("content") String content,
+            @RequestParam(value = "images", required = false) List<MultipartFile> images,
+            @RequestParam(value = "deleteImageIds", required = false) List<Long> deleteImageIds,
+            @CurrentUser User user
+
+    ) {
+        ReviewResponseDto dto = reviewService.updateReview(reviewId, festivalId, rating, title, content, images, deleteImageIds, user);
+
+        return BaseResponse.success(HttpStatus.OK, "리뷰 수정에 성공했습니다.", dto);
+    }
+
+    @DeleteMapping("/{reviewId}")
+    public ResponseEntity<BaseResponse<Void>> deleteReview(
+            @PathVariable Long reviewId,
+            @CurrentUser User user
+    ) {
+        reviewService.deleteReview(reviewId, user);
+        return BaseResponse.success(HttpStatus.OK, "리뷰 삭제에 성공했습니다.", null);
     }
 }

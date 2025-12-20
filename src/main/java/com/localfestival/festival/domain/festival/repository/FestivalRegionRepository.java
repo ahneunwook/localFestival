@@ -1,9 +1,7 @@
 package com.localfestival.festival.domain.festival.repository;
 
 import com.localfestival.festival.domain.festival.dto.response.FestivalResponse;
-import com.localfestival.festival.domain.festival.entity.Festival;
 import com.localfestival.festival.domain.festival.entity.QFestival;
-import com.localfestival.festival.global.common.PageResponse;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;

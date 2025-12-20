@@ -37,16 +37,16 @@ export function ReviewPage() {
 
       <!-- 필터 섹션 -->
       <div class="filter-section">
-        <div class="filter-row">
-          <span class="filter-label">정렬</span>
-          <div class="filter-buttons">
-            <button class="filter-btn active" data-sort="latest">최신순</button>
-            <button class="filter-btn" data-sort="likes">좋아요순</button>
-            <button class="filter-btn" data-sort="views">조회순</button>
-          </div>
-        </div>
+<!--        <div class="filter-row">-->
+<!--          <span class="filter-label">정렬</span>-->
+<!--          <div class="filter-buttons">-->
+<!--            <button class="filter-btn active" data-sort="latest">최신순</button>-->
+<!--            <button class="filter-btn" data-sort="likes">좋아요순</button>-->
+<!--            <button class="filter-btn" data-sort="views">조회순</button>-->
+<!--          </div>-->
+<!--        </div>-->
         
-        <div class="divider"></div>
+<!--        <div class="divider"></div>-->
         
         <div class="filter-row">
           <span class="filter-label">평점</span>
@@ -116,8 +116,7 @@ function setupWriteButton() {
     const writeBtn = document.getElementById('write-review-btn');
     if (writeBtn) {
         writeBtn.addEventListener('click', () => {
-            // 후기 작성 페이지로 이동
-            window.location.href = '/reviews/write';
+            window.router.navigate('/reviews/write');
         });
     }
 }
@@ -146,10 +145,14 @@ async function loadReviews(append = false) {
                 </div>
             `;
         }
-        console.log('API 호출 시작 - page:', currentPage);
+
+        let ratingParam = null;
+        if (currentRating && currentRating !== 'all') {
+            ratingParam = parseInt(currentRating);
+        }
 
         // API 호출
-        const response = await reviewApi.getReviews(currentPage);
+        const response = await reviewApi.getReviews(currentPage, ratingParam);
 
         const data = response;
 
@@ -197,7 +200,6 @@ async function loadReviews(append = false) {
 }
 
 function createReviewCard(review) {
-    console.log(review)
     const stars = renderStars(review.rating);
 
     // 이미지 URL을 절대 경로로 변환
@@ -219,7 +221,8 @@ function createReviewCard(review) {
     const formattedDate = new Date(review.createdDate).toLocaleDateString('ko-KR');
 
     return `
-    <a href="/reviews/${review.reviewId}" class="review-card">
+    <div class="review-card" style="cursor: pointer;" 
+         onclick="window.router.navigate('/reviews/detail?id=${review.reviewId}')">
       <div class="review-card-header">
         <div class="festival-info-review">
           <div class="festival-name">${review.festivalName}</div>
@@ -245,7 +248,7 @@ function createReviewCard(review) {
           <span class="review-date">${formattedDate}</span>
         </div>
       </div>
-    </a>
+    </div>
   `;
 }
 

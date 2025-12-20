@@ -1,0 +1,195 @@
+/* 전체 컨테이너: 중앙 정렬 및 최대 너비 제한 */
+.detail-container {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+/* 로딩 스피너 위치 잡기 */
+#detail-loading {
+    text-align: center;
+    padding: 50px;
+}
+
+/* 본문 카드 스타일 */
+.review-article {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); /* 부드러운 그림자 */
+    padding: 40px;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+/* 상단 헤더 영역 */
+.article-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.back-btn {
+    background: none;
+    border: none;
+    color: #666;
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 0;
+}
+.back-btn:hover { color: #333; text-decoration: underline; }
+
+.festival-badge-group {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.festival-name-tag {
+    font-weight: bold;
+    color: #555;
+    background: #f1f3f5;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.9rem;
+}
+
+/* 제목 및 메타 정보 */
+.article-title-section {
+    margin-bottom: 30px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 20px;
+}
+
+.article-title-section h1 {
+    font-size: 2rem;
+    margin: 0 0 15px 0;
+    color: #333;
+    line-height: 1.3;
+}
+
+.meta-info {
+    display: flex;
+    align-items: center;
+    color: #888;
+    font-size: 0.95rem;
+}
+
+.author-profile {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 500;
+    color: #333;
+}
+
+.separator { margin: 0 10px; color: #ddd; }
+
+.stars .star.filled { color: #FFD700; }
+.stars .star.empty { color: #eee; }
+
+/* 이미지 갤러리 */
+.article-gallery {
+    display: grid;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.detail-image {
+    width: 100%;
+    border-radius: 12px;
+    object-fit: contain; /* 이미지가 잘리지 않게 */
+    max-height: 500px;
+    background-color: #f8f9fa;
+}
+
+/* 본문 텍스트 */
+.article-body {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: #444;
+    white-space: pre-line; /* 줄바꿈 적용 */
+    margin-bottom: 40px;
+    word-break: break-all; /* 강제로 줄바꿈 */
+    overflow-wrap: break-word; /* 단어가 너무 길면 자름 */
+}
+
+/* 하단 버튼 */
+.article-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+}
+
+.like-btn {
+    background: #fff0f6;
+    color: #d6336c;
+    border: 1px solid #fcc2d7;
+    padding: 8px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.2s;
+}
+.like-btn:hover { background: #fcc2d7; }
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.title-row {
+    display: flex;
+    justify-content: space-between; /* 양쪽 끝으로 벌리기 */
+    align-items: center; /* 수직 중앙 정렬 */
+    margin-bottom: 1rem;
+    gap: 1rem;
+}
+
+#detail-title {
+    margin: 0;
+    font-size: 1.8rem;
+    word-break: break-all;
+    line-height: 1.3;
+}
+
+/* 버튼 그룹 컨테이너 */
+.owner-buttons {
+    display: flex; /* JS에서 flex로 변경하므로 여기선 기본 설정 */
+    gap: 8px;
+    flex-shrink: 0; /* 제목이 길어져도 버튼 크기 줄어들지 않게 */
+}
+
+/* 수정 버튼 스타일 */
+.btn-edit {
+    padding: 6px 12px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    color: #555;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+}
+
+.btn-edit:hover {
+    background-color: #f5f5f5;
+    border-color: #ccc;
+}
+
+/* 삭제 버튼 스타일 */
+.btn-delete {
+    padding: 6px 12px;
+    background-color: #fff;
+    border: 1px solid #ff4d4f;
+    border-radius: 4px;
+    color: #ff4d4f;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+}
+
+.btn-delete:hover {
+    background-color: #fff1f0;
+}

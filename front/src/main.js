@@ -12,6 +12,7 @@ import './styles/calendar.css'
 import './styles/region-festival-list.css'
 import './styles/reviews.css'
 import './styles/top-festivals.css'
+import './styles/review-detail.css'
 import Router from './router/index.js'
 import { HomePage, setupHomeSearchListeners } from './pages/Home.js'
 import { FestivalListPage } from './pages/FestivalList.js'
@@ -28,6 +29,7 @@ import { RegionFestivalListPage } from './pages/RegionFestivalList.js';
 import {ReviewPage} from "./pages/Review.js";
 import { TopFestivalsPage, setupTopFestivalsListeners } from './pages/TopFestivals.js'
 import {ReviewWritePage} from "./pages/ReviewWrite.js";
+import { ReviewDetailPage } from "./pages/ReviewDetailPage.js";
 
 
 // 라우트 정의
@@ -144,6 +146,12 @@ const routes = [
     path: '/reviews/write',
     component: async () => {
       return ReviewWritePage();
+    }
+  },
+  {
+    path: '/reviews/detail',
+    component: async () => {
+      return ReviewDetailPage();
     }
   },
   {

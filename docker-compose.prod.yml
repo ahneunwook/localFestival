@@ -15,15 +15,16 @@ services:
       - SPRING_PROFILES_ACTIVE=prod            # 프로필 강제 적용
       - PROD_DB_HOST=postgres-container        # localhost -> 컨테이너 이름
       - PROD_REDIS_HOST=redis-container        # localhost -> 컨테이너 이름
+      - LOGGING_FILE_NAME=/var/log/festival/application.log
     depends_on:
       - postgres
       - redis
     volumes:
-      - /var/log/festival:/var/log/festival
+      - ./logs:/var/log/festival
     restart: always
 
   postgres:
-    image: postgres:latest
+    image: postgres:15
     container_name: postgres-container
     restart: always
     ports:

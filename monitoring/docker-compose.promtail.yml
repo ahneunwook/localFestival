@@ -5,8 +5,8 @@ services:
     image: grafana/promtail:2.9.0
     container_name: promtail-prod
     volumes:
-      - ./promtail-prod.yml:/etc/promtail/config.yaml
-      - /var/log/festival:/var/log/festival
+      - ./promtail/promtail-prod.yml:/etc/promtail/config.yaml
+      - ../logs:/var/log/festival
     command: -config.file=/etc/promtail/config.yaml
     restart: always
 
@@ -15,4 +15,6 @@ services:
     container_name: node-exporter-app
     ports:
       - "9100:9100"
+    network_mode: host
+    pid: host
     restart: always
