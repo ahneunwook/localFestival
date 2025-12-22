@@ -1,5 +1,6 @@
 import { closeNotifications } from '../utils/notifications.js'
 import { authApi } from '../api/AuthApi.js'
+import { createFooter } from '../components/footer.js'
 
 // Simple SPA Router
 class Router {
@@ -34,7 +35,7 @@ class Router {
 	async loadRoute(path) {
 		// 쿼리 파라미터 제거하고 경로만 추출
 		const pathname = path.split('?')[0];
-		
+
 		// 라우트 찾기
 		const route = this.routes.find(r => r.path === pathname) || this.routes.find(r => r.path === '*');
 
@@ -44,7 +45,8 @@ class Router {
 
 			// 객체/문자열 처리
 			const result = await route.component();
-			app.innerHTML = typeof result === 'string' ? result : result.html;
+			const content = typeof result === 'string' ? result : result.html;
+			app.innerHTML = content + createFooter();
 			this.afterRender();
 		}
 	}

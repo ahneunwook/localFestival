@@ -134,19 +134,20 @@
   margin-top: 50px;
 }
 
-.load-more-btn {
+.festival-list.load-more-btn {
   padding: 15px 40px;
   background: white;
   border: 2px solid #a8d8ea;
-  border-radius: 10px;
+  border-radius: 30px;
   color: #7eb7d4;
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s;
+  margin: 0 auto;
 }
 
-.load-more-btn:hover {
+.festival-list.load-more-btn:hover {
   background: #a8d8ea;
   color: white;
 }

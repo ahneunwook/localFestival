@@ -41,7 +41,7 @@ export function FestivalListPage() {
       </div>
 
       <div class="load-more" id="load-more" style="display: none;">
-        <button class="load-more-btn" onclick="loadMore()">더 보기</button>
+        <button class="festival-list load-more-btn" onclick="loadMore()">더 보기</button>
       </div>
     </main>
   `;
