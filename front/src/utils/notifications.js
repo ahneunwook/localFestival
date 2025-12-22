@@ -3,6 +3,7 @@ import { API_BASE_URL } from '../config/api.js';
 let eventSource = null;
 let isConnecting = false;
 let reconnectAttempts = 0;
+let shouldStopReconnect = false;
 const MAX_RECONNECT_ATTEMPTS = 3;
 
 /**
@@ -14,12 +15,17 @@ export function initNotifications() {
   if (!token) {
     return;
   }
-  
+
+  // 재연결이 차단된 상태면 리턴
+  if (shouldStopReconnect) {
+    return;
+  }
+
   // 연결 시도 중이면 바로 리턴
   if (isConnecting) {
       return;
   }
-  
+
   // 이미 연결되어 있으면 중복 연결 방지
   if (eventSource) {
 	eventSource.close();
@@ -48,30 +54,41 @@ export function initNotifications() {
 
   // 연결 에러
   eventSource.onerror = async (error) => {
-    closeNotifications();
+    // EventSource 연결 닫기 (브라우저 자동 재연결 방지)
+    if (eventSource) {
+      eventSource.close();
+      eventSource = null;
+    }
     isConnecting = false;
-    
-    // 토큰 유효성 체크
-    const token = localStorage.getItem('accessToken');
-    
-    if (!token) {
+
+    // 재연결이 차단된 상태면 더 이상 시도하지 않음
+    if (shouldStopReconnect) {
       return;
     }
-    
+
+    // 토큰 유효성 체크
+    const token = localStorage.getItem('accessToken');
+
+    if (!token) {
+      shouldStopReconnect = true;
+      reconnectAttempts = 0;
+      return;
+    }
+
     // 재연결 시도 횟수 체크
     reconnectAttempts++;
-    if (reconnectAttempts > MAX_RECONNECT_ATTEMPTS) {     
+    if (reconnectAttempts > MAX_RECONNECT_ATTEMPTS) {
       // 토큰 갱신 시도
       try {
         const response = await fetch(`${API_BASE_URL}/auth/refresh`, {
           method: 'POST',
           credentials: 'include',
         });
-        
+
         if (response.ok) {
           const data = await response.json();
           const newToken = data.data?.accessToken || data.accessToken;
-          
+
           if (newToken) {
             // Bearer 제거 후 저장
             const cleanNewToken = newToken.replace(/^Bearer\s*/i, '').trim();
@@ -82,15 +99,24 @@ export function initNotifications() {
             throw new Error('새 토큰을 받지 못했습니다');
           }
         } else {
-          throw new Error('토큰 갱신 실패');
+          // refresh 토큰도 만료된 경우 - 재연결 중단 및 로그인 페이지로 이동
+          shouldStopReconnect = true;
+          reconnectAttempts = 0;
+          localStorage.removeItem('accessToken');
+          window.location.href = '/login';
+          return;
         }
       } catch (err) {
+        // 토큰 갱신 실패 시 재연결 중단 및 로그인 페이지로 이동
+        shouldStopReconnect = true;
+        reconnectAttempts = 0;
         localStorage.removeItem('accessToken');
         window.location.href = '/login';
+        return;
       }
       return;
     }
-    
+
     // 네트워크 에러 - 5초 후 재연결
     setTimeout(() => {
       initNotifications();
@@ -107,6 +133,7 @@ export function closeNotifications() {
     eventSource = null;
   }
   reconnectAttempts = 0;
+  shouldStopReconnect = false;
 }
 
 /**
