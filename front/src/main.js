@@ -25,7 +25,7 @@ import {questionPage, questionPageInit} from "./pages/question.js";
 import { NewsPage, setupNewsListeners } from './pages/News.js'
 import { initNotifications, closeNotifications } from './utils/notifications.js'
 import { CalendarPage, setupCalendarListeners } from './pages/Calendar.js';
-import { RegionPage, setupRegionListeners } from './pages/regionFestival.js';
+import { RegionPage, setupRegionListeners } from './pages/RegionFestival.js';
 import { RegionFestivalListPage } from './pages/RegionFestivalList.js';
 import {ReviewPage} from "./pages/Review.js";
 import { TopFestivalsPage, setupTopFestivalsListeners } from './pages/TopFestivals.js'
