@@ -7,6 +7,8 @@ services:
     volumes:
       - ./promtail/promtail-prod.yml:/etc/promtail/config.yaml
       - ../logs:/var/log/festival
+#      - 터미널에서 touch ./promtail/positions.yaml 하거나, 메모장으로 빈 파일 저장
+#      - ./promtail/positions.yaml:/tmp/positions.yaml
     command: -config.file=/etc/promtail/config.yaml
     restart: always
 
