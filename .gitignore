@@ -37,6 +37,7 @@ out/
 .vscode/
 # Environment files
 .env
+front/.env
 
 *.log
 logs/
