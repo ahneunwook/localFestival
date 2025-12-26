@@ -1,0 +1,51 @@
+name: Java CI with Gradle
+
+on:
+  push:
+    branches: ["main", "dev"]
+    paths:
+     - 'src/**'
+     - 'build.gradle'
+     - 'settings.gradle'
+     - 'Dockerfile'
+     - '.github/workflows/**'
+
+  pull_request:
+    types: [opened, synchronize, closed]
+    branches: [ "main", "dev" ]
+    paths:
+      - 'src/**'
+      - 'build.gradle'
+      - 'settings.gradle'
+      - 'Dockerfile'
+      - '.github/workflows/**'
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+
+      # 자바 17 설치 및 그레이들 캐싱
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'gradle'
+
+      # gradlew 실행 권한 주기
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      # 빌드 및 테스트 실행 (테스트 코드가 없어도 빌드는 수행함)
+      # 'build' 명령어는 test를 포함하고 있어서, 나중에 테스트 코드 짜면 자동으로 같이 돕니다.
+      - name: Build with Gradle
+        run: ./gradlew clean build
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: build/test-results
