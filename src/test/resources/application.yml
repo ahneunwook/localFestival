@@ -32,7 +32,7 @@ server:
 
 jwt:
   secret:
-    key: "this-is-a-dummy-secret-key-for-testing-purposes-only"
+    key: "c2lsdmVybGluZS10ZXN0LWp3dC1zZWNyZXQta2V5LXZhbHVlLWZvci1sb2NhbC1mZXN0aXZhbA"
 
 external:
   api:
