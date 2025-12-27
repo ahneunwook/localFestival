@@ -94,17 +94,42 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_KEY }}
           script: |
+            # 에러 발생시 즉시 중단
+            set -e
+            
+            # 디버깅을 위한 출력
+            echo "=== Starting deployment ==="
+            
             # 1. 프로젝트 폴더로 이동
             cd /home/ubuntu/local-festival
-
+            pwd
+            
             # 2. 최신 이미지 받기
+            echo "=== Pulling latest image ==="
             sudo docker pull dmsdnr0720/festival-api:latest
-
-            # 3. 서비스 재실행
-            sudo docker compose -f docker-compose.prod.yml -f monitoring/docker-compose.promtail.yml down
-  
+            
+            # 3. 기존 컨테이너 종료
+            echo "=== Stopping containers ==="
+            sudo docker compose -f docker-compose.prod.yml -f monitoring/docker-compose.promtail.yml down || true
+            
+            # 4. 이미지 업데이트
+            echo "=== Pulling images ==="
             sudo docker compose -f docker-compose.prod.yml -f monitoring/docker-compose.promtail.yml pull
             
+            # 5. 컨테이너 시작
+            echo "=== Starting containers ==="
             sudo docker compose -f docker-compose.prod.yml -f monitoring/docker-compose.promtail.yml up -d
-            # 4. 청소
+            
+            # 6. 컨테이너 상태 확인
+            echo "=== Container status ==="
+            sudo docker ps
+            
+            # 7. 로그 확인 (최근 50줄)
+            echo "=== Recent logs ==="
+            sudo docker compose -f docker-compose.prod.yml -f monitoring/docker-compose.promtail.yml logs --tail=50
+            
+            # 8. 청소
+            echo "=== Cleaning up ==="
             sudo docker image prune -f
+            
+            echo "=== Deployment complete ==="
