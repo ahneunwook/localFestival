@@ -101,11 +101,10 @@ jobs:
             sudo docker pull dmsdnr0720/festival-api:latest
 
             # 3. 서비스 재실행
-            sudo docker-compose -f docker-compose.prod.yml -f monitoring/docker-compose.promtail.yml down
-
-            sudo docker-compose -f docker-compose.prod.yml -f monitoring/docker-compose.promtail.yml pull
-
-            sudo docker-compose -f docker-compose.prod.yml -f monitoring/docker-compose.promtail.yml up -d
-
+            sudo docker compose -f docker-compose.prod.yml -f monitoring/docker-compose.promtail.yml down
+  
+            sudo docker compose -f docker-compose.prod.yml -f monitoring/docker-compose.promtail.yml pull
+            
+            sudo docker compose -f docker-compose.prod.yml -f monitoring/docker-compose.promtail.yml up -d
             # 4. 청소
             sudo docker image prune -f
