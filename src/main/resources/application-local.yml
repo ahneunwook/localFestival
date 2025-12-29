@@ -1,15 +1,15 @@
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://${LOCAL_DB_HOST}:${LOCAL_DB_PORT}/${LOCAL_DB_NAME}
-    username: ${LOCAL_DB_USERNAME}
-    password: ${LOCAL_DB_PASSWORD}
+    url: jdbc:postgresql://${LOCAL_DB_HOST:localhost}:${LOCAL_DB_PORT:5432}/${LOCAL_DB_NAME:festival}
+    username: ${LOCAL_DB_USERNAME:postgres}
+    password: ${LOCAL_DB_PASSWORD:postgres}
 
   data:
     redis:
-      host: ${LOCAL_REDIS_HOST}
-      port: ${LOCAL_REDIS_PORT}
-      password: ${LOCAL_REDIS_PASSWORD}
+      host: ${LOCAL_REDIS_HOST:localhost}
+      port: ${LOCAL_REDIS_PORT:6379}
+      password: ${LOCAL_REDIS_PASSWORD:}
       timeout: 3000
 
 springdoc:
@@ -21,8 +21,8 @@ springdoc:
 cloud:
   aws:
     credentials:
-      access-key: ${AWS_ACCESS_KEY:dummy}
-      secret-key: ${AWS_SECRET_KEY:dummy}
+      access-key: ${AWS_ACCESS_KEY:dummy-access-key}
+      secret-key: ${AWS_SECRET_KEY:dummy-secret-key}
     s3:
       bucket: ${AWS_S3_BUCKET:dummy-bucket}
     region:
