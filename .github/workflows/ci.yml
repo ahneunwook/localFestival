@@ -95,28 +95,16 @@ jobs:
           key: ${{ secrets.EC2_KEY }}
           script: |
             set -e
-            
-            echo "=== Starting deployment ==="
             cd /home/ubuntu/local-festival
-            
-            # 최신 이미지 받기
+
             echo "=== Pulling latest image ==="
             sudo docker pull dmsdnr0720/festival-api:latest
-            
-            # API 컨테이너만 재시작 (DB, Redis는 그대로 유지)
+
             echo "=== Restarting API container only ==="
             sudo docker compose -f docker-compose.prod.yml up -d --no-deps --force-recreate spring-app
-            
-            # 상태 확인
-            echo "=== Container status ==="
-            sudo docker ps
-            
-            # API 로그 확인 (에러 있는지 체크)
+
             echo "=== Recent API logs ==="
-            sudo docker logs --tail=50 spring-app
-            
-            # 청소
+            sudo docker logs --tail=50 local-festival || sudo docker logs --tail=50 spring-app
+
             echo "=== Cleaning up ==="
             sudo docker image prune -f
-            
-            echo "=== Deployment complete ==="
