@@ -3,7 +3,9 @@ import { createHeader } from '../components/header.js';
 import { reviewApi } from "../api/ReviewApi.js";
 import {getCurrentUser} from "../utils/auth.js";
 
-const API_BASE_URL = 'http://localhost:8080';
+const API_BASE_URL = window.location.hostname === 'localhost'
+    ? 'http://localhost:8080'
+    : 'https://api.local-festival.store';
 
 export function ReviewDetailPage(params) {
     const urlParams = new URLSearchParams(window.location.search);
