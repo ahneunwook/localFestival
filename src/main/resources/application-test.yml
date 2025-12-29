@@ -1,0 +1,52 @@
+spring:
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:testdb
+    username: sa
+    password:
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      password:
+      timeout: 3000
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+
+  flyway:
+    enabled: false  # 테스트에서는 Flyway 비활성화
+
+cloud:
+  aws:
+    credentials:
+      access-key: test-access-key
+      secret-key: test-secret-key
+    s3:
+      bucket: test-bucket
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
+
+jwt:
+  secret:
+    key: test-secret-key-for-testing-purpose-only-min-256-bits
+
+external:
+  api:
+    festival:
+      url: http://test-api.com
+      key: test-key
+    tour:
+      url: http://test-tour-api.com
+      key: test-key
+
+springdoc:
+  api-docs:
+    enabled: false
+  swagger-ui:
+    enabled: false
