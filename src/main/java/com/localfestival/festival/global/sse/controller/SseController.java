@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,6 +27,10 @@ public class SseController {
      * @param userPrincipal 인증된 사용자 정보
      * @return SseEmitter 객체
      */
+    @CrossOrigin(
+            origins = {"https://www.local-festival.store", "https://local-festival.store"},
+            allowCredentials = "true"
+    )
     @GetMapping(value = "/subscribe", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter subscribe(@AuthenticationPrincipal CustomUserPrincipal userPrincipal) {
         Long userId = userPrincipal.getId();

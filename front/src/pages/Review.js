@@ -10,7 +10,9 @@ let currentRating = 'all';   // all, 5, 4, 3
 let hasMorePages = false;
 
 // API 베이스 URL (실제 서버 주소로 변경하세요)
-const API_BASE_URL = 'http://localhost:8080'; // 또는 실제 서버 URL
+const API_BASE_URL = window.location.hostname === 'localhost'
+    ? 'http://localhost:8080'
+    : 'https://api.local-festival.store';
 
 export function ReviewPage() {
     requestAnimationFrame(() => {

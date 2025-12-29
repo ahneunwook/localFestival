@@ -103,24 +103,17 @@ jobs:
             echo "=== Pulling latest image ==="
             sudo docker pull dmsdnr0720/festival-api:latest
             
-            # 모든 컨테이너 강제 종료 및 제거
-            echo "=== Stopping all containers ==="
-            sudo docker compose -f docker-compose.prod.yml -f monitoring/docker-compose.promtail.yml down --remove-orphans || true
-            
-            # 혹시 남아있는 컨테이너들 개별 제거
-            sudo docker rm -f node-exporter-app promtail-prod local-festival postgres-container redis-container 2>/dev/null || true
-            
-            # 이미지 업데이트
-            echo "=== Pulling images ==="
-            sudo docker compose -f docker-compose.prod.yml -f monitoring/docker-compose.promtail.yml pull
-            
-            # 컨테이너 시작
-            echo "=== Starting containers ==="
-            sudo docker compose -f docker-compose.prod.yml -f monitoring/docker-compose.promtail.yml up -d
+            # API 컨테이너만 재시작 (DB, Redis는 그대로 유지)
+            echo "=== Restarting API container only ==="
+            sudo docker compose -f docker-compose.prod.yml up -d --no-deps --force-recreate spring-app
             
             # 상태 확인
             echo "=== Container status ==="
             sudo docker ps
+            
+            # API 로그 확인 (에러 있는지 체크)
+            echo "=== Recent API logs ==="
+            sudo docker logs --tail=50 spring-app
             
             # 청소
             echo "=== Cleaning up ==="
