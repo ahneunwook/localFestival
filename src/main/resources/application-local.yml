@@ -17,3 +17,15 @@ springdoc:
     enabled: true
   swagger-ui:
     enabled: true
+
+cloud:
+  aws:
+    credentials:
+      access-key: ${AWS_ACCESS_KEY:dummy}
+      secret-key: ${AWS_SECRET_KEY:dummy}
+    s3:
+      bucket: ${AWS_S3_BUCKET:dummy-bucket}
+    region:
+      static: ${AWS_REGION:ap-northeast-2}
+    stack:
+      auto: false
