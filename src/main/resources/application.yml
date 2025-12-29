@@ -73,7 +73,7 @@ server:
 
 jwt:
   secret:
-    key: ${SECRET_KEY}
+    key: ${SECRET_KEY:test-jwt-secret-key-for-testing-minimum-256-bits-required-hs256}
 
 logging:
   level:
@@ -97,10 +97,10 @@ external:
   api:
     festival:
       url: http://api.data.go.kr/openapi/tn_pubr_public_cltur_fstvl_api
-      key: ${FESTIVAL_API_KEY}
+      key: ${FESTIVAL_API_KEY:dummy-festival-key}
     tour:
       url: http://apis.data.go.kr/B551011/KorService2
-      key: ${TOUR_API_KEY}
+      key: ${TOUR_API_KEY:dummy-tour-key}
 
 springdoc:
   swagger-ui:
