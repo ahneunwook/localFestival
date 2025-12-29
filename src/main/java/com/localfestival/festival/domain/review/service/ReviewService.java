@@ -13,7 +13,6 @@ import com.localfestival.festival.domain.user.enums.Role;
 import com.localfestival.festival.global.common.PageResponse;
 import com.localfestival.festival.global.exception.CustomException;
 import com.localfestival.festival.global.exception.ErrorCode;
-import com.localfestival.festival.global.utils.LocalFileStorage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -36,7 +35,7 @@ public class ReviewService {
     private final FestivalRepository festivalRepository;
     private final ReviewImageRepository reviewImageRepository;
     private final FestivalReviewRepository festivalReviewRepository;
-    private final LocalFileStorage fileStorage;
+    private final FileStorage fileStorage;
 
     @Transactional
     public ReviewResponseDto createReview(User user, Long festivalId, Integer rating, String title, String content, List<MultipartFile> images) {

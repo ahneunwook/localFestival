@@ -1,8 +1,10 @@
-package com.localfestival.festival.global.utils;
+package com.localfestival.festival.domain.review.service;
 
 import com.localfestival.festival.global.exception.CustomException;
 import com.localfestival.festival.global.exception.ErrorCode;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -11,11 +13,13 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.UUID;
 
-@Component
-public class LocalFileStorage {
+@Service
+@Profile("local")
+public class LocalFileStorage implements FileStorage{
 
     private final String uploadDir = System.getProperty("user.dir") + "/uploads/reviews/";
 
+    @Override
     public String save(MultipartFile file){
         try{
             // 원본 파일명에서 확장자만 추출
@@ -49,6 +53,7 @@ public class LocalFileStorage {
         }
     }
 
+    @Override
     public void delete(String fileUrl) {
         if (fileUrl == null || fileUrl.isEmpty()) {
             return;
